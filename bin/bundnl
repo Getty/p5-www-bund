@@ -1,0 +1,86 @@
+#!/usr/bin/env perl
+
+# PODNAME: bundnl
+# ABSTRACT: CLI client for German Federal Government APIs (Dutch)
+
+use strict;
+use warnings;
+use lib 'lib';
+
+binmode(STDOUT, ':encoding(UTF-8)');
+binmode(STDERR, ':encoding(UTF-8)');
+
+# Map CLI aliases to Cmd package names
+my %aliases = (
+    'pegel-online' => 'pegel',
+    'pegel_online' => 'pegel',
+    'eco-visio' => 'ecovisio',
+    'eco_visio' => 'ecovisio',
+);
+
+for my $i (0 .. $#ARGV) {
+    next if $ARGV[$i] =~ /^-/;
+    if (exists $aliases{lc $ARGV[$i]}) {
+        $ARGV[$i] = $aliases{lc $ARGV[$i]};
+        last;
+    }
+}
+
+$ENV{WWW_BUND_LANG} //= 'nl';
+
+use WWW::Bund::CLI;
+
+WWW::Bund::CLI->new_with_cmd;
+
+__END__
+
+=pod
+
+=head1 SYNOPSIS
+
+  # Lijst van alle beschikbare API's
+  bundnl list
+
+  # Hulp voor een specifieke API
+  bundnl info autobahn
+  bundnl autobahn
+
+  # API-eindpunten aanroepen
+  bundnl autobahn roads
+  bundnl pegel stations
+  bundnl tagesschau search Oekraïne
+
+  # Uitvoerformaat wijzigen
+  bundnl -o json autobahn roads
+
+=head1 DESCRIPTION
+
+B<bundnl> is de Nederlandse variant van de B<bund> commandoregel-client
+voor Duitse federale overheids-API's (bund.dev). Standaard toont het in
+het Nederlands (C<lang=nl>) terwijl toegang wordt geboden tot dezelfde 16 publieke API's.
+
+Voor volledige documentatie, zie C<bund --help> of C<perldoc bund>.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-o, --output> I<formaat>
+
+Uitvoerformaat: C<template> (standaard), C<json>, C<yaml>
+
+=item B<--lang> I<taal>
+
+Taal wijzigen: C<nl> (standaard voor bundnl), C<de>, C<en>, C<fr>, C<es>, C<it>, C<pl>
+
+=item B<-h, --help>
+
+Hulp tonen
+
+=back
+
+=head1 SEE ALSO
+
+L<bund>, L<WWW::Bund>, L<https://bund.dev>
+
+=cut
