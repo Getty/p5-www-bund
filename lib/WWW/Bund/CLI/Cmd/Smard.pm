@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::Smard;
-
+our $VERSION = '0.002';
 # ABSTRACT: SMARD (Strommarktdaten) API command
 
 use Moo;

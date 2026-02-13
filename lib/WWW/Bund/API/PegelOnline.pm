@@ -1,5 +1,5 @@
 package WWW::Bund::API::PegelOnline;
-
+our $VERSION = '0.002';
 # ABSTRACT: Adapter for Pegel-Online API (water levels)
 
 use Moo;

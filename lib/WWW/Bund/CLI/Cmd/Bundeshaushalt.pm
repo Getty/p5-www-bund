@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::Bundeshaushalt;
-
+our $VERSION = '0.002';
 # ABSTRACT: Bundeshaushalt API command
 
 use Moo;

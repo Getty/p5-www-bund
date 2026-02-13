@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Role::APICommand;
-
+our $VERSION = '0.002';
 # ABSTRACT: Shared role for API command dispatch
 
 use Moo::Role;

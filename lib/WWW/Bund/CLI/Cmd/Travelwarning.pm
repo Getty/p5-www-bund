@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::Travelwarning;
-
+our $VERSION = '0.002';
 # ABSTRACT: Travelwarning (Reisewarnungen) API command
 
 use Moo;

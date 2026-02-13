@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::Ladestationen;
-
+our $VERSION = '0.002';
 # ABSTRACT: Ladestationen (Ladesaeulenregister) API command
 
 use Moo;

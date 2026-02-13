@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Formatter;
-
+our $VERSION = '0.002';
 # ABSTRACT: Template-based output formatter for bund CLI
 
 use Moo;

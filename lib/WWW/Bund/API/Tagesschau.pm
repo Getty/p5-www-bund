@@ -1,5 +1,5 @@
 package WWW::Bund::API::Tagesschau;
-
+our $VERSION = '0.002';
 # ABSTRACT: Adapter for Tagesschau API (news)
 
 use Moo;

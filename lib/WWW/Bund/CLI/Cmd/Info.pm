@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::Info;
-
+our $VERSION = '0.002';
 # ABSTRACT: Show detailed API information
 
 use Moo;

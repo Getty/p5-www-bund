@@ -1,5 +1,5 @@
 package WWW::Bund::HTTPResponse;
-
+our $VERSION = '0.002';
 # ABSTRACT: Transport-independent HTTP response object
 
 use Moo;

@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::Pegel;
-
+our $VERSION = '0.002';
 # ABSTRACT: Pegel Online API commands
 
 use Moo;

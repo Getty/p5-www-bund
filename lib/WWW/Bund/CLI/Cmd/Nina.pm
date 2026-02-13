@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::Nina;
-
+our $VERSION = '0.002';
 # ABSTRACT: NINA Warn-App API commands
 
 use Moo;

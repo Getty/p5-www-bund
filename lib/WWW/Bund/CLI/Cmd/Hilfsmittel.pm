@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::Hilfsmittel;
-
+our $VERSION = '0.002';
 # ABSTRACT: Hilfsmittel (GKV Hilfsmittelverzeichnis) API command
 
 use Moo;

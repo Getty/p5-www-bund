@@ -1,5 +1,5 @@
 package WWW::Bund::Caller;
-
+our $VERSION = '0.002';
 # ABSTRACT: Generic API call engine
 
 use Moo;

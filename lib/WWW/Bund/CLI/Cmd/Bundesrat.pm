@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::Bundesrat;
-
+our $VERSION = '0.002';
 # ABSTRACT: Bundesrat API command
 
 use Moo;

@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::Dwd;
-
+our $VERSION = '0.002';
 # ABSTRACT: DWD Weather API commands
 
 use Moo;

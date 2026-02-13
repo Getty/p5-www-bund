@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::EcoVisio;
-
+our $VERSION = '0.002';
 # ABSTRACT: Eco-Visio (Fahrrad-Zähler) API command
 
 use Moo;

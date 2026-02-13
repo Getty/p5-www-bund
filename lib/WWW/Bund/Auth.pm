@@ -1,5 +1,5 @@
 package WWW::Bund::Auth;
-
+our $VERSION = '0.002';
 # ABSTRACT: Authentication management for Bund APIs
 
 use Moo;
