@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::Autobahn;
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 # ABSTRACT: Autobahn App API commands
 
 use Moo;

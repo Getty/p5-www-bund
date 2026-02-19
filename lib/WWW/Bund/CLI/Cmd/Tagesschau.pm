@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::Tagesschau;
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 # ABSTRACT: Tagesschau API commands
 
 use Moo;

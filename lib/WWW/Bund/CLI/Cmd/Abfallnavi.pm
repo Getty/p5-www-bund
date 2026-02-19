@@ -1,4 +1,5 @@
 package WWW::Bund::CLI::Cmd::Abfallnavi;
+our $VERSION = '0.003';
 use Moo;
 use MooX::Cmd;
 use MooX::Options protect_argv => 0;

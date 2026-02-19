@@ -1,5 +1,5 @@
 package WWW::Bund::Role::Response;
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 # ABSTRACT: Role for typed API response objects
 
 use Moo::Role;

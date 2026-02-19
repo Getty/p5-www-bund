@@ -1,5 +1,5 @@
 package WWW::Bund::Response::XML;
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 # ABSTRACT: XML response — parses content to Perl data structure via XML::Twig
 
 use Moo;

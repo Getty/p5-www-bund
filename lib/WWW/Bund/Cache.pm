@@ -1,5 +1,5 @@
 package WWW::Bund::Cache;
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 # ABSTRACT: GET response caching on disk
 
 use Moo;

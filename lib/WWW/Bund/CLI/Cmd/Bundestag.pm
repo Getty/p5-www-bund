@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::Bundestag;
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 # ABSTRACT: Bundestag API commands
 
 use Moo;

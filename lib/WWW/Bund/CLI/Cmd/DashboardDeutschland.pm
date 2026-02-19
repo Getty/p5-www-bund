@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::DashboardDeutschland;
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 # ABSTRACT: Dashboard Deutschland API command
 
 use Moo;

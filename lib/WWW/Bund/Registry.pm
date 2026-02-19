@@ -1,5 +1,5 @@
 package WWW::Bund::Registry;
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 # ABSTRACT: API registry and endpoint catalog
 
 use Moo;

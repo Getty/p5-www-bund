@@ -1,5 +1,5 @@
 package WWW::Bund::LWPIO;
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 # ABSTRACT: Synchronous HTTP backend using LWP::UserAgent
 
 use Moo;

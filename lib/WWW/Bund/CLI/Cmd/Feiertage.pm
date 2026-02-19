@@ -1,5 +1,5 @@
 package WWW::Bund::CLI::Cmd::Feiertage;
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 # ABSTRACT: Feiertage API command
 
 use Moo;
