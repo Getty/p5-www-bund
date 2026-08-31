@@ -1,0 +1,14 @@
+---
+class: standard
+created: 2026-08-31T04:29:45Z
+id: 3
+priority: medium
+status: backlog
+tags:
+- api
+- test
+title: Live-test eco_visio and hilfsmittel endpoints
+updated: 2026-08-31T04:29:45Z
+---
+
+eco_visio and hilfsmittel were implemented but never live-verified. Run perl -Ilib bin/bund eco-visio <action> / hilfsmittel <action> against the real APIs, fix endpoint data or templates as needed.
