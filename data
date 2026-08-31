@@ -1,0 +1,13 @@
+---
+class: standard
+created: 2026-08-31T04:30:06Z
+id: 8
+priority: low
+status: backlog
+tags:
+- docs
+title: Refresh CLAUDE.md/README API counts
+updated: 2026-08-31T04:30:06Z
+---
+
+Docs are stale: they claim 16 APIs / 78 endpoints / 497 templates. Actual repo now has 21 CLI/Cmd classes and 114 endpoints. Update counts and the API table in README.md (CLAUDE.md is now a delegation pointer).
