@@ -1,0 +1,13 @@
+---
+class: standard
+created: 2026-08-31T04:29:58Z
+id: 6
+priority: medium
+status: backlog
+tags:
+- api
+title: marktstammdaten data endpoints need POST filter params
+updated: 2026-08-31T04:29:58Z
+---
+
+The filter_* endpoints work. The data endpoints (strom_erzeugung etc.) need filter parameters sent as a POST body. Caller POST body support exists; wire the filter params through and live-test.
