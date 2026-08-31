@@ -1,0 +1,14 @@
+---
+class: standard
+created: 2026-08-31T04:29:14Z
+id: 1
+priority: high
+status: backlog
+tags:
+- api
+- bug
+title: bundeshaushalt endpoint returns HTTP 400
+updated: 2026-08-31T04:29:14Z
+---
+
+The bundeshaushalt endpoint returns HTTP 400. Check base_url / query params in share/endpoints.yml against the current OpenAPI spec. From CLAUDE.md known-issues.
