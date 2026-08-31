@@ -1,0 +1,6 @@
+claude: true
+prompt: |
+  Drain the WWW::Bund karr board. Pick the highest-priority actionable ticket,
+  delegate implementation to the www-bund-worker agent, verify with `prove -l t/`,
+  and hand off to review. Do not run `dzil release`. Do not touch any public
+  issue tracker.
