@@ -1,0 +1,13 @@
+---
+class: standard
+created: 2026-08-31T04:29:53Z
+id: 5
+priority: medium
+status: backlog
+tags:
+- api
+title: 'destatis: expose command + auth handling'
+updated: 2026-08-31T04:29:53Z
+---
+
+Destatis Cmd class was removed during cleanup. Caller already supports POST form-encoded bodies (old "add POST body support" TODO is DONE). Remaining: re-expose destatis with username/password auth (GAST/GAST works for find only; other endpoints need a registered account). base_url uses www-genesis (hyphen), method POST.
