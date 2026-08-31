@@ -1,0 +1,14 @@
+---
+class: standard
+created: 2026-08-31T04:29:18Z
+id: 2
+priority: high
+status: backlog
+tags:
+- api
+- bug
+title: 'ladestationen: URL serves HTML, not GeoJSON'
+updated: 2026-08-31T04:29:18Z
+---
+
+ladestationen endpoint URL points at an HTML page instead of GeoJSON. Per API_CLEANUP_SUMMARY it also became token-gated in 2026. Decide: fix the URL, wire auth, or mark the API disabled in registry.
