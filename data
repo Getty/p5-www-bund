@@ -1,0 +1,14 @@
+---
+class: standard
+created: 2026-08-31T04:30:02Z
+id: 7
+priority: medium
+status: backlog
+tags:
+- api
+- test
+title: Live-test luftqualitaet + pflanzenschutzmittelzulassung
+updated: 2026-08-31T04:30:02Z
+---
+
+Two of the newer public APIs. Run the endpoints against real data, confirm templates render for all 7 languages, fix any endpoint/template drift.
