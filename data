@@ -1,0 +1,14 @@
+---
+class: standard
+created: 2026-08-31T04:29:49Z
+id: 4
+priority: medium
+status: backlog
+tags:
+- api
+- test
+title: Verify abfallnavi {region} end-to-end
+updated: 2026-08-31T04:29:49Z
+---
+
+Caller already substitutes {region} in base_url (e.g. moenchengladbach-abfallapp.regioit.de). Confirm a user can pass the region param through the CLI to reach orte/strassen/fraktionen/termine, and live-test. NOTE: old API_CLEANUP_SUMMARY TODO "Caller must implement {region} substitution" is already DONE.
