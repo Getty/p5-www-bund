@@ -1,0 +1,15 @@
+---
+class: standard
+created: 2026-09-09T09:19:00Z
+id: 12
+priority: medium
+status: backlog
+tags:
+- api
+- upstream
+- bug
+title: eco_visio API appears dead upstream (counters path 404s)
+updated: 2026-09-09T09:19:00Z
+---
+
+During k3 live-testing: the documented eco_visio counters path publicwebpageplus/{idOrganisme} returns HTTP 404 for every organism id tried (16+ incl spec default 4586 and 677 Koeln). The undocumented sibling publicwebpage/{id} returns HTTP 200 but empty stubs. eco_visio_data needs flowIds only obtainable from the dead counters listing, so it cannot be exercised. endpoints.yml matches the OpenAPI spec (from 2023); the API itself seems gone or moved. Left both eco_visio endpoints on honest YAML fallback (no unverifiable templates). Needs upstream re-investigation before eco_visio can be verified. Split out of k3 which is otherwise done for hilfsmittel.
