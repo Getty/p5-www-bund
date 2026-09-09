@@ -1,0 +1,17 @@
+---
+class: standard
+completed: 2026-09-09T09:26:29Z
+created: 2026-08-31T04:30:06Z
+id: 8
+priority: low
+started: 2026-09-09T09:22:52Z
+status: done
+tags:
+- docs
+title: Refresh CLAUDE.md/README API counts
+updated: 2026-09-09T09:26:29Z
+---
+
+Docs are stale: they claim 16 APIs / 78 endpoints / 497 templates. Actual repo now has 21 CLI/Cmd classes and 114 endpoints. Update counts and the API table in README.md (CLAUDE.md is now a delegation pointer).
+
+2026-09-09 09:26 Updated stale POD counts in Bund.pm Registry.pm Formatter.pm from 16 APIs 78 endpoints 497 templates to 19 APIs 114 endpoints 144 per language. Fixed README data-files counts and API roadmap nina 13 to 14 and removed stale abfallnavi in-arbeit row since region is done. README headline counts were already current. Commit af8e23b.
