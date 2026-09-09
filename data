@@ -1,0 +1,18 @@
+---
+class: standard
+completed: 2026-09-09T09:35:40Z
+created: 2026-08-31T04:30:02Z
+id: 7
+priority: medium
+started: 2026-09-09T09:21:23Z
+status: done
+tags:
+- api
+- test
+title: Live-test luftqualitaet + pflanzenschutzmittelzulassung
+updated: 2026-09-09T09:35:40Z
+---
+
+Two of the newer public APIs. Run the endpoints against real data, confirm templates render for all 7 languages, fix any endpoint/template drift.
+
+2026-09-09 09:35 Both APIs live-verified return data no endpoint drift vs specs. pflanzenschutz all 6 endpoints render via yml templates in 7 languages type table extract items. luftqualitaet all 13 use the UBA indices plus numeric keyed format the current formatter cannot render left on honest YAML fallback tracked in ticket 14 for a new keyed matrix formatter type. Offline test pins both. prove green 794 tests. Commit 2276813.
