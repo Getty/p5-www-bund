@@ -1,0 +1,14 @@
+---
+class: standard
+created: 2026-09-09T09:19:04Z
+id: 13
+priority: low
+status: backlog
+tags:
+- api
+- cleanup
+title: hilfsmittel_produkte query params are non-functional server-side
+updated: 2026-09-09T09:19:04Z
+---
+
+The /Produkt endpoint ignores all query params: fetched with UntergruppeId, ProduktartId, and with no params, every variant returns the byte-identical full list of 66025 products (~55MB). The OpenAPI spec documents /Produkt with no parameters. So the query_params block (ProduktgruppeId, UntergruppeId, ProduktartId) and the corresponding CLI positional args do nothing. The UnterruppeId typo was fixed in k3, but a decision is needed: drop these non-functional params entirely. Design decision, left for maintainer.
