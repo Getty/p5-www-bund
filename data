@@ -1,0 +1,18 @@
+---
+class: standard
+completed: 2026-09-09T09:19:59Z
+created: 2026-08-31T04:29:45Z
+id: 3
+priority: medium
+started: 2026-09-09T09:01:56Z
+status: done
+tags:
+- api
+- test
+title: Live-test eco_visio and hilfsmittel endpoints
+updated: 2026-09-09T09:19:59Z
+---
+
+eco_visio and hilfsmittel were implemented but never live-verified. Run perl -Ilib bin/bund eco-visio <action> / hilfsmittel <action> against the real APIs, fix endpoint data or templates as needed.
+
+2026-09-09 09:19 hilfsmittel fully live-verified all 7 endpoints render via yml templates in 7 languages. Fixed UnterruppeId typo to UntergruppeId. eco_visio API dead upstream 404 everywhere left on YAML fallback tracked in ticket 12. hilfsmittel produkte params non functional tracked in ticket 13. Commit f38873e. prove green 352 tests.
