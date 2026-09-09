@@ -1,0 +1,18 @@
+---
+class: standard
+completed: 2026-09-09T08:27:08Z
+created: 2026-09-09T08:25:28Z
+id: 9
+priority: high
+started: 2026-09-09T08:27:08Z
+status: done
+tags:
+- deps
+- bug
+title: cpanfile missing XML::Twig prereq
+updated: 2026-09-09T08:27:08Z
+---
+
+Response/XML.pm and the Caller load path require XML::Twig, but cpanfile does not declare it. A clean env (no XML::Twig) fails to compile WWW::Bund::Caller so the whole test suite goes red. Add requires XML::Twig to cpanfile. Found during Phase 2 batch while establishing a green baseline.
+
+2026-09-09 08:27 Added requires XML::Twig to cpanfile. Commit 0f275b3. prove -l t/ green: 294 tests pass.
