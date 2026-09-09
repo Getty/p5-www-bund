@@ -1,0 +1,18 @@
+---
+class: standard
+created: 2026-09-09T08:43:27Z
+id: 10
+priority: medium
+started: 2026-09-09T08:43:32Z
+status: backlog
+tags:
+- formatter
+- bug
+- templates
+title: Formatter ignores .yaml templates (loads only .yml)
+updated: 2026-09-09T08:53:40Z
+---
+
+Formatter _load_template builds the path as endpoint_name.yml only. 44 templates per language use the .yaml extension (308 files total across 7 langs), so those endpoints silently fall back to a raw YAML dump instead of rendering their template. Affects bundeshaushalt, all luftqualitaet, all hilfsmittel, eco_visio, all pflanzenschutzmittelzulassung, bundesrat, smard, regionalatlas, ladestationen_query. No basename collisions between .yml and .yaml. Fix: make _load_template try .yml first then .yaml. Prereq for the template-render verification in tickets 3 and 7. Found during Phase 2 batch.
+
+2026-09-09 08:53 The 44 yaml templates per language are incomplete stubs. Loading them globally regressed output so the loader change was reverted. Complete per API as proper yml. eco visio hilfsmittel under k3 luftqualitaet pflanzenschutz under k7. Remaining stubs bundesrat smard regionalatlas ladestationen bundeshaushalt. Tracking ticket.
