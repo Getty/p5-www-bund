@@ -1,0 +1,14 @@
+---
+class: standard
+created: 2026-09-09T09:00:06Z
+id: 11
+priority: medium
+status: backlog
+tags:
+- cli
+- bug
+title: CLI drops empty positional args (unfiltered marktstammdaten unusable)
+updated: 2026-09-09T09:00:06Z
+---
+
+MooX::Cmd/MooX::Options @ARGV handling (protect_argv=0) strips empty-string positional args before cmd_call sees them. So bund marktstammdaten strom-erzeugung "" 1 5 collapses to 1 5 and misassigns sort=1 page=5. The marktstammdaten data API also requires the filter query param to be present even when empty (omitting it returns Die Anfrage ist Null). Named --filter= is rejected by MooX::Options (only positionals feed query params). Net effect: the unfiltered show-everything call is impossible via the CLI; a non-empty filter value is required as a workaround. Filtered calls work fine. Found during Phase 2 batch (ticket 6). Fix likely needs empty-positional passthrough and/or a way to send an empty required query param.
