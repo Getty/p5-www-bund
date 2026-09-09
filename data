@@ -1,0 +1,17 @@
+---
+class: standard
+completed: 2026-09-09T08:59:41Z
+created: 2026-08-31T04:29:58Z
+id: 6
+priority: medium
+started: 2026-09-09T08:47:23Z
+status: done
+tags:
+- api
+title: marktstammdaten data endpoints need POST filter params
+updated: 2026-09-09T08:59:41Z
+---
+
+The filter_* endpoints work. The data endpoints (strom_erzeugung etc.) need filter parameters sent as a POST body. Caller POST body support exists; wire the filter params through and live-test.
+
+2026-09-09 08:59 Verified live data endpoints work via GET plus filter query param not POST. POST rejected by API. endpoints.yml already correct no change. Added offline regression test. prove green. Commit d1a2866. Separate CLI bug empty positional args dropped see ticket 11.
