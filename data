@@ -1,0 +1,18 @@
+---
+class: standard
+completed: 2026-09-09T08:40:09Z
+created: 2026-08-31T04:29:14Z
+id: 1
+priority: high
+started: 2026-09-09T08:30:23Z
+status: done
+tags:
+- api
+- bug
+title: bundeshaushalt endpoint returns HTTP 400
+updated: 2026-09-09T08:40:39Z
+---
+
+The bundeshaushalt endpoint returns HTTP 400. Check base_url / query params in share/endpoints.yml against the current OpenAPI spec. From CLAUDE.md known-issues.
+
+2026-09-09 08:40 Root cause HTTP 400 was the API rejecting missing required params. base_url and path confirmed correct vs OpenAPI spec. Added opt-in required list year and account plus validation in cmd_call so a missing param yields a usage hint instead of raw HTTP 400. Reused existing strings. New offline test t_cli_required plus cli.t regression. prove green 308 tests. Live verified. Commit 1e5317d.
