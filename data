@@ -1,0 +1,15 @@
+---
+class: standard
+created: 2026-09-09T09:35:09Z
+id: 14
+priority: medium
+status: backlog
+tags:
+- formatter
+- templates
+- enhancement
+title: Formatter needs a keyed-matrix type for the UBA (luftqualitaet) format
+updated: 2026-09-09T09:35:09Z
+---
+
+All 13 luftqualitaet endpoints return the Umweltbundesamt format the current formatter cannot render: a hash whose indices array is the header row and whose numeric-string keys map to data-row arrays (variants: top-level numeric-keyed hash; nested under data; data as an array of positional arrays; deeply nested meta). The current table list record types plus extract cannot express this, so luftqualitaet is left on raw YAML fallback (templates kept as .yaml stubs, NOT renamed to .yml, since a stub .yml would render leer, worse than the fallback). A new formatter type that pairs indices as headers with the numeric-keyed arrays as rows and also supports array-indexed columns would unlock all 13 luftqualitaet endpoints at once. This is an engine change plus a presentation design decision, left for the maintainer. Found during Phase 2 batch ticket 7. See also tracking ticket 10.
