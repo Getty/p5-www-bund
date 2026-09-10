@@ -1,0 +1,17 @@
+---
+class: standard
+created: 2026-08-31T04:29:53Z
+id: 5
+priority: medium
+status: backlog
+tags:
+- api
+title: 'destatis: expose command + auth handling'
+updated: 2026-09-10T03:51:09Z
+---
+
+Destatis Cmd class was removed during cleanup. Caller already supports POST form-encoded bodies (old "add POST body support" TODO is DONE). Remaining: re-expose destatis with username/password auth (GAST/GAST works for find only; other endpoints need a registered account). base_url uses www-genesis (hyphen), method POST.
+
+2026-09-09 09:27 Assessed in Phase 2 batch. destatis uses username and password as plain query params not header auth so Auth.pm does not cover it. GAST GAST works for the find endpoint only other endpoints need a registered account. Re exposing needs new endpoints a Cmd class and 7 language templates plus a credential UX decision passing a password as a CLI positional is a security smell. Left open ambiguous scope plus security tradeoff per batch boundary rules. Needs maintainer decision on which endpoints to expose and how to handle credentials.
+
+PARK (Fleet Worker C, 2026-09-10): Richtung laut Koordinator-Briefing offen (User-Notiz leer). Nicht bearbeitet. Offene Grundsatzfrage an Koordinator: destatis uebergibt user/pass als Query-Params (Security-Smell) - gewuenschte Richtung? (Header-Auth? Command-Expose-Umfang?)
