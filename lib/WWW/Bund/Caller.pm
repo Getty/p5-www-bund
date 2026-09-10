@@ -139,6 +139,23 @@ sub call {
     $path =~ s{^/}{};
     my $url = "$base_url/$path";
 
+    # Apply endpoint query defaults (caller-supplied values win)
+    if (my $defaults = $endpoint->{query_defaults}) {
+        for my $k (keys %$defaults) {
+            $remaining_params{$k} = $defaults->{$k}
+                unless exists $remaining_params{$k};
+        }
+    }
+
+    # Inject query-param auth token from the environment when configured and set
+    # (e.g. ArcGIS ?token=). Caller-supplied value wins; absent env var = omitted.
+    if (my $env = $endpoint->{auth_env}) {
+        my $param = $endpoint->{auth_query_param} // 'token';
+        if (!exists $remaining_params{$param} && defined(my $token = $ENV{$env})) {
+            $remaining_params{$param} = $token;
+        }
+    }
+
     # Prepare body content for POST/PUT
     my $body_content;
     my @param_pairs;
@@ -221,6 +238,11 @@ Options:
 =item * C<base_url> - Override endpoint's base URL
 
 =back
+
+An endpoint may declare a C<query_defaults> map of fixed query values (applied
+only for keys the caller did not supply) and, for query-parameter token auth
+such as ArcGIS, an C<auth_env>/C<auth_query_param> pair: when the named
+environment variable is set, its value is injected as that query parameter.
 
 Path parameters (C<{roadId}> in path) are substituted first. Remaining
 parameters are:

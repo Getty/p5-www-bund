@@ -1,6 +1,9 @@
 # Endpoint definitions for WWW::Bund
 # Each entry maps a unique endpoint name to its API, base URL, path, and HTTP method.
 # Path parameters use {name} syntax and are substituted from params.
+# query_defaults: map of fixed query values applied when the caller omits them.
+# auth_env / auth_query_param: when the named env var is set, its value is
+#   injected as that query parameter (used for query-param token auth, e.g. ArcGIS).
 # cache_ttl: seconds to cache GET responses (default 3600 if omitted)
 #   120   = emergency (warnings, alerts)
 #   300   = realtime (traffic, news, measurements)
@@ -533,20 +536,33 @@
   method: get
   cache_ttl: 86400
 
-# --- Ladestationen API ---
-# DISABLED: Endpoint now requires authentication (Token Required error 499)
-# Upstream changed from public GeoJSON download to ArcGIS FeatureServer with auth
-# - name: ladestationen_query
-#   api: ladestationen
-#   base_url: https://services6.arcgis.com/6jU7RmJig2Wwo1b0/ArcGIS/rest/services/Ladesaeulenregister/FeatureServer/7
-#   path: /query
-#   method: get
-#   cache_ttl: 86400
-#   query_params:
-#     - geometry
-#     - geometryType
-#     - outFields
-#     - f
+# --- Ladestationen API (Ladesaeulenregister, Bundesnetzagentur) ---
+# ArcGIS FeatureServer /query. A bare /query returns the ArcGIS HTML query form
+# (hence the old "serves HTML, not GeoJSON" report), so the GeoJSON output format
+# and a catch-all where clause are supplied as query_defaults. The layer became
+# token-gated in 2026; when LADESTATIONEN_TOKEN is set it is injected as the
+# ArcGIS ?token= query parameter (see WWW::Bund::CLI::Cmd::Ladestationen for how
+# to obtain a token). Left public-first: without a token the request still goes
+# out, so a live test tells url-only apart from truly auth-gated.
+- name: ladestationen_query
+  api: ladestationen
+  base_url: https://services6.arcgis.com/6jU7RmJig2Wwo1b0/ArcGIS/rest/services/Ladesaeulenregister/FeatureServer/7
+  path: /query
+  method: get
+  cache_ttl: 86400
+  query_defaults:
+    where: "1=1"
+    outFields: "*"
+    f: geojson
+  auth_env: LADESTATIONEN_TOKEN
+  auth_query_param: token
+  query_params:
+    - where
+    - outFields
+    - f
+    - resultRecordCount
+    - resultOffset
+    - token
 
 # --- Eco Visio API (Fahrrad-Zähler) ---
 - name: eco_visio_counters

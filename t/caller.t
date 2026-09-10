@@ -195,6 +195,69 @@ my $caller = WWW::Bund::Caller->new(
     $cache->clear;
 }
 
+# ladestationen: query_defaults are applied and token auth is injected from ENV
+{
+    my $lade_cache_dir = File::Spec->catdir($FindBin::Bin, '..', '.test-cache-lade');
+    my $lade_mock = MockIO->new(
+        default_response => WWW::Bund::HTTPResponse->new(
+            status       => 200,
+            content      => encode_json({ type => 'FeatureCollection', features => [] }),
+            content_type => 'application/json',
+        ),
+    );
+    my $lade_caller = WWW::Bund::Caller->new(
+        registry     => $registry,
+        auth         => WWW::Bund::Auth->new,
+        cache        => WWW::Bund::Cache->new(cache_dir => $lade_cache_dir),
+        rate_limiter => WWW::Bund::RateLimit->new,
+        io           => $lade_mock,
+    );
+
+    # No token in the environment: defaults applied, no token param, request still sent
+    {
+        local $ENV{LADESTATIONEN_TOKEN};
+        delete $ENV{LADESTATIONEN_TOKEN};
+
+        my $data = $lade_caller->call('ladestationen', 'ladestationen_query');
+        is($data->{type}, 'FeatureCollection', 'ladestationen returns parsed GeoJSON');
+
+        my $url = $lade_mock->requests->[-1]->url;
+        like($url, qr{services6\.arcgis\.com/.+/FeatureServer/7/query\?},
+            'ArcGIS FeatureServer /query path built');
+        like($url, qr/f=geojson/,       'query_default f=geojson applied');
+        like($url, qr/outFields=%2A/,   'query_default outFields=* applied (escaped)');
+        like($url, qr/where=1%3D1/,     'query_default where=1=1 applied (escaped)');
+        unlike($url, qr/token=/,        'no token param when env var unset');
+    }
+
+    # Token in the environment: injected as the ArcGIS ?token= query param
+    {
+        local $ENV{LADESTATIONEN_TOKEN} = 'SECRET123';
+
+        $lade_caller->call('ladestationen', 'ladestationen_query');
+        my $url = $lade_mock->requests->[-1]->url;
+        like($url, qr/token=SECRET123/, 'token from env injected as query param');
+        like($url, qr/f=geojson/,       'defaults still applied alongside token');
+    }
+
+    # Caller-supplied params override query_defaults
+    {
+        local $ENV{LADESTATIONEN_TOKEN};
+        delete $ENV{LADESTATIONEN_TOKEN};
+
+        $lade_caller->call('ladestationen', 'ladestationen_query',
+            params => { f => 'json', where => "bundesland='Bayern'" },
+        );
+        my $url = $lade_mock->requests->[-1]->url;
+        like($url, qr/f=json/,      'caller-supplied f overrides default');
+        unlike($url, qr/f=geojson/, 'default f not applied when caller supplies it');
+        like($url, qr/Bayern/,      'caller-supplied where overrides default');
+    }
+
+    use File::Path qw(remove_tree);
+    remove_tree($lade_cache_dir) if -d $lade_cache_dir;
+}
+
 # Cleanup
 {
     use File::Path qw(remove_tree);
