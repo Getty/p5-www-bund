@@ -1,0 +1,24 @@
+---
+claimed_at: 2026-09-10T03:54:53Z
+claimed_by: worker-c
+class: standard
+completed: 2026-09-10T03:54:53Z
+created: 2026-08-31T04:29:18Z
+id: 2
+priority: high
+started: 2026-09-10T03:51:00Z
+status: done
+tags:
+- api
+- bug
+title: 'ladestationen: URL serves HTML, not GeoJSON'
+updated: 2026-09-10T03:54:53Z
+---
+
+ladestationen endpoint URL points at an HTML page instead of GeoJSON. Per API_CLEANUP_SUMMARY it also became token-gated in 2026. Decide: fix the URL, wire auth, or mark the API disabled in registry.
+
+2026-09-09 09:27 Assessed in Phase 2 batch. Real endpoint is an ArcGIS FeatureServer query path services6.arcgis.com Ladesaeulenregister that returned HTTP 400 text html on test. registry says auth none but ticket says token gated since 2026. Needs a decision fix url vs wire auth vs mark disabled in registry. Left open as a design decision per batch boundary rules. Recommendation mark disabled in registry unless a token is available.
+
+Fleet Worker C, 2026-09-10 (commit 5173e0b): Ursache primaer URL/Parametrierung, nicht (nur) Auth. Der ArcGIS FeatureServer /query liefert ohne where/f die HTML-Query-Form -> daher 'serves HTML'. Fix: Endpoint reaktiviert mit query_defaults where=1=1, outFields=*, f=geojson. Zusaetzlich optionaler Token als ?token= Query-Param via ENV. TOKEN BESCHAFFEN: ArcGIS-Token vom Token-Service, z.B. curl https://www.arcgis.com/sharing/rest/generateToken --data-urlencode username=USER --data-urlencode password=PASS --data-urlencode referer=https://www.arcgis.com --data-urlencode f=json -> JSON-Feld token. Zugang zum Layer services6.arcgis.com/6jU7RmJig2Wwo1b0 (Item Ladesaeulenregister) via bund.dev/Bundesnetzagentur-Registrierung. TOKEN SETZEN: export LADESTATIONEN_TOKEN=<token> (oder pro Call: bund ladestationen query --token <token>). Auth optional/public-first: ohne Token geht der Request trotzdem raus -> Live-Call zeigt, ob url-only reichte oder Layer wirklich gated ist. OFFEN (Getty, live): FeatureServer-Layer-Index /7 sowie ob ArcGIS ?token= oder Header X-Esri-Authorization erwartet.
+
+DONE (Fleet Worker C): Implementiert + Offline-Tests gruen (prove -lr t/ = 305 ok; t/caller.t +11 Assertions fuer Query-Defaults, Token-Injektion, Override). AUSSTEHEND: Live-Verifikation gegen ArcGIS durch Getty (offline nicht moeglich).
