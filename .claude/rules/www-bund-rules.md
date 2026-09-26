@@ -29,7 +29,7 @@ This rule depends on whether the Agent/Task tool is available to you.
 
 - **You can spawn subagents** (orchestrating main agent): Do NOT touch
   behavior-relevant code yourself — delegate to `www-bund-worker`. Your lane:
-  coordinate, inspect, plan, review diffs, run tests, manage git, edit
+  coordinate, inspect, plan, review diffs, run tests, edit
   non-behavioral prose. When in doubt, delegate. Why: only the `www-bund-*`
   agents get their skills force-loaded via `briefing.skills`; you get no
   briefing and would touch internals with too little context.
@@ -38,7 +38,7 @@ This rule depends on whether the Agent/Task tool is available to you.
   |---|---|
   | Implement / refactor / debug behavior-relevant code | `www-bund-worker` (default) |
   | POD + 7-language templates/strings | `www-bund-doc-writer` |
-  | Pre-release audit | `www-bund-release-checker` |
+  | Commits, `Changes`, card → done, pre-release audit | `www-bund-release-manager` |
 
 - **You cannot spawn subagents** (you ARE a `www-bund-*` agent): the delegation
   lock does not apply — implement, refactor, debug and test per these rules.
@@ -46,6 +46,9 @@ This rule depends on whether the Agent/Task tool is available to you.
 Behavior-relevant = runtime behavior, the call engine, response parsing, the
 CLI dispatch, endpoint/registry data, templates, tests. Pure POD prose and
 `Changes` notes are not.
+
+**Only `www-bund-release-manager` commits.** A worker leaves a commit-ready tree and hands its card
+to `review`; you then dispatch `www-bund-release-manager` to cut the commit and close the card.
 
 ## Coordination — karr board (always in scope)
 
@@ -56,7 +59,7 @@ lives in `refs/karr/*`; this repo has its own board.
 - `karr list --compact` / `karr board` — open work · `karr show ID` — detail
 - `karr create "Title" --priority high --tags a,b --body '…'` — new ticket
 - `karr move ID in-progress --claim NAME` — start · `karr handoff ID --claim NAME --note "…"` — to review
-- mutating commands auto-sync. Full surface: skill `kanban-issues-karr-cli`.
+- mutating commands auto-sync. Full surface: skill `kanban-issues-karr-coordination`.
 
 **Serialize board mutations when fanning out.** Keep implementation parallel if
 you like, but collect results and then loop `karr move`/`handoff`/`sync`

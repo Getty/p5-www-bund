@@ -14,7 +14,7 @@ yourself — the principle and the lane split are in
 |---|---|
 | Implement / refactor / debug / test behavior-relevant code | `www-bund-worker` (default) |
 | POD + 7-language templates/strings | `www-bund-doc-writer` |
-| Pre-release audit | `www-bund-release-checker` |
+| Commits, `Changes`, card → done, pre-release audit | `www-bund-release-manager` |
 
 The agents carry their knowledge via `briefing.skills` (see `.claude/agents/`);
 the main agent delegates rather than loading those skills. Architecture, the
