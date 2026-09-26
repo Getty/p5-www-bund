@@ -2,7 +2,6 @@
 name: www-bund-doc-writer
 description: "Write and maintain WWW::Bund documentation — POD in the lib/bin classes and the 7-language YAML render templates (share/templates/{lang}/) and CLI strings (share/strings/{lang}.yml). One concern at a time; specify the module or endpoint. Does not change runtime behavior."
 model: sonnet
-allowed-tools: Read, Edit, Write, Bash, Glob, Grep
 briefing:
   skills:
     - www-bund-core

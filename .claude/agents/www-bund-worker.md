@@ -2,7 +2,6 @@
 name: www-bund-worker
 description: "Default WWW::Bund worker — implement, refactor, debug and test everything in this distribution: CLI command classes, the call engine, response parsing, the 7-language template/string system, and API additions. Pre-loaded with all WWW::Bund conventions, Moo idioms and karr coordination. Leaves a commit-ready tree; never commits — commits belong to www-bund-release-manager."
 model: inherit
-allowed-tools: Read, Edit, Write, Bash, Glob, Grep
 briefing:
   skills:
     - www-bund-core
