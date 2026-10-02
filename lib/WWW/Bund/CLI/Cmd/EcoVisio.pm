@@ -1,6 +1,6 @@
 package WWW::Bund::CLI::Cmd::EcoVisio;
 our $VERSION = '0.003';
-# ABSTRACT: Eco-Visio (Fahrrad-Zähler) API command
+# ABSTRACT: Eco-Visio (Fahrrad-Zaehler) API command
 
 use Moo;
 use MooX::Cmd;

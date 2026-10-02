@@ -1,6 +1,6 @@
 package WWW::Bund::Response::Raw;
 our $VERSION = '0.003';
-# ABSTRACT: Raw response — returns content as-is
+# ABSTRACT: Raw response - returns content as-is
 
 use Moo;
 use namespace::clean;
