@@ -1,0 +1,33 @@
+---
+class: standard
+created: 2026-10-06T19:48:10Z
+id: 18
+priority: low
+status: backlog
+tags:
+- bug
+- encoding
+- review-2026-10-06
+title: JSON served as text/* with non-ASCII content dies in decode_json (decoded_content
+  hands over characters)
+updated: 2026-10-06T19:48:10Z
+---
+
+`lib/WWW/Bund/LWPIO.pm:68` passes `$response->decoded_content` on. For `text/*` (and XML) content types that is a character string; `WWW::Bund::Response::JSON::_build_data` then calls `decode_json`, which expects UTF-8 bytes. `_build_response` in `Caller.pm` chooses the JSON class by content sniffing (`$content =~ /^\s*[\{\[]/`), i.e. also for JSON that is *not* labelled `application/json`.
+
+The mechanism is reproduced with HTTP::Message 7.04:
+
+```
+application/json; charset=utf-8    is_utf8=0 decode_json=ok
+text/plain; charset=utf-8          is_utf8=1 decode_json=DIES: Wide character in subroutine entry
+text/json; charset=utf-8           is_utf8=1 decode_json=DIES: Wide character in subroutine entry
+```
+
+(body `{"n":"M\xc3\xbcller \xe2\x82\xac"}`). With umlauts only and no character above U+00FF it does not die but decodes to mojibake. The cache makes it inconsistent on top: `Cache::set` writes UTF-8 bytes, so the same URL fails fresh and works from the cache.
+
+Which of the 19 registered APIs actually label JSON as `text/*` was not checked (no network in this review) -- German government endpoints with umlauts in the data are the obvious candidates, hence `plausible`.
+
+Done when: `LWPIO::call` returns bytes (`decoded_content( charset => 'none' )`, which still undoes Content-Encoding), the XML path is checked against the same change, and `t/response.t` has a `text/plain` JSON body with `ü` and `€`.
+
+---
+Fleet review 2026-10-06 · kind: bug · confidence: plausible
