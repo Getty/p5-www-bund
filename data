@@ -1,0 +1,23 @@
+---
+class: standard
+created: 2026-10-06T19:48:00Z
+id: 16
+priority: medium
+status: backlog
+tags:
+- bug
+- cache
+- ratelimit
+- review-2026-10-06
+title: 'Caller: cache hits consume the rate limit and can sleep up to an hour'
+updated: 2026-10-06T19:48:00Z
+---
+
+`lib/WWW/Bund/Caller.pm:178` calls `$self->rate_limiter->check($api)` *before* the cache lookup at line 185. `WWW::Bund::RateLimit::check` records a timestamp for every call and, once `max` is reached, `sleep`s until the oldest falls out of the window (`lib/WWW/Bund/RateLimit.pm`, `check`).
+
+The defaults are `tagesschau` and `smard` at 60 per 3600 s. So the 61st `tagesschau` call within an hour blocks for up to an hour even when every one of them was answered from the disk cache and no request went out. The cache exists to avoid exactly those requests.
+
+Done when: the limiter is consulted only on a cache miss, right before `$self->io->call($req)`, and `t/caller.t` asserts that N cached calls leave the limiter's count untouched.
+
+---
+Fleet review 2026-10-06 · kind: bug · confidence: verified
