@@ -1,0 +1,27 @@
+---
+class: standard
+created: 2026-10-06T19:48:05Z
+id: 17
+priority: medium
+status: backlog
+tags:
+- security
+- logging
+- review-2026-10-06
+title: 'Caller: the query-param auth token (LADESTATIONEN_TOKEN) is written to the
+  log and into the croak message'
+updated: 2026-10-06T19:48:05Z
+---
+
+`lib/WWW/Bund/Caller.pm:152-157` puts the value of the env var named by `auth_env` into the query string (`share/endpoints.yml:557` uses it for `ladestationen` with `LADESTATIONEN_TOKEN`). The full URL including `?token=...` is then
+
+- logged at debug (`$log->debug("$method $url ...")`), at info on success (line 216) and at error on failure (line 212),
+- put into the exception: `croak "Bund API error: HTTP ... for $method $url"` (line 213), which the CLI prints,
+- used as the cache key (line 184; only its MD5 reaches the disk, so that part is harmless).
+
+A rejected or expired token is the typical case in which the error path runs, and it prints that token.
+
+Done when: the URL used for log lines and error messages has the `auth_query_param` value masked (e.g. `token=***`), and `t/caller.t` asserts that neither the croak message nor the captured log contains the token.
+
+---
+Fleet review 2026-10-06 · kind: bug · confidence: verified
