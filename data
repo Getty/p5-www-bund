@@ -1,0 +1,36 @@
+---
+class: standard
+created: 2026-10-06T19:47:55Z
+id: 15
+priority: high
+status: backlog
+tags:
+- bug
+- git
+- deps
+- review-2026-10-06
+title: 'Branch phase2-www-bund (7 commits, 2026-09-09) was never merged: k1, k4, k6,
+  k7, k8, k9 are done on the board but missing on main'
+updated: 2026-10-06T19:47:55Z
+---
+
+`git log --oneline main..phase2-www-bund`:
+
+- `0f275b3` Declare XML::Twig prerequisite in cpanfile (k9)
+- `1e5317d` Reject missing required query params before the API call (bundeshaushalt) (k1)
+- `ffed909` offline regression test for abfallnavi {region} (k4)
+- `d1a2866` regression test locking marktstammdaten to GET+filter (k6)
+- `f38873e` hilfsmittel: render all endpoints via templates; fix produkte param typo (k3)
+- `af8e23b` docs: refresh stale API/endpoint/template counts and roadmap (k8)
+- `2276813` pflanzenschutz: render all endpoints via templates; verify luftqualitaet (k7)
+
+The branch is still checked out in the worktree `.claude/worktrees/phase2-www-bund`. All six cards are `done` and quote these hashes.
+
+Concrete effect on `main`: `lib/WWW/Bund/Response/XML.pm:6` does `use XML::Twig;`, which `WWW::Bund::Caller` loads unconditionally, and `cpanfile` on `main` does not declare it (`grep -n Twig cpanfile` is empty; on the branch it is line 9). A clean install cannot load the dist -- exactly what k9 was filed for. Also missing on main: five test files (`t/abfallnavi.t`, `t/cli_required.t`, `t/hilfsmittel_ecovisio_endpoints.t`, `t/luftqualitaet_pflanzenschutz.t`, `t/marktstammdaten.t`), the required-param validation and the template renames `.yaml` -> `.yml` (which is what open card k10 is about).
+
+`git diff --stat main...phase2-www-bund`: 195 files, +1296/-191. `main` has since moved by chores and `323e76c Keep abstracts ASCII`, so expect trivial conflicts in the `# ABSTRACT` lines at most.
+
+Done when: the seven commits are on `main`, `prove -l t` is green, the worktree and branch are removed, k10 is re-checked against the merged state, and `Changes` `{{$NEXT}}` -- empty on both `main` and the branch -- names what changed since 0.002: the re-enabled `ladestationen` endpoint with `query_defaults` and the optional `LADESTATIONEN_TOKEN` (`5173e0b`), the required-param check, the new templates, the XML::Twig prereq.
+
+---
+Fleet review 2026-10-06 · kind: bug · confidence: verified
