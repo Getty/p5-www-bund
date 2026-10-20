@@ -6,6 +6,7 @@ requires 'LWP::UserAgent';
 requires 'LWP::Protocol::https';
 requires 'HTTP::Request';
 requires 'JSON::MaybeXS';
+requires 'XML::Twig';
 requires 'YAML::PP';
 requires 'Log::Any';
 requires 'File::ShareDir';

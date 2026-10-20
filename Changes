@@ -1,4 +1,7 @@
 {{$NEXT}}
+  - The ladestationen endpoint is enabled again with fixed GeoJSON query
+    defaults and an optional LADESTATIONEN_TOKEN
+  - XML::Twig is declared as a prerequisite; the XML parser uses it
 
 0.002     2026-02-19 22:57:28Z
 
