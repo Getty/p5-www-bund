@@ -1,0 +1,29 @@
+---
+claimed_at: 2026-10-20T05:29:55Z
+claimed_by: k19
+class: standard
+completed: 2026-10-20T05:29:55Z
+created: 2026-10-20T05:22:27Z
+id: 19
+priority: medium
+started: 2026-10-20T05:23:06Z
+status: done
+tags:
+- bug
+- encoding
+title: Rohantworten erscheinen als Mojibake in der CLI-Ausgabe
+updated: 2026-10-20T05:29:55Z
+---
+
+Seit k18 gibt der HTTP-Transport den Antwortkoerper durchgehend als Bytes weiter. JSON- und XML-Antworten werden vom Parser dekodiert, eine Antwort, die weder JSON noch XML ist, geht aber ueber WWW::Bund::Response::Raw unveraendert an den Formatter. Der Formatter liest sie als Latin-1: YAML::PP::Dump und JSON::MaybeXS (utf8 => 0) machen aus UTF-8-Bytes die Mojibake-Zeichenfolge. Gemessen am 2026-10-20: der Koerper "Grüße aus Köln" kommt als "GrÃ¼Ãe aus KÃ¶ln" in der Ausgabe an (im YAML-Dump zusaetzlich als \x9f, weil 0x9f kein gueltiges UTF-8 ist).
+
+Die Rolle WWW::Bund::Role::Response sagt selbst: "The HTTP transport hands over bytes (UTF-8 encoded), the parser decodes them." Genau das tut Response::Raw nicht - er ist die einzige Antwortklasse, die nicht dekodiert. Das ist die Ursache.
+
+Erledigt, wenn:
+
+- eine Antwort, die weder JSON noch XML ist, als Zeichenkette im Perl-Text (Zeichen, keine Bytes) im Formatter ankommt, also "Grüße aus Köln" und nicht "GrÃ¼Ãe aus KÃ¶ln"
+- die Dekodierung dort passiert, wo sie hingehört: in der Antwortklasse (Response::Raw), nicht im Formatter - der Formatter soll unveraendert bleiben
+- ein Koerper, der kein gueltiges UTF-8 ist, nicht abstuerzt, sondern unveraendert durchkommt (defekte Bytes sind keine Ausnahme in der freien Wildbahn)
+- ein Test das festhaelt, offline, ohne Netz
+- der rote Beweis: der Test ist gegen das alte lib/ rot, mit einem Verhaltensfehler, nicht mit einem Ladefehler
+- ein Changes-Eintrag im CPAN-Format, 78 Spalten, Ziel statt Weg, ohne Karten-ID
