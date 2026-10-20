@@ -1,0 +1,31 @@
+---
+claimed_at: 2026-10-20T08:46:27Z
+claimed_by: k25-k26
+class: standard
+completed: 2026-10-20T08:46:27Z
+created: 2026-10-20T06:09:47Z
+id: 25
+priority: low
+started: 2026-10-20T08:28:23Z
+status: done
+tags:
+- api
+- eco_visio
+- bug
+title: The eco_visio endpoints answer no data
+updated: 2026-10-20T08:46:27Z
+---
+
+Measured 2026-10-20 (live, no credentials):
+
+- eco_visio_counters (GET /pbl/publicwebpageplus/{idOrganisme}) answers 404 Not Found for every id of the published list (4586, 5024, 8080, 6365, 4728, 888, ...).
+- The variant without "plus" (GET /pbl/publicwebpage/{id}) answers 200, but empty: {"logos":[],"latitude":0.0,"longitude":0.0,"channels":[]}.
+- eco_visio_data (GET /pbl/publicwebpageplus/data/{idPdc}) answers 400 with a validation chain: "flowIds is mandatory" -> "interval is mandatory" -> "interval is invalid" (only 3, 4, 5 pass) -> "Bad Request. Input number format". A usable flow id is only obtainable from a counter list that the API does not deliver.
+
+So both eco_visio endpoints have no answer that can be rendered, and no template can be written honestly. Decide: point eco_visio_counters at the working path variant, keep the endpoints as they are with a note, or take them out of the distribution. The placeholders (eco_visio_counters.yaml, eco_visio_data.yaml) are removed by the card about the .yaml placeholders; until then the CLI shows the raw answer.
+
+Done: the endpoints stay as they are, the documentation names what the API answers today. README: a hint under the table of the implemented APIs - counters 404 Not Found for every published id, the variant without plus 200 with an empty result, data 400 with a validation chain, measured on 2026-10-20, the CLI shows the raw answer. POD of lib/WWW/Bund/CLI/Cmd/EcoVisio.pm: one sentence in the same sense. No code change, no number that can go stale. podchecker on the module is clean, the full suite offline is green (25 files, 2464 tests, integration.t is opt-in and skipped). Commit 2e576c4.
+
+Also found: the README counts 114 endpoints in the table of the implemented APIs (19 APIs) while lib/WWW/Bund.pm and lib/WWW/Bund/Registry.pm count 115 - the 115th is ladestationen, which is listed in the table of the APIs in work. The numbers are each correct, but they are easy to read as a contradiction. Left alone, the endpoint numbers do not change in this task.
+
+2026-10-20 08:46 Karte umgesetzt und nach main gemergt. Commit 2e576c4 'Document what the eco-visio endpoints answer (k25)': README-Hinweis unter der Tabelle der vollstaendig implementierten APIs (gemessen am 2026-10-20: counters 404, Variante ohne plus 200 leer, data 400 mit Validierungskette) und der POD-Hinweis in lib/WWW/Bund/CLI/Cmd/EcoVisio.pm, dass die API derzeit nichts Renderbares liefert und die CLI die rohe Antwort zeigt. Changes-Eintrag ergaenzt. Keine Code-Aenderung, keine Zahl in der Doku.
