@@ -1,0 +1,8 @@
+type: table
+extract: items
+empty: "Keine Anträge gefunden."
+columns:
+  - field: kennr
+  - field: antragnr
+  - field: antragsteller
+  - field: antragsteller_nr

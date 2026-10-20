@@ -1,0 +1,8 @@
+type: table
+extract: items
+empty: "Geen actieve ingrediënten gevonden."
+columns:
+  - field: wirknr
+  - field: wirkstoffname
+  - field: wirkstoffname_en
+  - field: genehmigt

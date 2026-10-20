@@ -1,0 +1,8 @@
+type: table
+extract: items
+empty: "Keine Wirkstoffe gefunden."
+columns:
+  - field: wirknr
+  - field: wirkstoffname
+  - field: wirkstoffname_en
+  - field: genehmigt

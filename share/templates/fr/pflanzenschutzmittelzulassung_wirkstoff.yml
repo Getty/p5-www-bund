@@ -1,0 +1,8 @@
+type: table
+extract: items
+empty: "Aucun ingrédient actif trouvé."
+columns:
+  - field: wirknr
+  - field: wirkstoffname
+  - field: wirkstoffname_en
+  - field: genehmigt

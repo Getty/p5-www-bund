@@ -1,0 +1,8 @@
+type: table
+extract: items
+empty: "Nessuna domanda trovata."
+columns:
+  - field: kennr
+  - field: antragnr
+  - field: antragsteller
+  - field: antragsteller_nr

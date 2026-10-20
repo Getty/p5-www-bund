@@ -1,0 +1,8 @@
+type: table
+extract: items
+empty: "Aucun produit phytosanitaire trouvé."
+columns:
+  - field: kennr
+  - field: mittelname
+  - field: formulierung_art
+  - field: zul_ende

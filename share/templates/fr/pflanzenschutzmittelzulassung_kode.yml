@@ -1,0 +1,10 @@
+type: table
+extract: items
+empty: "Aucun code trouvé."
+columns:
+  - field: kode
+  - field: kodeliste
+  - field: kodetext
+    width: 60
+    wrap: true
+  - field: sprache

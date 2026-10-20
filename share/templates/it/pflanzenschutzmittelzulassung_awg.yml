@@ -1,0 +1,8 @@
+type: table
+extract: items
+empty: "Nessuna applicazione trovata."
+columns:
+  - field: awg_id
+  - field: kennr
+  - field: anwendungsbereich
+  - field: kultur_erl

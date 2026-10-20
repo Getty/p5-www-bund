@@ -1,0 +1,8 @@
+type: table
+extract: items
+empty: "Nie znaleziono substancji czynnych."
+columns:
+  - field: wirknr
+  - field: wirkstoffname
+  - field: wirkstoffname_en
+  - field: genehmigt

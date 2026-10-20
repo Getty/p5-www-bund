@@ -1,0 +1,8 @@
+type: table
+extract: items
+empty: "Keine Pflanzenschutzmittel gefunden."
+columns:
+  - field: kennr
+  - field: mittelname
+  - field: formulierung_art
+  - field: zul_ende

@@ -1,0 +1,5 @@
+type: table
+extract: items
+empty: "No data found."
+columns:
+  - field: datum

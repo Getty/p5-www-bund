@@ -1,0 +1,8 @@
+type: table
+extract: items
+empty: "No plant protection products found."
+columns:
+  - field: kennr
+  - field: mittelname
+  - field: formulierung_art
+  - field: zul_ende

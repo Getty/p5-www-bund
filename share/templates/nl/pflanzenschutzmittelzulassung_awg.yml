@@ -1,0 +1,8 @@
+type: table
+extract: items
+empty: "Geen toepassingen gevonden."
+columns:
+  - field: awg_id
+  - field: kennr
+  - field: anwendungsbereich
+  - field: kultur_erl

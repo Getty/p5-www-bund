@@ -14,6 +14,9 @@
     eco_visio_data are corrected
   - The API, endpoint and template counts in README, WWW::Bund, CLI::Formatter
     and Registry again match the shipped data
+  - The pflanzenschutzmittelzulassung endpoints render their templates instead
+    of falling back to a raw YAML dump; the luftqualitaet endpoints keep the
+    YAML fallback, their response shape is not renderable by the formatter
 
 0.002     2026-02-19 22:57:28Z
 
