@@ -373,12 +373,18 @@
     - account
 
 # --- Bundesrat API ---
+# The website answers these paths with its HTML page unless the query parameter
+# view=renderXml is sent; only then the answer is real XML. The view is
+# therefore a query default of every Bundesrat endpoint. It stays in
+# query_params, so a caller can still send another view.
 - name: bundesrat_startlist
   api: bundesrat
   base_url: https://www.bundesrat.de
   path: /iOS/v3/startlist_table.xml
   method: get
   cache_ttl: 86400
+  query_defaults:
+    view: renderXml
   query_params:
     - view
 
@@ -388,6 +394,8 @@
   path: /iOS/v3/01_Aktuelles/aktuelles_table.xml
   method: get
   cache_ttl: 300
+  query_defaults:
+    view: renderXml
   query_params:
     - view
 
@@ -397,6 +405,8 @@
   path: /iOS/v3/02_Termine/termine_table.xml
   method: get
   cache_ttl: 300
+  query_defaults:
+    view: renderXml
   query_params:
     - view
 
@@ -406,6 +416,8 @@
   path: /iOS/v3/03_Plenum/plenum_kompakt_table.xml
   method: get
   cache_ttl: 300
+  query_defaults:
+    view: renderXml
   query_params:
     - view
 
@@ -415,6 +427,8 @@
   path: /iOS/SharedDocs/3_Plenum/plenum_aktuelleSitzung_table.xml
   method: get
   cache_ttl: 300
+  query_defaults:
+    view: renderXml
   query_params:
     - view
 
@@ -424,6 +438,8 @@
   path: /iOS/SharedDocs/3_Plenum/plenum_toChronologisch_table.xml
   method: get
   cache_ttl: 86400
+  query_defaults:
+    view: renderXml
   query_params:
     - view
 
@@ -433,6 +449,8 @@
   path: /iOS/SharedDocs/3_Plenum/plenum_naechsteSitzungen.xml
   method: get
   cache_ttl: 300
+  query_defaults:
+    view: renderXml
   query_params:
     - view
 
@@ -442,6 +460,8 @@
   path: /iOS/SharedDocs/2_Mitglieder/mitglieder_table.xml
   method: get
   cache_ttl: 86400
+  query_defaults:
+    view: renderXml
   query_params:
     - view
 
@@ -451,6 +471,8 @@
   path: /iOS/v3/06_Stimmen/stimmverteilung.xml
   method: get
   cache_ttl: 86400
+  query_defaults:
+    view: renderXml
   query_params:
     - view
 
@@ -460,6 +482,8 @@
   path: /iOS/v3/05_Bundesrat/Praesidium/bundesrat_praesidium.xml
   method: get
   cache_ttl: 86400
+  query_defaults:
+    view: renderXml
   query_params:
     - view
 

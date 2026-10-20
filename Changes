@@ -30,6 +30,8 @@
     YAML fallback, their shape has no flat header row
   - Add a keyed matrix template type, for data that arrives as a header row
     with numbered rows
+  - The Bundesrat endpoints ask for the XML view of the site, so the answer
+    is XML and not the HTML page of the website
 
 0.002     2026-02-19 22:57:28Z
 
