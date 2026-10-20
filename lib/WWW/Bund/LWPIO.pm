@@ -63,9 +63,12 @@ sub call {
 
     my $response = $self->ua->request($http_req);
 
+    # The body is handed over as bytes: the Content-Encoding is resolved, but
+    # the charset is not decoded. The response parsers expect the raw bytes
+    # (decode_json needs UTF-8 bytes, XML::Parser needs bytes).
     return WWW::Bund::HTTPResponse->new(
         status       => $response->code,
-        content      => $response->decoded_content // '',
+        content      => $response->decoded_content(charset => 'none') // '',
         content_type => $response->header('Content-Type') // '',
     );
 }
@@ -75,7 +78,8 @@ sub call {
     my $response = $io->call($request);
 
 Execute HTTP request. Takes L<WWW::Bund::HTTPRequest>, returns
-L<WWW::Bund::HTTPResponse> with decoded content.
+L<WWW::Bund::HTTPResponse> with the body as bytes: the Content-Encoding is
+resolved, the charset is not decoded. The response parsers decode the bytes.
 
 =cut
 

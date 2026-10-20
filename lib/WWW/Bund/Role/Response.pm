@@ -41,7 +41,8 @@ has content => (is => 'ro', default => '');
 
 =attr content
 
-Raw response content (character string). Defaults to empty string.
+Raw response content. The HTTP transport hands over bytes (UTF-8 encoded), the
+parser decodes them. Defaults to empty string.
 
 =cut
 

@@ -1,10 +1,25 @@
 use strict;
 use warnings;
+use utf8;
 use Test::More;
+use Encode qw(encode_utf8);
+use HTTP::Response;
 
 use WWW::Bund::Response::JSON;
 use WWW::Bund::Response::XML;
 use WWW::Bund::Response::Raw;
+use WWW::Bund::LWPIO;
+use WWW::Bund::HTTPRequest;
+
+# FakeUA: hands over a canned HTTP::Response
+{
+    package FakeUA;
+    use Moo;
+
+    has response => (is => 'ro', required => 1);
+
+    sub request { $_[0]->response }
+}
 
 # --- JSON Response ---
 
@@ -95,6 +110,58 @@ use WWW::Bund::Response::Raw;
     );
     is($resp->content, '{}', 'content attribute accessible');
     is($resp->content_type, 'application/json; charset=utf-8', 'content_type attribute accessible');
+}
+
+# --- Transport: the body is handed over as bytes ---
+
+# A JSON body that is served as text/plain must not die in decode_json
+{
+    my $body = encode_utf8('{"name":"Müller €"}');
+    my $http = HTTP::Response->new(
+        200, 'OK', ['Content-Type' => 'text/plain; charset=utf-8'], $body,
+    );
+
+    my $io = WWW::Bund::LWPIO->new(ua => FakeUA->new(response => $http));
+    my $resp = $io->call(
+        WWW::Bund::HTTPRequest->new(method => 'GET', url => 'https://example.org/data')
+    );
+
+    ok(!utf8::is_utf8($resp->content), 'the transport hands over bytes');
+    is($resp->content, $body, 'the bytes are unchanged');
+    is($resp->content_type, 'text/plain; charset=utf-8', 'the content type is passed on');
+
+    my $data = eval {
+        WWW::Bund::Response::JSON->new(
+            content      => $resp->content,
+            content_type => $resp->content_type,
+        )->data;
+    };
+    ok(!$@, "JSON as text/plain decodes without dying: $@");
+    is($data ? $data->{name} : undef, 'Müller €', 'the characters survive the round trip');
+}
+
+# The same for XML: the parser gets the bytes and decodes them
+{
+    my $body = encode_utf8('<root><name>Müller €</name></root>');
+    my $http = HTTP::Response->new(
+        200, 'OK', ['Content-Type' => 'text/xml; charset=utf-8'], $body,
+    );
+
+    my $io = WWW::Bund::LWPIO->new(ua => FakeUA->new(response => $http));
+    my $resp = $io->call(
+        WWW::Bund::HTTPRequest->new(method => 'GET', url => 'https://example.org/data')
+    );
+
+    ok(!utf8::is_utf8($resp->content), 'the transport hands over bytes');
+
+    my $data = eval {
+        WWW::Bund::Response::XML->new(
+            content      => $resp->content,
+            content_type => $resp->content_type,
+        )->data;
+    };
+    ok(!$@, "XML as text/xml parses without dying: $@");
+    is($data ? $data->{name} : undef, 'Müller €', 'the characters survive the round trip');
 }
 
 done_testing;

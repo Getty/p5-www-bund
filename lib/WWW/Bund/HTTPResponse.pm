@@ -18,7 +18,8 @@ use namespace::clean;
 =head1 DESCRIPTION
 
 Simple immutable HTTP response object returned by L<WWW::Bund::Role::IO>
-implementations. Contains decoded content (not raw bytes).
+implementations. Contains the response body as it came in, the HTTP transport
+hands over bytes (not decoded characters).
 
 =cut
 
@@ -34,7 +35,8 @@ has content => (is => 'ro', default => '');
 
 =attr content
 
-Response body as Perl character string (already decoded). Defaults to empty string.
+Response body as it came in. The HTTP transport hands over bytes (UTF-8
+encoded), the response parsers decode them. Defaults to empty string.
 
 =cut
 
