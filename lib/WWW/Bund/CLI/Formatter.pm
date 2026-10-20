@@ -75,6 +75,11 @@ Template files are YAML with structure:
 
 See C<share/templates/> for the render templates (about 139 per language, 7 languages).
 
+The template of an endpoint lives in C<share/templates/{lang}/{endpoint}.yml>.
+A file with the extension C<.yaml> is used when there is no C<.yml> file for
+the endpoint; a template that is given explicitly overrides both. An endpoint
+without a template shows the answer as it is.
+
 A cell of the type table that holds a nested structure - a hash or a list - is
 written as compact JSON: an empty cell would hide the value. The same holds for
 a field of the type record that holds a nested structure.

@@ -376,6 +376,11 @@ bund pegel stations
 # ...
 ```
 
+Das Template eines Endpunkts liegt in `share/templates/{sprache}/{endpunkt}.yml`.
+Gibt es keine `.yml`-Datei, greift eine `.yaml`-Datei mit demselben Namen; ein
+Template, das man mit `-t` angibt, hat Vorrang. Ein Endpunkt ohne Template
+zeigt die Antwort so, wie sie ist.
+
 ### JSON
 
 ```bash
