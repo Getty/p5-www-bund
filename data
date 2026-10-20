@@ -1,0 +1,29 @@
+---
+claimed_at: 2026-10-20T08:46:33Z
+claimed_by: k25-k26
+class: standard
+completed: 2026-10-20T08:46:33Z
+created: 2026-10-20T06:09:53Z
+id: 26
+priority: low
+started: 2026-10-20T08:28:29Z
+status: done
+tags:
+- endpoints
+- registry
+- templates
+- cleanup
+title: Eleven registered APIs have no endpoint, 28 templates belong to endpoints that
+  do not exist
+updated: 2026-10-20T08:46:33Z
+---
+
+share/registry.yml registers 31 APIs, but only 20 have an endpoint in share/endpoints.yml. Without an endpoint are: ausbildungssuche, bewerberboerse, ddb, destatis, deutschlandatlas, dip_bundestag, handelsregister, jobsuche, lebensmittelwarnung, mudab, regionalatlas.
+
+In share/templates/ there are 28 template files per language (7 languages) that belong to endpoints which do not exist: 11 for mudab and 17 leftovers of renamed endpoints (bundeshaushalt_plan, 10 bundesrat_*, eco_visio_counter, hilfsmittel_search, ladestationen_get, smard_chart, smard_filter, smard_index). The formatter never loads them, because it looks the file up by the name of the endpoint.
+
+Decide per API: add the endpoint (with path, method and command class), or drop the template. The README gets a short section about the registered APIs without an endpoint in the card that repairs the documentation.
+
+Done: the 28 templates that belong to no endpoint are removed from all seven languages (196 files). Endstand: 111 templates per language, 777 in all. The endstand was counted in every language, the dead list is identical in all of them. The README and the POD of the Formatter carry the new numbers, the number of the endpoints (115) and of the APIs (31 in the registry, 20 with endpoints) is unchanged. New test t/template_endpoints.t holds the invariant; it was red against the old state of share/ (216 tests, 203 failed, the dead templates named) and is green now. Full suite offline: 25 files, 2464 tests, all successful (integration.t is opt-in and skipped). Commit 3d36039.
+
+2026-10-20 08:46 Karte umgesetzt und nach main gemergt. Commit 3d36039 'Ship only the templates that belong to an endpoint (k26)': die 196 toten Templates (28 je Sprache) aus share/templates/ entfernt, Endstand 111 je Sprache und 777 insgesamt, README und POD des Formatters auf diese Zahlen korrigiert. Neuer Test t/template_endpoints.t haelt die Regel fest (rot gegen den alten Datenstand: 216 Tests, 203 Fehlschlaege, tote Vorlagen namentlich benannt), volle Suite im Worktree 25 Dateien, 2464 Tests, PASS. Changes-Eintrag ergaenzt.
