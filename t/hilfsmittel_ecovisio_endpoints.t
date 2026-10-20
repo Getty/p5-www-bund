@@ -15,15 +15,15 @@ my $reg = WWW::Bund::Registry->new(
     endpoints_file => File::Spec->catfile($share, 'endpoints.yml'),
 );
 
-# hilfsmittel_produkte: the filter param must be UntergruppeId, not the old
-# UnterruppeId typo (matches the hilfsmittel_untergruppe entity / OpenAPI spec).
+# hilfsmittel_produkte: the API ignores every filter parameter - fetched with
+# UntergruppeId, with ProduktartId and without parameters at all, every
+# variant answers with the byte-identical full list of 66025 products. The
+# OpenAPI spec documents /Produkt without parameters, so the endpoint carries
+# none and the CLI offers no positional argument for them.
 {
     my $ep = $reg->endpoint('hilfsmittel_produkte');
-    my %qp = map { $_ => 1 } @{ $ep->{query_params} || [] };
-    ok($qp{UntergruppeId},  'hilfsmittel_produkte has UntergruppeId query param');
-    ok(!$qp{UnterruppeId},  'hilfsmittel_produkte no longer carries the UnterruppeId typo');
-    ok($qp{ProduktgruppeId} && $qp{ProduktartId},
-        'hilfsmittel_produkte keeps its sibling filter params');
+    is_deeply($ep->{query_params} // [], [],
+        'hilfsmittel_produkte carries no filter parameter');
 }
 
 # eco_visio_data: idOrganisme is a documented required query param and was

@@ -623,10 +623,6 @@
   path: /Produkt
   method: get
   cache_ttl: 86400
-  query_params:
-    - ProduktgruppeId
-    - UntergruppeId
-    - ProduktartId
 
 - name: hilfsmittel_produkt
   api: hilfsmittel

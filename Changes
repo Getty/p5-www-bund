@@ -18,9 +18,10 @@
   - The marktstammdaten data endpoints are called with GET and their filter
     parameters; a regression test locks it in
   - The hilfsmittel endpoints render their templates (type, columns, fields)
-    instead of falling back to a raw YAML dump; the filter parameter of
-    hilfsmittel_produkte (UntergruppeId) and the idOrganisme parameter of
-    eco_visio_data are corrected
+    instead of falling back to a raw YAML dump; the idOrganisme parameter of
+    eco_visio_data is corrected
+  - The hilfsmittel_produkte endpoint takes no filter parameter: the API
+    ignores them and answers with the full list of products
   - The API, endpoint and template counts in README, WWW::Bund, CLI::Formatter
     and Registry again match the shipped data
   - The pflanzenschutzmittelzulassung endpoints render their templates instead
