@@ -1,0 +1,25 @@
+---
+claimed_at: 2026-10-20T06:09:23Z
+claimed_by: k20
+class: standard
+completed: 2026-10-20T06:09:23Z
+created: 2026-10-20T05:59:47Z
+id: 20
+priority: high
+started: 2026-10-20T06:01:00Z
+status: done
+tags:
+- bundesrat
+- xml
+- bug
+title: Bundesrat endpoints ask the site for the XML view
+updated: 2026-10-20T06:09:23Z
+---
+
+The ten bundesrat endpoints answer with the website's HTML page unless the query parameter view=renderXml is sent. The body then starts with '<', so the caller picks the XML parser and dies with 'syntax error at line 1, column 0, byte 0'. Measured 2026-10-20: with view=renderXml all ten endpoints answer with real XML. Fix: each of the ten endpoints gets query_defaults with view: renderXml. The endpoints keep view in query_params, so a caller can still override the value (caller-supplied values win). Test: t/bundesrat_xml_view.t checks the ten defaults and that a caller value beats the default.
+
+2026-10-20 06:05 Umsetzung: Die zehn Bundesrat-Endpunkte in share/endpoints.yml tragen jetzt 'query_defaults: view: renderXml'; 'view' bleibt in query_params, damit ein Aufruferwert die Vorgabe schlaegt (Caller-Regel: caller-supplied values win). Neuer Offline-Test t/bundesrat_xml_view.t (24 Assertions): die zehn Vorgaben, 'view' in query_params und die Caller-Regel ueber eine MockIO. Rot-Beweis gegen die alte endpoints.yml: 11 von 24 Assertions rot (Verhaltensfehler 'got: undef, expected: renderXml' bzw. Request-URL ohne view=), kein Ladefehler. Nach dem Fix gruen. Volle Suite offline: prove -lr t/ -> 18 Dateien, 1467 Tests, alle gruen, 1 uebersprungen (t/integration.t, Live-Tests, WWW_BUND_LIVE_TEST nicht gesetzt). Changes-Eintrag: 'The Bundesrat endpoints ask for the XML view of the site, so the answer is XML and not the HTML page of the website'. Commit 80b3d33 auf Branch k20 (von lokalem main 1cb356e).
+
+2026-10-20 06:05 Fertig: Die zehn Bundesrat-Endpunkte fragen die Website per Query-Default view=renderXml nach der XML-Ansicht, view bleibt ueberschreibbar. Neuer Offline-Test t/bundesrat_xml_view.t war vor dem Fix rot (11/24 Assertions, Verhaltensfehler) und ist nach dem Fix gruen, volle Suite offline gruen (1467 Tests, 1 Live-Test uebersprungen). Changes-Eintrag ergaenzt. Commit 80b3d33 auf Branch k20.
+
+2026-10-20 06:09 K20 umgesetzt: alle zehn Bundesrat-Endpunkte tragen query_defaults.view=renderXml, view bleibt in query_params (Aufruferwert schlaegt Vorgabe, im Caller belegt). Test t/bundesrat_xml_view.t (24 Tests) ist gegen das alte share/endpoints.yml rot (11 Verhaltensfehler: Vorgabe fehlt), volle Suite offline gruen (18 Dateien, 1467 Tests). Commit 80b3d33, per fast-forward in main.
