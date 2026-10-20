@@ -1,0 +1,27 @@
+---
+claimed_at: 2026-10-20T07:49:04Z
+claimed_by: www-bund-worker
+class: standard
+completed: 2026-10-20T07:49:04Z
+created: 2026-10-20T06:00:15Z
+id: 24
+priority: medium
+started: 2026-10-20T07:37:56Z
+status: done
+tags:
+- bug
+- xml
+- parser
+title: An HTML answer is reported instead of a parser error
+updated: 2026-10-20T07:49:04Z
+---
+
+An answer that is a web page instead of XML dies with 'syntax error at line 1, column 0, byte 0' - the caller picks the XML parser as soon as the body starts with '<'. Measured 2026-10-20: the Bundesrat site answers with its HTML page when the XML view is not asked for. The XML parser recognises an HTML answer (doctype html, html, head or body at the start, without an XML declaration) and reports it in clear words, instead of letting the XML parser fail. Test: t/html_answer.t covers the detection, the XML declaration as the exception and the way through the caller.
+
+2026-10-20 07:45 Commit 593d523 (branch k24, from local main e10d3bb). Detection in lib/WWW/Bund/Response/XML.pm before the parse: a doctype/html/head/body at the very beginning (case insensitive, after optional whitespace) and no XML declaration -> the build dies with 'The API answered with a web page (HTML) instead of XML - a query parameter is probably missing or wrong'. The Caller needs no change, it passes the message on. An XML declaration still wins, so a document with an html root element that is delivered as XML is parsed as before.
+
+Verified offline: t/html_answer.t was red against the old lib (12 of 23 subtests failed with the parser error 'syntax error at line 1, column 0, byte 0' resp. no error at all) and green with the fix; full suite prove -lr t/ green (2423 tests, 1 skipped: the opt-in live integration test).
+
+Also found: without a doctype, a '<html>...' page does not fail in the XML parser at all - XML::Twig accepts it as well-formed XML and the caller would have rendered the web page as data. Only the doctype variant produced the parser error named in the card.
+
+2026-10-20 07:48 Gebaut und geprueft: WWW::Bund::Response::XML erkennt eine HTML-Antwort (doctype/html/head/body am Anfang, ohne XML-Deklaration) und bricht mit einer klaren Meldung ab, statt den XML-Parser scheitern zu lassen; der Caller reicht sie unveraendert weiter. Suite offline gruen (23 Dateien, 2423 Tests), roter Beweis gegen das alte lib bestaetigt (12 von 23 Teiltests, Verhaltensfehler). Commit 593d523.
