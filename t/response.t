@@ -2,7 +2,9 @@ use strict;
 use warnings;
 use utf8;
 use Test::More;
-use Encode qw(encode_utf8);
+use Encode qw(encode_utf8 decode);
+use File::Spec;
+use FindBin;
 use HTTP::Response;
 
 use WWW::Bund::Response::JSON;
@@ -10,6 +12,18 @@ use WWW::Bund::Response::XML;
 use WWW::Bund::Response::Raw;
 use WWW::Bund::LWPIO;
 use WWW::Bund::HTTPRequest;
+use WWW::Bund::CLI::Formatter;
+
+my $templates_dir = File::Spec->catdir($FindBin::Bin, '..', 'share', 'templates');
+my $strings_dir   = File::Spec->catdir($FindBin::Bin, '..', 'share', 'strings');
+
+sub make_fmt {
+    return WWW::Bund::CLI::Formatter->new(
+        templates_dir => $templates_dir,
+        strings_dir   => $strings_dir,
+        lang          => 'de',
+    );
+}
 
 # FakeUA: hands over a canned HTTP::Response
 {
@@ -99,6 +113,61 @@ use WWW::Bund::HTTPRequest;
 {
     my $resp = WWW::Bund::Response::Raw->new(content => '');
     is($resp->data, '', 'Raw: empty content returns empty string');
+}
+
+# --- Raw Response: the body is decoded ---
+
+# The transport hands the body over as bytes, the parser decodes them. Without
+# the decoding the answer arrives as mojibake in the output.
+{
+    my $resp = WWW::Bund::Response::Raw->new(
+        content      => encode_utf8('Grüße aus Köln'),
+        content_type => 'text/plain; charset=utf-8',
+    );
+
+    is($resp->data, 'Grüße aus Köln', 'Raw: the body is decoded as UTF-8');
+    ok(utf8::is_utf8($resp->data), 'Raw: the decoded body is a character string');
+}
+
+# The characters arrive in the output, not the bytes
+{
+    my $resp = WWW::Bund::Response::Raw->new(
+        content      => encode_utf8('Grüße aus Köln'),
+        content_type => 'text/plain; charset=utf-8',
+    );
+    my $fmt = make_fmt();
+
+    my $json = $fmt->format_output($resp->data, undef, 'json');
+    like($json, qr/\QGrüße aus Köln\E/, 'Raw: the JSON output shows the characters');
+
+    # The YAML dump answers with a character string, the CLI writes it through
+    # a UTF-8 output layer - the characters are what the user sees.
+    my $yaml = $fmt->format_output($resp->data, undef, 'yaml');
+    like($yaml, qr/\QGrüße aus Köln\E/, 'Raw: the YAML output shows the characters');
+    unlike($yaml, qr/Ã/, 'Raw: the output carries no mojibake');
+}
+
+# A body that is not valid UTF-8 comes through unchanged and does not die
+{
+    my $broken = "Gr\x{fc}\x{df}e \xc3\x28";
+    my $resp = eval {
+        WWW::Bund::Response::Raw->new(
+            content      => $broken,
+            content_type => 'text/plain; charset=utf-8',
+        );
+    };
+    ok(!$@, "Raw: a broken body does not die: $@");
+    is($resp ? $resp->data : undef, $broken, 'Raw: a broken body comes through unchanged');
+}
+
+# A body that was decoded already is not decoded a second time
+{
+    my $decoded = decode('UTF-8', encode_utf8('Grüße aus Köln'));
+    my $resp = WWW::Bund::Response::Raw->new(
+        content      => $decoded,
+        content_type => 'text/plain; charset=utf-8',
+    );
+    is($resp->data, 'Grüße aus Köln', 'Raw: a decoded body is not decoded twice');
 }
 
 # --- Role attributes ---

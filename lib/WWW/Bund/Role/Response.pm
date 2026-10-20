@@ -31,7 +31,7 @@ Implementations:
 
 =item * L<WWW::Bund::Response::XML> - Parses XML to HashRef via XML::Twig
 
-=item * L<WWW::Bund::Response::Raw> - Returns content as-is
+=item * L<WWW::Bund::Response::Raw> - Decodes the content as UTF-8 and returns it as-is
 
 =back
 
