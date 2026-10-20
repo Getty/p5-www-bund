@@ -6,6 +6,8 @@
     account) before the call instead of passing the API's HTTP 400 through
   - The {region} placeholder of the abfallnavi endpoints is substituted into
     the base URL; an offline regression test locks it in
+  - The marktstammdaten data endpoints are called with GET and their filter
+    parameters; a regression test locks it in
 
 0.002     2026-02-19 22:57:28Z
 
