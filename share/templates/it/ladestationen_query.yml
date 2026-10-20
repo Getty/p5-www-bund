@@ -1,0 +1,22 @@
+extract: features
+type: table
+empty: "Nessuna stazione di ricarica."
+columns:
+  - field: "properties.für_die_Überschrift_"
+    header: STAZIONE
+    width: 40
+    wrap: true
+  - field: "properties.Betreiber_"
+    header: OPERATORE
+    width: 30
+    wrap: true
+  - field: "properties.Standort_"
+    header: POSIZIONE
+    width: 40
+    wrap: true
+  - field: "properties.Anzahl_Ladepunkte_"
+    header: NUMERO DI PUNTI DI RICARICA
+    width: 20
+  - field: "properties.Art_des_Ladepunktes_"
+    header: TIPO DI PUNTO DI RICARICA
+    width: 25

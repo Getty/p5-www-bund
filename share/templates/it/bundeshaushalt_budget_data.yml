@@ -1,0 +1,17 @@
+type: record
+fields:
+  - field: meta.year
+    label: Anno
+  - field: meta.quota
+    label: Quota
+  - field: meta.unit
+    label: Unità
+  - field: meta.entity
+    label: Livello
+  - field: meta.modifyDate
+    label: Aggiornamento
+  - field: detail
+    label: Dettagli
+  - field: parents
+    label: Nodi superiori
+empty: "Nessun dato disponibile."

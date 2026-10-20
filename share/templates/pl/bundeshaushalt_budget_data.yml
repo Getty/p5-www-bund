@@ -1,0 +1,17 @@
+type: record
+fields:
+  - field: meta.year
+    label: Rok
+  - field: meta.quota
+    label: Kwota
+  - field: meta.unit
+    label: Jednostka
+  - field: meta.entity
+    label: Poziom
+  - field: meta.modifyDate
+    label: Data aktualizacji
+  - field: detail
+    label: Szczegóły
+  - field: parents
+    label: Węzły nadrzędne
+empty: "Brak dostępnych danych."

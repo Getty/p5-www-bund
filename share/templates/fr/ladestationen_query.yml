@@ -1,0 +1,22 @@
+extract: features
+type: table
+empty: "Aucune borne de recharge."
+columns:
+  - field: "properties.für_die_Überschrift_"
+    header: STATION
+    width: 40
+    wrap: true
+  - field: "properties.Betreiber_"
+    header: EXPLOITANT
+    width: 30
+    wrap: true
+  - field: "properties.Standort_"
+    header: EMPLACEMENT
+    width: 40
+    wrap: true
+  - field: "properties.Anzahl_Ladepunkte_"
+    header: NOMBRE DE POINTS DE CHARGE
+    width: 20
+  - field: "properties.Art_des_Ladepunktes_"
+    header: TYPE DE POINT DE CHARGE
+    width: 25

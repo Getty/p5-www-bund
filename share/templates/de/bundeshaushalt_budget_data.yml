@@ -1,0 +1,17 @@
+type: record
+fields:
+  - field: meta.year
+    label: Jahr
+  - field: meta.quota
+    label: Kontenart
+  - field: meta.unit
+    label: Einheit
+  - field: meta.entity
+    label: Ebene
+  - field: meta.modifyDate
+    label: Stand
+  - field: detail
+    label: Details
+  - field: parents
+    label: Übergeordnete Knoten
+empty: "Keine Daten verfügbar."

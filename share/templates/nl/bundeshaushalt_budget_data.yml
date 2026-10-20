@@ -1,0 +1,17 @@
+type: record
+fields:
+  - field: meta.year
+    label: Jaar
+  - field: meta.quota
+    label: Quota
+  - field: meta.unit
+    label: Eenheid
+  - field: meta.entity
+    label: Niveau
+  - field: meta.modifyDate
+    label: Peildatum
+  - field: detail
+    label: Details
+  - field: parents
+    label: Bovenliggende knooppunten
+empty: "Geen gegevens beschikbaar."

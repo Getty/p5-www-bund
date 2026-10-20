@@ -76,7 +76,8 @@ Template files are YAML with structure:
 See C<share/templates/> for the render templates (about 154 per language, 7 languages).
 
 A cell of the type table that holds a nested structure - a hash or a list - is
-written as compact JSON: an empty cell would hide the value.
+written as compact JSON: an empty cell would hide the value. The same holds for
+a field of the type record that holds a nested structure.
 
 =head2 The keyed_matrix type
 
@@ -536,9 +537,16 @@ sub _render_record {
         my $label = $f->{label} // $f->{field};
         my $val = $self->_resolve_field($data, $f->{field});
 
-        if (!defined $val && $f->{field} =~ /\./) {
-            # Try the full dotted path
-            $val = $self->_extract($data, $f->{field});
+        if (!defined $val) {
+            # A nested structure is shown as compact JSON: an empty line
+            # would hide the value.
+            my $nested = $self->_field_value($data, $f->{field});
+            $val = $nested if ref $nested;
+
+            if (!defined $val && $f->{field} =~ /\./) {
+                # Try the full dotted path
+                $val = $self->_extract($data, $f->{field});
+            }
         }
 
         if (ref $val) {

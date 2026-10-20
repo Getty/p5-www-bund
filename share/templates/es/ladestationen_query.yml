@@ -1,0 +1,22 @@
+extract: features
+type: table
+empty: "Ninguna estación de carga."
+columns:
+  - field: "properties.für_die_Überschrift_"
+    header: ESTACIÓN
+    width: 40
+    wrap: true
+  - field: "properties.Betreiber_"
+    header: OPERADOR
+    width: 30
+    wrap: true
+  - field: "properties.Standort_"
+    header: UBICACIÓN
+    width: 40
+    wrap: true
+  - field: "properties.Anzahl_Ladepunkte_"
+    header: NÚMERO DE PUNTOS DE CARGA
+    width: 20
+  - field: "properties.Art_des_Ladepunktes_"
+    header: TIPO DE PUNTO DE CARGA
+    width: 25

@@ -37,6 +37,8 @@
   - The SMARD endpoints render their templates instead of falling back to a
     raw YAML dump; a table cell that holds a nested value shows it as JSON
     instead of leaving the cell empty
+  - The Ladestationen and the federal budget render their templates instead
+    of falling back to a raw YAML dump
 
 0.002     2026-02-19 22:57:28Z
 
