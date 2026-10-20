@@ -1,0 +1,63 @@
+---
+claimed_at: 2026-10-20T06:39:27Z
+claimed_by: k21
+class: standard
+completed: 2026-10-20T06:39:27Z
+created: 2026-10-20T05:59:54Z
+id: 21
+priority: medium
+started: 2026-10-20T06:11:18Z
+status: done
+tags:
+- bundesrat
+- templates
+title: The five Bundesrat endpoints render their templates
+updated: 2026-10-20T06:39:27Z
+---
+
+The five Bundesrat endpoints below have only the placeholder files <endpoint>.yaml today (see the card about the .yaml placeholders) - the CLI shows their answer as a raw YAML dump. The shapes of the XML answers were measured live on 2026-10-20 with view=renderXml, so the templates are built without an API call.
+
+Measured shapes (parsed with the XML parser of the repo):
+- bundesrat_startlist: list.item[] - per row name, date, layoutDate, md5, url
+- bundesrat_aktuelles: list.item[] - date, dateOfIssue, title, bodyText, type, id, url, detail, highlighted, imgDates
+- bundesrat_termine: list.item[] - title, description, startdate, stopdate, type, id, url, detail
+- bundesrat_mitglieder: list.employee[] - name, firstname, honorificTitle, party, state, brmitglied, bv, designiert, mitglied, imagePath, imageDate, detailImgDates, url, detail
+- bundesrat_praesidium: list.item[] - title, imageCaption, imagePath, date, dateOfIssue, abstract, detail, id, type
+
+The fields detail and bodyText contain HTML and do not belong in a template.
+
+Templates: one file <endpoint>.yml per endpoint in all seven languages (de, en, fr, es, it, nl, pl), in the style of the existing files (see share/templates/de/autobahn_closures.yml). The headers are translated, the field names stay as the API delivers them.
+
+| endpoint | type | extract | columns |
+|---|---|---|---|
+| bundesrat_startlist | table | list.item | name, date, url |
+| bundesrat_aktuelles | table | list.item | date, title, type, url |
+| bundesrat_termine | table | list.item | startdate, title, description |
+| bundesrat_mitglieder | table | list.employee | name, firstname, party, state |
+| bundesrat_praesidium | table | list.item | title, imageCaption, imagePath, date |
+
+Every template carries a translated empty message that fits the endpoint (German: "Keine Startliste.", "Keine Meldungen.", "Keine Termine.", "Keine Mitglieder.", "Keine Eintraege." - with umlauts, in the language of the file).
+
+Test: t/bundesrat_templates.t (new), offline:
+- for every endpoint and every language: the file <endpoint>.yml is there, is readable as YAML, has the type and the extract named above, a non-empty empty message and the column list in the order named above
+- a render test: the measured answers of the startlist, the members and the presidency are written into the test as Perl data structures, sent through WWW::Bund::CLI::Formatter with the matching template, and the result is checked - the values show up in the output, no field stays silently empty
+
+The test must be red against the old share/templates (the files are missing there): a behavioural failure, no "Can't locate" error.
+
+Changes: one new entry under {{$NEXT}}, wrapped at 78 columns, without board ids:
+  - The Bundesrat endpoints render their templates instead of falling back to a raw YAML dump
+No second entry to the same topic.
+
+2026-10-20 06:35 Umgesetzt auf Branch k21 (Basis: lokaler main 80b3d33), Commit c786bc5: 35 Templates (5 Endpunkte x 7 Sprachen) unter share/templates/{lang}/bundesrat_*.yml, neu t/bundesrat_templates.t, ein Changes-Eintrag unter {{$NEXT}}. Die Templates liefern die Spalten der Karte in der vorgegebenen Reihenfolge, mit uebersetzten Headern (CAPITALS) und einer passenden leeren Meldung je Endpunkt und Sprache. detail und bodyText sind nicht enthalten.
+
+2026-10-20 06:35 Verifiziert: prove -lr t/ aus dem Worktree mit PERL5LIB auf den Worktree gesetzt: 19 Dateien, 1719 Tests, alle gruen (nur t/integration.t uebersprungen, das laeuft per WWW_BUND_LIVE_TEST=1). Der neue Test hat 252 Subtests. Rote Probe: gegen die alten share/templates (die 35 .yml-Dateien entfernt) fallen 211 der 252 Subtests durch, alle verhaltensbezogen, keine 'Can't locate'-Fehler. Zusaetzlich live geprueft: bund bundesrat startlist/aktuelles/termine/mitglieder/praesidium rendern alle ihre Templates (Header NAME/DATUM/URL usw.), kein YAML-Dump, kein HTML aus detail/bodyText.
+
+2026-10-20 06:35 Also found: Die .yaml-Platzhalter der fuenf Endpunkte (share/templates/{lang}/bundesrat_*.yaml) sind jetzt toter Code - der Formatter liest nur .yml. Sie nicht zu loeschen, weil die Karte zu den .yaml-Platzhaltern (k10) den Umgang damit festlegt.
+
+2026-10-20 06:35 Also found: Abweichung der live gemessenen Daten von der Kartentabelle: die mitglieder-Zeilen tragen detail1/detail2/detail3 statt detail und kein detailImgDates, die praesidium-Zeilen zusaetzlich imageSource und imgDates, die aktuelles-Zeilen zusaetzlich subtitle, imageCaption, imageDate, imagePath, imageSource. Die vorgegebenen Spalten sind nicht betroffen.
+
+2026-10-20 06:35 Also found: YAML::PP liest die Template-Dateien zeilenweise ueber das aktuelle $/. Wer den Formatter in einem Block aufruft, der vorher mit 'local $/' eine Datei schluckt, bekommt nur den ersten Schluessel des Templates (statt der Spaltenliste) und damit automatisch erkannte Spalten - still, ohne Fehler. Das CLI selbst aendert $/ nicht (nur Cache.pm in einem eigenen Sub), der CLI-Pfad ist also nicht betroffen, aber eine stille Stolperfalle.
+
+2026-10-20 06:35 Done: 35 Render-Templates fuer die fuenf Bundesrat-Endpunkte (startlist, aktuelles, termine, mitglieder, praesidium) in allen sieben Sprachen, dazu der offline Test t/bundesrat_templates.t und ein Changes-Eintrag. Commit c786bc5 auf Branch k21, nicht gepusht. Verifiziert: prove -lr t/ gruen (19 Dateien, 1719 Tests, nur der opt-in Live-Test uebersprungen), der neue Test 252 Subtests gruen, rote Probe gegen die alten Templates 211 Fehlschlaege ohne 'Can't locate', live CLI rendert alle fuenf Endpunkte mit ihren Templates.
+
+2026-10-20 06:39 K21 umgesetzt: fuenf Bundesrat-Endpunkte (startlist, aktuelles, termine, mitglieder, praesidium) haben je sieben Sprachdateien als .yml-Templates (35 Dateien), Felder und extract wie gemessen. Test t/bundesrat_templates.t (252 Tests) ist gegen das alte share/templates rot (211 Verhaltensfehler: Template fehlt, Ausgabe leer), volle Suite offline gruen (19 Dateien, 1719 Tests). Commit c786bc5, per fast-forward in main. Die zweite Haelfte (Plenum-Endpunkte) laeuft ueber Karte 27.
