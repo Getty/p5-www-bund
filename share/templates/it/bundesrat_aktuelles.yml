@@ -1,0 +1,18 @@
+extract: list.item
+type: table
+empty: "Nessuna notizia."
+columns:
+  - field: date
+    header: DATA
+    width: 20
+  - field: title
+    header: TITOLO
+    width: 50
+    wrap: true
+  - field: type
+    header: TIPO
+    width: 15
+  - field: url
+    header: URL
+    width: 110
+    wrap: true

@@ -1,0 +1,18 @@
+extract: list.item
+type: table
+empty: "Keine Meldungen."
+columns:
+  - field: date
+    header: DATUM
+    width: 20
+  - field: title
+    header: TITEL
+    width: 50
+    wrap: true
+  - field: type
+    header: TYP
+    width: 15
+  - field: url
+    header: URL
+    width: 110
+    wrap: true

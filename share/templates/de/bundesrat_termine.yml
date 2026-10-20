@@ -1,0 +1,15 @@
+extract: list.item
+type: table
+empty: "Keine Termine."
+columns:
+  - field: startdate
+    header: STARTDATUM
+    width: 20
+  - field: title
+    header: TITEL
+    width: 50
+    wrap: true
+  - field: description
+    header: BESCHREIBUNG
+    width: 60
+    wrap: true

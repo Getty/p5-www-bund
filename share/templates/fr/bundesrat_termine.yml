@@ -1,0 +1,15 @@
+extract: list.item
+type: table
+empty: "Aucun rendez-vous."
+columns:
+  - field: startdate
+    header: DATE DE DÉBUT
+    width: 20
+  - field: title
+    header: TITRE
+    width: 50
+    wrap: true
+  - field: description
+    header: DESCRIPTION
+    width: 60
+    wrap: true

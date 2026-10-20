@@ -1,0 +1,18 @@
+extract: list.item
+type: table
+empty: "Ninguna entrada."
+columns:
+  - field: title
+    header: TÍTULO
+    width: 30
+    wrap: true
+  - field: imageCaption
+    header: LEYENDA DE LA IMAGEN
+    width: 25
+  - field: imagePath
+    header: RUTA DE LA IMAGEN
+    width: 110
+    wrap: true
+  - field: date
+    header: FECHA
+    width: 20

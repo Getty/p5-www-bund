@@ -1,0 +1,18 @@
+extract: list.item
+type: table
+empty: "Brak wpisów."
+columns:
+  - field: title
+    header: TYTUŁ
+    width: 30
+    wrap: true
+  - field: imageCaption
+    header: PODPIS OBRAZU
+    width: 25
+  - field: imagePath
+    header: ŚCIEŻKA OBRAZU
+    width: 110
+    wrap: true
+  - field: date
+    header: DATA
+    width: 20

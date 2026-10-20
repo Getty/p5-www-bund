@@ -1,0 +1,15 @@
+extract: list.item
+type: table
+empty: "Ninguna cita."
+columns:
+  - field: startdate
+    header: FECHA DE INICIO
+    width: 20
+  - field: title
+    header: TÍTULO
+    width: 50
+    wrap: true
+  - field: description
+    header: DESCRIPCIÓN
+    width: 60
+    wrap: true

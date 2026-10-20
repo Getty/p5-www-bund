@@ -1,0 +1,18 @@
+extract: list.item
+type: table
+empty: "Nessuna voce."
+columns:
+  - field: title
+    header: TITOLO
+    width: 30
+    wrap: true
+  - field: imageCaption
+    header: DIDASCALIA
+    width: 25
+  - field: imagePath
+    header: PERCORSO DELL'IMMAGINE
+    width: 110
+    wrap: true
+  - field: date
+    header: DATA
+    width: 20

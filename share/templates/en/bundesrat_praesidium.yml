@@ -1,0 +1,18 @@
+extract: list.item
+type: table
+empty: "No entries."
+columns:
+  - field: title
+    header: TITLE
+    width: 30
+    wrap: true
+  - field: imageCaption
+    header: IMAGE CAPTION
+    width: 25
+  - field: imagePath
+    header: IMAGE PATH
+    width: 110
+    wrap: true
+  - field: date
+    header: DATE
+    width: 20

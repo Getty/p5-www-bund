@@ -1,0 +1,18 @@
+extract: list.employee
+type: table
+empty: "Geen leden."
+columns:
+  - field: name
+    header: NAAM
+    width: 25
+    wrap: true
+  - field: firstname
+    header: VOORNAAM
+    width: 20
+  - field: party
+    header: PARTIJ
+    width: 30
+    wrap: true
+  - field: state
+    header: STAAT
+    width: 25

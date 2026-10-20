@@ -1,0 +1,18 @@
+extract: list.item
+type: table
+empty: "Aucune actualité."
+columns:
+  - field: date
+    header: DATE
+    width: 20
+  - field: title
+    header: TITRE
+    width: 50
+    wrap: true
+  - field: type
+    header: TYPE
+    width: 15
+  - field: url
+    header: URL
+    width: 110
+    wrap: true

@@ -1,0 +1,18 @@
+extract: list.employee
+type: table
+empty: "No members."
+columns:
+  - field: name
+    header: NAME
+    width: 25
+    wrap: true
+  - field: firstname
+    header: FIRST NAME
+    width: 20
+  - field: party
+    header: PARTY
+    width: 30
+    wrap: true
+  - field: state
+    header: STATE
+    width: 25

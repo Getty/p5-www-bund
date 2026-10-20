@@ -1,0 +1,18 @@
+extract: list.item
+type: table
+empty: "Keine Eintraege."
+columns:
+  - field: title
+    header: TITEL
+    width: 30
+    wrap: true
+  - field: imageCaption
+    header: BILDKAPSEL
+    width: 25
+  - field: imagePath
+    header: BILDPFAD
+    width: 110
+    wrap: true
+  - field: date
+    header: DATUM
+    width: 20

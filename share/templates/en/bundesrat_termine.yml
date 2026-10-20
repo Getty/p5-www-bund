@@ -1,0 +1,15 @@
+extract: list.item
+type: table
+empty: "No appointments."
+columns:
+  - field: startdate
+    header: START DATE
+    width: 20
+  - field: title
+    header: TITLE
+    width: 50
+    wrap: true
+  - field: description
+    header: DESCRIPTION
+    width: 60
+    wrap: true

@@ -1,0 +1,18 @@
+extract: list.employee
+type: table
+empty: "Brak członków."
+columns:
+  - field: name
+    header: NAZWISKO
+    width: 25
+    wrap: true
+  - field: firstname
+    header: IMIĘ
+    width: 20
+  - field: party
+    header: PARTIA
+    width: 30
+    wrap: true
+  - field: state
+    header: STAN
+    width: 25
