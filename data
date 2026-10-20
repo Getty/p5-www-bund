@@ -1,0 +1,87 @@
+---
+class: standard
+completed: 2026-10-20T16:45:55Z
+created: 2026-10-20T16:26:20Z
+id: 29
+priority: medium
+started: 2026-10-20T16:45:55Z
+status: done
+tags:
+- release
+- prereq
+title: Ein Test, der die Voraussetzungen haelt, fehlt
+updated: 2026-10-20T16:45:55Z
+---
+
+Ein Test, der die Voraussetzungen haelt, fehlt.
+
+Andere Distributionen der WWW-Flotte pruefen mit t/cpanfile.t, dass jede
+Bibliothek, die der Code laedt, im cpanfile genannt ist. In diesem Repo gibt
+es keinen solchen Test: eine verlorene Voraussetzung faellt dann erst beim
+Laden der Bibliothek auf einer Maschine auf, auf der das Modul fehlt - nicht
+beim Bauen.
+
+Der Test entsteht neu nach dem Hausmuster (siehe p5-www-hetzner,
+p5-www-idrac, p5-www-keycloak): er liest das cpanfile, trennt die
+Laufzeit-Phase von der Test-Phase und haelt eine hart kodierte Liste fest -
+je Voraussetzung ein ok(). Wo Modul und Distribution auseinanderlaufen, zaehlt
+die Distribution: der Test akzeptiert deshalb beide Formen (in Klammern die
+zulaessigen Namen im cpanfile).
+
+Laufzeit:
+  File::ShareDir::ProjectDistDir (File::ShareDir::ProjectDistDir, File::ShareDir)
+  HTTP::Request (HTTP::Request, HTTP::Message)
+  JSON::MaybeXS
+  LWP::Protocol::https
+  LWP::UserAgent
+  Log::Any (Log::Any, Log::Any::Adapter)
+  Moo (Moo, Moo::Role)
+  MooX::Cmd
+  MooX::Options
+  URI::Escape (URI::Escape, URI)
+  XML::Twig
+  YAML::PP
+  namespace::clean
+
+Test:
+  HTTP::Response (HTTP::Response, HTTP::Message, HTTP::Request)
+  JSON::MaybeXS
+  Log::Any::Adapter (Log::Any::Adapter, Log::Any)
+  Moo
+  Test::Exception
+  Test::More
+  YAML::PP
+
+Regeln fuer den Test:
+- Eine Laufzeit-Voraussetzung muss in der Laufzeit-Phase stehen; ein Eintrag
+  nur in der Test-Phase installiert sie beim Anwenden nicht.
+- Eine Test-Voraussetzung wird akzeptiert, wenn sie in der Test-Phase oder in
+  der Laufzeit-Phase steht - die Laufzeit-Phase wird immer installiert.
+- Kernmodule gehoeren nicht in die Liste. Die Testhelfer im Repo (MockUA,
+  MockForgejo, Test::WWW::MikroTik::MockUA) sind keine Voraussetzungen.
+
+Am cpanfile:
+Alle genannten Voraussetzungen sind heute schon genannt, es fehlt nur
+der Test. Zusaetzlich steht das cpanfile nicht in der Hausform: die
+Voraussetzungen sind nicht alphabetisch. Bring sie in die alphabetische
+Reihenfolge; die Mindestversionen bleiben unberuehrt (hier gibt es keine
+leeren Pins).
+
+Der rote Beweis: der Test muss gegen das alte cpanfile rot sein. Belege ihn so
+und nenne das Ergebnis in der Abschlussmeldung:
+
+    cd <worktree>
+    cp cpanfile cpanfile.bak
+    git show main:cpanfile > cpanfile
+    prove -lr t/cpanfile.t     # muss rot sein
+    mv cpanfile.bak cpanfile
+    prove -lr t/cpanfile.t     # muss gruen sein
+
+cpanfile.bak ist nur eine Sicherung: sie wird nicht committet und am Ende
+geloescht.
+
+Aenderungen ausserhalb von cpanfile, t/cpanfile.t und Changes: nicht.
+Ein Changes-Eintrag unter {$NEXT} (ohne Kartennummern, bei 78 Spalten
+umbrochen). Commit-Betreff nennt die Karte als (k29), kein #29.
+
+2026-10-20 16:45 Koordination: der Commit 37c5923 steht auf main (ff-only gemergt). Der rote Beweis wurde nachgeprueft: gegen das alte cpanfile aus main sind 2 von 22 Tests rot (beide die alphabetische Reihenfolge - die Laufzeit-Phase stand mit Moo am Anfang, die Test-Phase mit Test::More), mit dem neuen cpanfile sind alle 22 gruen. Suite offline: 27 Dateien, 2502 Tests, PASS.
