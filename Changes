@@ -1,4 +1,6 @@
 {{$NEXT}}
+  - An answer that is a web page instead of XML is reported as such, instead
+    of failing with a parser error
   - An empty positional argument keeps its place in the CLI, so a query
     parameter can be sent with an empty value
   - A response that is delivered as text/plain is read correctly: the HTTP

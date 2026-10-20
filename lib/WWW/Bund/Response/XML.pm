@@ -5,6 +5,7 @@ our $VERSION = '0.003';
 use Moo;
 use XML::Twig;
 use Encode qw(encode_utf8);
+use Carp qw(croak);
 use namespace::clean;
 
 =head1 SYNOPSIS
@@ -41,6 +42,11 @@ XML elements are converted to HashRef with the following rules:
 Handles UTF-8 encoding correctly: if content is a Perl character string, it
 is encoded to bytes before parsing (XML::Parser requires bytes).
 
+A web page instead of XML is reported in clear words: when the content starts
+with a HTML document (a doctype, C<html>, C<head> or C<body>) and carries no
+XML declaration, parsing dies with a message that names the symptom and the
+likely cause instead of a parser error.
+
 Used by Bundestag and Bundesrat APIs which return XML instead of JSON.
 
 =cut
@@ -56,6 +62,9 @@ Parsed XML as HashRef. Lazy-built from C<content>.
 sub _build_data {
     my ($self) = @_;
     return undef unless defined $self->content && length $self->content;
+    croak 'The API answered with a web page (HTML) instead of XML - a query '
+        . 'parameter is probably missing or wrong'
+        if _looks_like_html($self->content);
     my $twig = XML::Twig->new();
     # XML::Parser expects bytes, not Perl character strings
     my $bytes = utf8::is_utf8($self->content)
@@ -63,6 +72,22 @@ sub _build_data {
         : $self->content;
     $twig->parse($bytes);
     return _element_to_hash($twig->root);
+}
+
+# An API that answers with its web page instead of the requested XML: the
+# parameter that asks for the XML view is missing or wrong. The typical
+# starters of an HTML document are recognised at the very beginning of the
+# content. An XML declaration always wins, so a document with an "html" root
+# element that is delivered as XML is still parsed as XML.
+sub _looks_like_html {
+    my ($content) = @_;
+    return 0 unless $content =~ /\A\s*</;
+    return 0 if $content =~ /\A\s*<\?xml/i;
+    return 1 if $content =~ /\A\s*<!doctype\s+html/i;
+    return 1 if $content =~ /\A\s*<html[\s\/>]/i;
+    return 1 if $content =~ /\A\s*<head[\s\/>]/i;
+    return 1 if $content =~ /\A\s*<body[\s\/>]/i;
+    return 0;
 }
 
 sub _element_to_hash {
