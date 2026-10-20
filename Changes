@@ -1,4 +1,6 @@
 {{$NEXT}}
+  - An empty positional argument keeps its place in the CLI, so a query
+    parameter can be sent with an empty value
   - A response that is delivered as text/plain is read correctly: the HTTP
     transport hands the body over as bytes, so JSON and XML with German
     umlauts are decoded instead of dying or arriving as mojibake

@@ -29,8 +29,16 @@ sub execute {
         exit(1);
     }
 
-    my $api = $main->_resolve_api($args->[0]);
-    $main->cmd_info($api);
+    # An empty argument did not survive the argument split of MooX::Cmd, the
+    # root CLI encodes it - decode it here, where it is used.
+    my $api = $main->_decode_arg( $args->[0] );
+
+    unless ( length $api ) {
+        warn $main->_s('err_usage_info') . "\n";
+        exit(1);
+    }
+
+    $main->cmd_info( $main->_resolve_api($api) );
 }
 
 =method execute

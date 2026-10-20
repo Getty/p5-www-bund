@@ -37,6 +37,9 @@ identifier. This keeps API command classes minimal (typically 10 lines).
 
 =back
 
+Arguments that did not survive the argument split of L<MooX::Cmd> - an empty
+argument, for example - are decoded by the root CLI before they are used.
+
 =cut
 
 requires 'api_id';
@@ -61,7 +64,7 @@ sub execute {
         return;
     }
 
-    my @call_args = @$args;
+    my @call_args = map { $main->_decode_arg($_) } @$args;
     my $action = shift @call_args;
 
     my $rc = $main->cmd_call($api, $action, @call_args);

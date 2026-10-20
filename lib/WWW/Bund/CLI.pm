@@ -13,6 +13,8 @@ use JSON::MaybeXS qw(encode_json);
 use YAML::PP qw(Dump);
 use File::ShareDir::ProjectDistDir;
 use File::Spec;
+use Text::ParseWords qw(shellwords);
+use Encode ();
 
 =head1 SYNOPSIS
 
@@ -42,6 +44,16 @@ C<info>).
 API-specific commands are implemented as subcommands in
 C<WWW::Bund::CLI::Cmd::*> modules. Most use L<WWW::Bund::CLI::Role::APICommand>
 for uniform dispatch.
+
+L<MooX::Cmd> splits the arguments with
+C<shellwords(join ' ', map { quotemeta } @ARGV)> - an empty argument does not
+survive that round trip and is dropped, which shifts the following arguments to
+the wrong parameters. The root CLI therefore replaces every argument behind the
+command name that does not survive the split with a token holding its value;
+the command decodes the token again where the argument is used. An empty
+argument therefore keeps its place:
+
+    bund marktstammdaten strom-erzeugung "" 1 5 ""
 
 =head2 Global Options
 
@@ -211,6 +223,77 @@ L<WWW::Bund> client instance for making API calls.
 my %ALIASES = (
     pegel => 'pegel_online',
 );
+
+# MooX::Cmd splits @ARGV with shellwords(join ' ', map { quotemeta } @ARGV).
+# An empty argument does not survive that round trip: it is dropped and the
+# following arguments shift to the wrong parameters - an empty `filter` would
+# turn `page` into the `sort` parameter. Arguments that do not survive are
+# therefore replaced by a token carrying their value. The token is decoded
+# again where the arguments are used, in WWW::Bund::CLI::Role::APICommand.
+#
+# The prefix is unique per process, so a value given by the user can never be
+# mistaken for an encoded argument.
+my $ARG_TOKEN_PREFIX = sprintf(
+    '__www_bund_arg_%d_%s__',
+    $$, unpack( 'H*', pack( 'N', int( rand(2**32) ) ) ),
+);
+
+around _initialize_from_cmd => sub {
+    my ( $orig, $self, %params ) = @_;
+
+    defined $params{command_commands}
+        or $params{command_commands} = $self->_build_command_commands( \%params );
+
+    # Only the arguments behind the command name are encoded - the arguments
+    # in front of it belong to the global options and keep their behaviour.
+    local @ARGV = _encode_argv( $params{command_commands}, \@ARGV );
+
+    return $self->$orig(%params);
+};
+
+# Encode all arguments behind the command name that would not survive the
+# MooX::Cmd argument split.
+sub _encode_argv {
+    my ( $commands, $argv ) = @_;
+
+    my $cmd_index;
+    for my $i ( 0 .. $#$argv ) {
+        if ( exists $commands->{ $argv->[$i] } ) {
+            $cmd_index = $i;
+            last;
+        }
+    }
+    return @$argv unless defined $cmd_index;
+
+    my @encoded = @$argv;
+    for my $i ( $cmd_index + 1 .. $#$argv ) {
+        $encoded[$i] = _encode_arg( $encoded[$i] );
+    }
+    return @encoded;
+}
+
+sub _encode_arg {
+    my ($arg) = @_;
+    return $arg if _arg_survives_split($arg);
+    return $ARG_TOKEN_PREFIX . unpack( 'H*', Encode::encode( 'UTF-8', $arg ) );
+}
+
+sub _decode_arg {
+    my ( $self, $arg ) = @_;
+    return $arg unless index( $arg, $ARG_TOKEN_PREFIX ) == 0;
+
+    my $hex = substr( $arg, length $ARG_TOKEN_PREFIX );
+    return $arg unless $hex =~ /\A(?:[0-9a-f]{2})*\z/;
+
+    return Encode::decode( 'UTF-8', pack( 'H*', $hex ) );
+}
+
+# Does the argument survive the quotemeta/shellwords round trip of MooX::Cmd?
+sub _arg_survives_split {
+    my ($arg) = @_;
+    my @tokens = shellwords( quotemeta $arg );
+    return scalar(@tokens) == 1 && $tokens[0] eq $arg;
+}
 
 sub _resolve_api {
     my ($self, $name) = @_;
