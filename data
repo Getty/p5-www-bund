@@ -1,0 +1,21 @@
+---
+class: standard
+completed: 2026-10-20T05:31:00Z
+created: 2026-08-31T04:29:53Z
+id: 5
+priority: medium
+started: 2026-10-20T05:31:00Z
+status: archived
+tags:
+- api
+title: 'destatis: expose command + auth handling'
+updated: 2026-10-20T05:31:00Z
+---
+
+Destatis Cmd class was removed during cleanup. Caller already supports POST form-encoded bodies (old "add POST body support" TODO is DONE). Remaining: re-expose destatis with username/password auth (GAST/GAST works for find only; other endpoints need a registered account). base_url uses www-genesis (hyphen), method POST.
+
+2026-09-09 09:27 Assessed in Phase 2 batch. destatis uses username and password as plain query params not header auth so Auth.pm does not cover it. GAST GAST works for the find endpoint only other endpoints need a registered account. Re exposing needs new endpoints a Cmd class and 7 language templates plus a credential UX decision passing a password as a CLI positional is a security smell. Left open ambiguous scope plus security tradeoff per batch boundary rules. Needs maintainer decision on which endpoints to expose and how to handle credentials.
+
+PARK (Fleet Worker C, 2026-09-10): Richtung laut Koordinator-Briefing offen (User-Notiz leer). Nicht bearbeitet. Offene Grundsatzfrage an Koordinator: destatis uebergibt user/pass als Query-Params (Security-Smell) - gewuenschte Richtung? (Header-Auth? Command-Expose-Umfang?)
+
+2026-10-20 05:31 2026-10-20 Koordination: Diese Karte wird geschlossen - destatis wird in dieser Kampagne nicht freigelegt. destatis nimmt Benutzername und Passwort als Query-Parameter entgegen; GAST/GAST funktioniert nur fuer die find-Schnittstelle, alle anderen Endpunkte brauchen ein registriertes Konto. Ein Passwort im Query-String landet in der URL, damit in den Log-Zeilen, in der Shell-History und in jedem Proxy-Log davor. Die Token-Maskierung aus k17 greift hier nicht, sie maskiert einen Token aus der Umgebung, nicht ein Passwort in der URL. Die Karte bleibt damit bewusst liegen: wer destatis doch freigelegt haben will, braucht vorher eine Entscheidung, wie die Zugangsdaten aus der URL herauskommen - zum Beispiel Header-Auth und ein eigener Endpunkt-Set. Fuer diese Entscheidung ist das Karten-Wissen hier abgelegt.
