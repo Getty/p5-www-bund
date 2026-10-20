@@ -582,6 +582,7 @@
   method: get
   cache_ttl: 1800
   query_params:
+    - idOrganisme
     - interval
     - flowIds
     - begin
@@ -624,7 +625,7 @@
   cache_ttl: 86400
   query_params:
     - ProduktgruppeId
-    - UnterruppeId
+    - UntergruppeId
     - ProduktartId
 
 - name: hilfsmittel_produkt

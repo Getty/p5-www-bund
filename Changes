@@ -8,6 +8,10 @@
     the base URL; an offline regression test locks it in
   - The marktstammdaten data endpoints are called with GET and their filter
     parameters; a regression test locks it in
+  - The hilfsmittel endpoints render their templates (type, columns, fields)
+    instead of falling back to a raw YAML dump; the filter parameter of
+    hilfsmittel_produkte (UntergruppeId) and the idOrganisme parameter of
+    eco_visio_data are corrected
 
 0.002     2026-02-19 22:57:28Z
 

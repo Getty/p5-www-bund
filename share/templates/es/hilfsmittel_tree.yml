@@ -1,0 +1,10 @@
+type: table
+columns:
+  - field: xSteller
+    width: 12
+  - field: displayValue
+    width: 60
+    wrap: true
+  - field: level
+    width: 5
+empty: "No hay datos disponibles."

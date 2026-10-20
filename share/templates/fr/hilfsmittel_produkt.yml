@@ -1,0 +1,7 @@
+type: record
+fields:
+  - field: zehnSteller
+  - field: name
+  - field: herstellerName
+  - field: produktartBezeichnung
+empty: "Aucune donnée disponible."

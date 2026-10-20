@@ -1,0 +1,6 @@
+type: record
+fields:
+  - field: nummer
+  - field: sechsSteller
+  - field: bezeichnung
+empty: "No data available."

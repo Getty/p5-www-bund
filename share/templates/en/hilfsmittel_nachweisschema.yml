@@ -1,0 +1,5 @@
+type: record
+fields:
+  - field: name
+  - field: produktmusterErforderlich
+empty: "No data available."

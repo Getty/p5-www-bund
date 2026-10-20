@@ -1,0 +1,11 @@
+type: table
+columns:
+  - field: zehnSteller
+    width: 16
+  - field: name
+    width: 50
+    wrap: true
+  - field: herstellerName
+    width: 30
+    wrap: true
+empty: "No data available."
