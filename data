@@ -1,0 +1,35 @@
+---
+claimed_at: 2026-10-20T04:56:02Z
+claimed_by: k16-k18
+class: standard
+completed: 2026-10-20T04:56:02Z
+created: 2026-10-06T19:48:00Z
+id: 16
+priority: medium
+started: 2026-10-20T04:30:40Z
+status: done
+tags:
+- bug
+- cache
+- ratelimit
+- review-2026-10-06
+title: 'Caller: cache hits consume the rate limit and can sleep up to an hour'
+updated: 2026-10-20T04:56:02Z
+---
+
+`lib/WWW/Bund/Caller.pm:178` calls `$self->rate_limiter->check($api)` *before* the cache lookup at line 185. `WWW::Bund::RateLimit::check` records a timestamp for every call and, once `max` is reached, `sleep`s until the oldest falls out of the window (`lib/WWW/Bund/RateLimit.pm`, `check`).
+
+The defaults are `tagesschau` and `smard` at 60 per 3600 s. So the 61st `tagesschau` call within an hour blocks for up to an hour even when every one of them was answered from the disk cache and no request went out. The cache exists to avoid exactly those requests.
+
+Done when: the limiter is consulted only on a cache miss, right before `$self->io->call($req)`, and `t/caller.t` asserts that N cached calls leave the limiter's count untouched.
+
+---
+Fleet review 2026-10-06 · kind: bug · confidence: verified
+
+Commit 37e5cfc auf Branch k16-k18 (Worktree .claude/worktrees/k16-k18). Limiter-Check wandert hinter die Cache-Prüfung, unmittelbar vor io->call; Zeitfenster/max/Schlaflogik in RateLimit.pm unverändert. Test t/caller.t war gegen das alte lib/ rot (Zählerstand 6 statt 1), jetzt grün; volle Suite: 808 Tests grün (t/integration.t übersprungen, Live-Test opt-in).
+
+Umgesetzt: Cache-Treffer verbrauchen kein Rate-Limit-Kontingent mehr. Test rot gegen altes lib/ belegt.
+
+2026-10-20 04:42 Also found: Seit k18 liefert der Transport alle Bodies als Bytes. Antworten, die weder JSON noch XML sind (text/plain, text/csv), landen damit als Bytes in WWW::Bund::Response::Raw; der CLI-Formatter (YAML::PP::Dump, JSON::MaybeXS utf8=>0) deutet Byte-Strings als Latin-1 - Nicht-ASCII-Zeichen kommen als Mojibake heraus. Vor k18 kamen diese Antworten als Zeichenkette an. Nicht behoben (Raw/Formatter waren nicht Teil des Auftrags).
+
+2026-10-20 Koordination: Der Branch ist auf main gezogen (fast-forward, keine Merge-Konflikte). Die Karte ist damit erledigt. Der Rate-Limiter wird jetzt erst nach dem Cache-Zugriff befragt: ein Treffer im Cache verbraucht kein Kontingent mehr und kann deshalb auch nicht mehr bis zu einer Stunde schlafen. Nachweis: `prove -lr t/` = 15 Dateien, 825 Tests, alles gruen. Der rote Beweis traegt: `t/caller.t` scheitert gegen das alte `lib/`. Kein Push, kein `dzil release`.
