@@ -73,7 +73,7 @@ Template files are YAML with structure:
         width: 40
         wrap: true
 
-See C<share/templates/> for the render templates (about 139 per language, 7 languages).
+See C<share/templates/> for the render templates (about 111 per language, 7 languages).
 
 The template of an endpoint lives in C<share/templates/{lang}/{endpoint}.yml>.
 A file with the extension C<.yaml> is used when there is no C<.yml> file for

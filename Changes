@@ -1,4 +1,7 @@
 {{$NEXT}}
+  - Only the templates that belong to an endpoint of the distribution are
+    shipped; the leftovers of renamed endpoints and the templates of the API
+    without an endpoint are gone
   - An answer that is a web page instead of XML is reported as such, instead
     of failing with a parser error
   - An empty positional argument keeps its place in the CLI, so a query
