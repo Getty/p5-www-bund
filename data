@@ -1,0 +1,25 @@
+---
+claimed_at: 2026-10-20T05:59:28Z
+claimed_by: k14
+class: standard
+completed: 2026-10-20T05:59:28Z
+created: 2026-09-09T09:35:09Z
+id: 14
+priority: medium
+started: 2026-10-20T05:31:21Z
+status: done
+tags:
+- formatter
+- templates
+- enhancement
+title: Formatter needs a keyed-matrix type for the UBA (luftqualitaet) format
+updated: 2026-10-20T05:59:28Z
+---
+
+All 13 luftqualitaet endpoints return the Umweltbundesamt format the current formatter cannot render: a hash whose indices array is the header row and whose numeric-string keys map to data-row arrays (variants: top-level numeric-keyed hash; nested under data; data as an array of positional arrays; deeply nested meta). The current table list record types plus extract cannot express this, so luftqualitaet is left on raw YAML fallback (templates kept as .yaml stubs, NOT renamed to .yml, since a stub .yml would render leer, worse than the fallback). A new formatter type that pairs indices as headers with the numeric-keyed arrays as rows and also supports array-indexed columns would unlock all 13 luftqualitaet endpoints at once. This is an engine change plus a presentation design decision, left for the maintainer. Found during Phase 2 batch ticket 7. See also tracking ticket 10.
+
+2026-10-20 k14: Branch k14, Basis local main c420b20, Commit 1cb356e Render matrix data with a new keyed_matrix type (k14). Neuer Template-Typ keyed_matrix in lib/WWW/Bund/CLI/Formatter.pm, 77 neue Templates in share/templates fuer elf luftqualitaet-Endpunkte in sieben Sprachen, die 77 yaml-Stubs sind geloescht, airquality und meta behalten ihren Stub. Neuer Test t/keyed_matrix.t, t/luftqualitaet_pflanzenschutz.t umgestellt, Changes-Eintrag ergaenzt und der pflanzenschutz-Eintrag korrigiert. Nachweis: prove -Ilib -lr t/ = 17 Dateien, 1443 Tests, PASS. Roter Beweis offline gegen das alte lib/ aus main: 29 von 37 Assertions scheitern mit Verhaltensfehlern, nicht mit einem Ladefehler.
+
+Entscheidungen nach der Messung: die Bezeichnung der Key-Spalte kommt beim Hash-Header aus dem ersten sortierten Schluessel, bei einem Listen-Header aus row_key_header, sonst row; kein Template setzt row_key_header, weil Variante C die Bezeichnung immer mitliefert. Kein Template hat columns:, der API-Header gilt unveraendert. Nebenbefunde: Die Template-Zahl je Sprache bleibt bei 144, die Angaben in README.md und im Formatter-POD bleiben damit korrekt. YAML::PP laedt true und false als ueberladene Boolean-Objekte, deshalb ok() statt is() im Test. Die beiden yaml-Stubs fuer airquality und meta werden nie geladen und sind faktisch nur noch Doku.
+
+2026-10-20 05:59 2026-10-20 Koordination: k14 ist umgesetzt und in main. Der Formatter kennt den neuen Typ keyed_matrix (Header-Zeile plus Zeilen, Spalten aus dem Template, verschachtelte Zellen als JSON); die elf renderbaren luftqualitaet-Endpunkte haben .yml-Templates in allen sieben Sprachen, ihre .yaml-Platzhalter sind weg. t/keyed_matrix.t (Varianten A bis E, leere Meldung, YAML-Fallback ohne Header, verschachtelte Zelle) ist neu, t/luftqualitaet_pflanzenschutz.t ist angepasst. Pruefung: 17 Testdateien, 1443 Tests, rc=0, der rote Beweis gegen das alte lib/ ist bei beiden Dateien gruen angezeigt. Commit 1cb356e, per Fast-Forward in main uebernommen. Offen bleiben die 140 .yaml-Platzhalter (20 Endpunkte x 7 Sprachen) - die werden in k10 geloescht, die Zahl in README und POD wird dort nachgezogen.
