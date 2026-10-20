@@ -1,20 +1,20 @@
+requires 'File::ShareDir';
+requires 'File::ShareDir::ProjectDistDir';
+requires 'HTTP::Request';
+requires 'JSON::MaybeXS';
+requires 'Log::Any';
+requires 'LWP::Protocol::https';
+requires 'LWP::UserAgent';
 requires 'Moo';
 requires 'MooX::Cmd';
 requires 'MooX::Options';
 requires 'namespace::clean';
-requires 'LWP::UserAgent';
-requires 'LWP::Protocol::https';
-requires 'HTTP::Request';
-requires 'JSON::MaybeXS';
+requires 'URI::Escape';
 requires 'XML::Twig';
 requires 'YAML::PP';
-requires 'Log::Any';
-requires 'File::ShareDir';
-requires 'File::ShareDir::ProjectDistDir';
-requires 'URI::Escape';
 
 on test => sub {
-    requires 'Test::More';
-    requires 'Test::Exception';
     requires 'Path::Tiny';
+    requires 'Test::Exception';
+    requires 'Test::More';
 };
