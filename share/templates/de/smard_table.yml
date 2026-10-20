@@ -1,0 +1,10 @@
+type: table
+extract: series.0.values
+columns:
+  - field: timestamp
+    header: Zeitstempel
+  - field: versions
+    header: Werte
+    width: 60
+    wrap: true
+empty: "Keine Daten verfügbar."

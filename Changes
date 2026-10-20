@@ -34,6 +34,9 @@
     is XML and not the HTML page of the website
   - The ten Bundesrat endpoints render their templates instead of falling back
     to a raw YAML dump
+  - The SMARD endpoints render their templates instead of falling back to a
+    raw YAML dump; a table cell that holds a nested value shows it as JSON
+    instead of leaving the cell empty
 
 0.002     2026-02-19 22:57:28Z
 

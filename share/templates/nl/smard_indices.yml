@@ -1,2 +1,3 @@
-type: record
+type: list
+extract: timestamps
 empty: "Geen gegevens beschikbaar."

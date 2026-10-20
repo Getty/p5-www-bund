@@ -75,6 +75,9 @@ Template files are YAML with structure:
 
 See C<share/templates/> for the render templates (about 154 per language, 7 languages).
 
+A cell of the type table that holds a nested structure - a hash or a list - is
+written as compact JSON: an empty cell would hide the value.
+
 =head2 The keyed_matrix type
 
 Some APIs deliver their data as a matrix: a header row and rows that are
@@ -101,10 +104,16 @@ is joined with C<" / "> - or a list of rows, which are then numbered from 1.
 A value missing in a row leaves the cell empty, a nested hash or list is
 written into the cell as compact JSON.
 
-The type translates nothing: the column names are the ones the API delivers,
-in the language the API was asked for (its C<lang> query parameter, not the
-C<--lang> option of the CLI). The C<empty> message on the other hand comes
-from the template and is therefore in the language of the CLI.
+The header row may be missing: the columns of the template are the columns
+then, the field name is the position in the row. Without a header row and
+without columns in the template the answer is the raw data as YAML.
+
+The type translates nothing: the column names of the header row are the ones
+the API delivers, in the language the API was asked for (its C<lang> query
+parameter, not the C<--lang> option of the CLI). Columns that come from the
+template are translated like every other text of a template. The C<empty>
+message on the other hand comes from the template and is therefore in the
+language of the CLI.
 
 =cut
 
@@ -270,15 +279,8 @@ sub _extract {
 sub _resolve_field {
     my ($self, $item, $field) = @_;
 
-    my $val = $item;
-    for my $key (split /\./, $field) {
-        if (ref $val eq 'HASH') {
-            $val = $val->{$key};
-        } else {
-            return undef;
-        }
-        return undef unless defined $val;
-    }
+    my $val = $self->_field_value($item, $field);
+    return undef unless defined $val;
 
     # Translate booleans to localized strings
     if (JSON::MaybeXS::is_bool($val)) {
@@ -288,6 +290,34 @@ sub _resolve_field {
     if (!ref $val && $val eq 'false') { return $self->strings->get('bool_false') }
 
     return ref $val ? undef : $val;
+}
+
+# The value of a field, also a nested structure.
+sub _field_value {
+    my ($self, $item, $field) = @_;
+
+    my $val = $item;
+    for my $key (split /\./, $field) {
+        return undef unless ref $val eq 'HASH';
+        $val = $val->{$key};
+        return undef unless defined $val;
+    }
+
+    return $val;
+}
+
+# A cell of a table: a scalar as it is, a nested structure as compact JSON -
+# an empty cell would hide the value.
+sub _table_cell {
+    my ($self, $item, $field) = @_;
+
+    my $val = $self->_field_value($item, $field);
+    if (defined $val && ref $val && !JSON::MaybeXS::is_bool($val)) {
+        my $json = JSON::MaybeXS->new(pretty => 0, canonical => 1, utf8 => 0);
+        return $json->encode($val);
+    }
+
+    return $self->_resolve_field($item, $field) // '';
 }
 
 sub _empty_message {
@@ -336,7 +366,7 @@ sub _render_table {
     for my $i (0 .. $max_rows - 1) {
         my $row = $data->[$i];
         for my $c (0 .. $#$columns) {
-            my $val = $self->_resolve_field($row, $columns->[$c]{field}) // '';
+            my $val = $self->_table_cell($row, $columns->[$c]{field});
             my $len = length("$val");
             $widths[$c] = $len if $len > $widths[$c];
         }
@@ -376,7 +406,7 @@ sub _render_table {
     for my $i (0 .. $max_rows - 1) {
         my $row = $data->[$i];
         my @vals = map {
-            my $v = $self->_resolve_field($row, $_->{field}) // '';
+            my $v = $self->_table_cell($row, $_->{field});
             $v;
         } @$columns;
 
@@ -542,9 +572,13 @@ sub _render_keyed_matrix {
         $headers = $header;
     }
 
-    # An unknown shape is answered honestly with the raw data.
+    # An unknown shape is answered honestly with the raw data. A header that is
+    # missing is not an unknown shape: the columns of the template are the
+    # columns then, their field names the positions in the row.
     unless (ref $headers eq 'ARRAY') {
-        return Dump(_deref_booleans($data));
+        my $spec = $template->{columns};
+        return Dump(_deref_booleans($data)) unless $spec && @$spec;
+        $headers = [];
     }
 
     $key_header = $template->{row_key_header} // $key_header // 'row';

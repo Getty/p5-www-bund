@@ -1,0 +1,9 @@
+type: keyed_matrix
+rows: series
+row_key: false
+columns:
+  - field: "0"
+    header: Timestamp
+  - field: "1"
+    header: Value
+empty: "Geen gegevens beschikbaar."

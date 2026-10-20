@@ -1,0 +1,10 @@
+type: table
+extract: series.0.values
+columns:
+  - field: timestamp
+    header: Timestamp
+  - field: versions
+    header: Values
+    width: 60
+    wrap: true
+empty: "Geen gegevens beschikbaar."
