@@ -1,0 +1,11 @@
+type: record
+empty: "Geen gegevens beschikbaar."
+fields:
+  - field: list.item.title
+    label: Titel
+  - field: list.item.date
+    label: Datum
+  - field: list.item.dateOfIssue
+    label: Uitgiftedatum
+  - field: list.item.abstract
+    label: Samenvatting

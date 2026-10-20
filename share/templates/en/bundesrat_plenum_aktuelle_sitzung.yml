@@ -1,0 +1,18 @@
+extract: list.top
+type: table
+empty: "No agenda items."
+columns:
+  - field: toptitle
+    header: ITEM
+    width: 12
+  - field: topheader
+    header: SUBJECT
+    width: 60
+    wrap: true
+  - field: topdrucksache
+    header: DOCUMENT
+    width: 25
+  - field: topurl
+    header: URL
+    width: 110
+    wrap: true

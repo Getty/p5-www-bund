@@ -1,0 +1,18 @@
+extract: list.top
+type: table
+empty: "Keine Tagesordnungspunkte."
+columns:
+  - field: toptitle
+    header: TOP
+    width: 12
+  - field: topheader
+    header: GEGENSTAND
+    width: 60
+    wrap: true
+  - field: topdrucksache
+    header: DRUCKSACHE
+    width: 25
+  - field: topurl
+    header: URL
+    width: 110
+    wrap: true

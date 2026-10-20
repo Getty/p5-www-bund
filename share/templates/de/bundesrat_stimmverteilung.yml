@@ -1,0 +1,11 @@
+type: record
+empty: "Keine Angaben."
+fields:
+  - field: list.item.imageCaption
+    label: Bildunterschrift
+  - field: list.item.imagePath
+    label: Bildpfad
+  - field: list.item.date
+    label: Datum
+  - field: list.item.dateOfIssue
+    label: Stand

@@ -1,0 +1,15 @@
+extract: list.tops.top
+type: table
+empty: "Keine Tagesordnungspunkte."
+columns:
+  - field: nr
+    header: NR
+    width: 12
+  - field: title
+    header: TITEL
+    width: 50
+    wrap: true
+  - field: subtop
+    header: UNTERTITEL
+    width: 50
+    wrap: true

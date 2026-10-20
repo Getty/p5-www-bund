@@ -1,0 +1,11 @@
+type: record
+empty: "Nessuna informazione disponibile."
+fields:
+  - field: list.item.imageCaption
+    label: Didascalia
+  - field: list.item.imagePath
+    label: "Percorso dell'immagine"
+  - field: list.item.date
+    label: Data
+  - field: list.item.dateOfIssue
+    label: Data di emissione

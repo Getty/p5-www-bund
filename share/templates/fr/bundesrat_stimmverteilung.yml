@@ -1,0 +1,11 @@
+type: record
+empty: "Aucune information disponible."
+fields:
+  - field: list.item.imageCaption
+    label: Légende
+  - field: list.item.imagePath
+    label: "Chemin de l'image"
+  - field: list.item.date
+    label: Date
+  - field: list.item.dateOfIssue
+    label: Date de publication

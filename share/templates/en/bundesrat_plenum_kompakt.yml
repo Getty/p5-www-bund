@@ -1,0 +1,15 @@
+extract: list.tops.top
+type: table
+empty: "No agenda items."
+columns:
+  - field: nr
+    header: NO
+    width: 12
+  - field: title
+    header: TITLE
+    width: 50
+    wrap: true
+  - field: subtop
+    header: SUBTITLE
+    width: 50
+    wrap: true

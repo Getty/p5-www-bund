@@ -1,0 +1,7 @@
+type: record
+empty: "Nessuna informazione disponibile."
+fields:
+  - field: list.title
+    label: Titolo
+  - field: list.header
+    label: Data della seduta

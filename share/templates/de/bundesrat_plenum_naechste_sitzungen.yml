@@ -1,0 +1,11 @@
+type: record
+empty: "Keine Angaben."
+fields:
+  - field: list.item.title
+    label: Titel
+  - field: list.item.date
+    label: Datum
+  - field: list.item.dateOfIssue
+    label: Stand
+  - field: list.item.abstract
+    label: Kurzfassung

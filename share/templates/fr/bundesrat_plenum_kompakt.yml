@@ -1,0 +1,15 @@
+extract: list.tops.top
+type: table
+empty: "Aucun point à l'ordre du jour."
+columns:
+  - field: nr
+    header: "N°"
+    width: 12
+  - field: title
+    header: TITRE
+    width: 50
+    wrap: true
+  - field: subtop
+    header: SOUS-TITRE
+    width: 50
+    wrap: true

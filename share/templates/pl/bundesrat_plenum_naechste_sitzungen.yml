@@ -1,0 +1,11 @@
+type: record
+empty: "Brak danych."
+fields:
+  - field: list.item.title
+    label: Tytuł
+  - field: list.item.date
+    label: Data
+  - field: list.item.dateOfIssue
+    label: Data wydania
+  - field: list.item.abstract
+    label: Streszczenie

@@ -1,0 +1,11 @@
+type: record
+empty: "Brak danych."
+fields:
+  - field: list.item.imageCaption
+    label: Podpis obrazu
+  - field: list.item.imagePath
+    label: Ścieżka obrazu
+  - field: list.item.date
+    label: Data
+  - field: list.item.dateOfIssue
+    label: Data wydania

@@ -1,0 +1,11 @@
+type: record
+empty: "No information available."
+fields:
+  - field: list.item.title
+    label: Title
+  - field: list.item.date
+    label: Date
+  - field: list.item.dateOfIssue
+    label: Issued
+  - field: list.item.abstract
+    label: Abstract

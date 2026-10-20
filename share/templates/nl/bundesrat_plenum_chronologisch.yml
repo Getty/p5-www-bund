@@ -1,0 +1,7 @@
+type: record
+empty: "Geen gegevens beschikbaar."
+fields:
+  - field: list.title
+    label: Titel
+  - field: list.header
+    label: Sessiedatum

@@ -1,0 +1,7 @@
+type: record
+empty: "Sin información disponible."
+fields:
+  - field: list.title
+    label: Título
+  - field: list.header
+    label: Fecha de sesión

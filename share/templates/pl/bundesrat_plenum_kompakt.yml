@@ -1,0 +1,15 @@
+extract: list.tops.top
+type: table
+empty: "Brak punktów porządku obrad."
+columns:
+  - field: nr
+    header: NR
+    width: 12
+  - field: title
+    header: TYTUŁ
+    width: 50
+    wrap: true
+  - field: subtop
+    header: PODTYTUŁ
+    width: 50
+    wrap: true

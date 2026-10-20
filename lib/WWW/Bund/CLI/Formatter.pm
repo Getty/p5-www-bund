@@ -73,7 +73,7 @@ Template files are YAML with structure:
         width: 40
         wrap: true
 
-See C<share/templates/> for the render templates (about 144 per language, 7 languages).
+See C<share/templates/> for the render templates (about 154 per language, 7 languages).
 
 =head2 The keyed_matrix type
 

@@ -544,7 +544,7 @@ lib/WWW/Bund/API/*.pm                 Typed API-Adapter (optional)
 ```
 share/registry.yml                    31 API-Definitionen
 share/endpoints.yml                   115 Endpoint-Definitionen (20 APIs mit Endpoints)
-share/templates/{de,en,fr,es,it,nl,pl}/       1008 Templates (144 pro Sprache)
+share/templates/{de,en,fr,es,it,nl,pl}/       1078 Templates (154 pro Sprache)
 share/strings/{de,en,fr,es,it,nl,pl}.yml      7 Strings-Dateien
 ```
 

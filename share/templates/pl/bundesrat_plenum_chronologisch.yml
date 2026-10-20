@@ -1,0 +1,7 @@
+type: record
+empty: "Brak danych."
+fields:
+  - field: list.title
+    label: Tytuł
+  - field: list.header
+    label: Data posiedzenia

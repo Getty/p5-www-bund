@@ -1,0 +1,7 @@
+type: record
+empty: "Keine Angaben."
+fields:
+  - field: list.title
+    label: Titel
+  - field: list.header
+    label: Sitzungstermin

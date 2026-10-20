@@ -32,8 +32,8 @@
     with numbered rows
   - The Bundesrat endpoints ask for the XML view of the site, so the answer
     is XML and not the HTML page of the website
-  - The Bundesrat endpoints render their templates instead of falling back to
-    a raw YAML dump
+  - The ten Bundesrat endpoints render their templates instead of falling back
+    to a raw YAML dump
 
 0.002     2026-02-19 22:57:28Z
 
