@@ -1,0 +1,20 @@
+---
+claimed_at: 2026-10-20T05:22:12Z
+claimed_by: k13
+class: standard
+completed: 2026-10-20T05:22:12Z
+created: 2026-09-09T09:19:04Z
+id: 13
+priority: low
+started: 2026-10-20T05:20:14Z
+status: done
+tags:
+- api
+- cleanup
+title: hilfsmittel_produkte query params are non-functional server-side
+updated: 2026-10-20T05:22:12Z
+---
+
+The /Produkt endpoint ignores all query params: fetched with UntergruppeId, ProduktartId, and with no params, every variant returns the byte-identical full list of 66025 products (~55MB). The OpenAPI spec documents /Produkt with no parameters. So the query_params block (ProduktgruppeId, UntergruppeId, ProduktartId) and the corresponding CLI positional args do nothing. The UnterruppeId typo was fixed in k3, but a decision is needed: drop these non-functional params entirely. Design decision, left for maintainer.
+
+2026-10-20 Koordination: Der Branch ist auf main gezogen (fast-forward, keine Merge-Konflikte). Die Karte ist damit erledigt. Entscheidung des Koordinators: die drei Filter-Parameter (ProduktgruppeId, UntergruppeId, ProduktartId) fallen weg. Sie haben keine Wirkung - mit ihnen, mit einem von ihnen und ohne sie antwortet die API mit derselben vollstaendigen Liste von 66025 Produkten, und die OpenAPI-Spezifikation dokumentiert /Produkt ohne Parameter. `share/endpoints.yml` fuehrt den Endpunkt deshalb ohne Query-Parameter, und die CLI bietet dafuer kein Positionsargument mehr; die Parameter erscheinen auch nicht mehr in der Hilfeausgabe. Der Test `t/hilfsmittel_ecovisio_endpoints.t` haelt fest, dass der Endpunkt keine Filter-Parameter traegt. Nachweis: `prove -lr t/` = 16 Dateien, 845 Tests, alles gruen. Der rote Beweis traegt: derselbe Test scheitert gegen die alten `share/endpoints.yml` mit einem Verhaltensfehler (erwartet eine leere Parameterliste, gefunden `ProduktgruppeId`), nicht mit einem Ladefehler. Kein Push, kein `dzil release`.
