@@ -1,0 +1,31 @@
+---
+claimed_at: 2026-10-20T08:05:56Z
+claimed_by: k10
+class: standard
+completed: 2026-10-20T08:05:56Z
+created: 2026-09-09T08:43:27Z
+id: 10
+priority: medium
+started: 2026-09-09T08:43:32Z
+status: done
+tags:
+- formatter
+- bug
+- templates
+title: Formatter ignores .yaml templates (loads only .yml)
+updated: 2026-10-20T08:05:56Z
+---
+
+Formatter _load_template builds the path as endpoint_name.yml only. 44 templates per language use the .yaml extension (308 files total across 7 langs), so those endpoints silently fall back to a raw YAML dump instead of rendering their template. Affects bundeshaushalt, all luftqualitaet, all hilfsmittel, eco_visio, all pflanzenschutzmittelzulassung, bundesrat, smard, regionalatlas, ladestationen_query. No basename collisions between .yml and .yaml. Fix: make _load_template try .yml first then .yaml. Prereq for the template-render verification in tickets 3 and 7. Found during Phase 2 batch.
+
+2026-09-09 08:53 The 44 yaml templates per language are incomplete stubs. Loading them globally regressed output so the loader change was reverted. Complete per API as proper yml. eco visio hilfsmittel under k3 luftqualitaet pflanzenschutz under k7. Remaining stubs bundesrat smard regionalatlas ladestationen bundeshaushalt. Tracking ticket.
+
+2026-10-20 07:53 Also found: 28 Template-Dateien je Sprache in share/templates/ haben keinen Endpunkt in share/endpoints.yml (19 umbenannte Altlasten wie bundesrat_ausschuesse, eco_visio_counter, smard_chart, ladestationen_get, bundeshaushalt_plan, hilfsmittel_search; 11 fuer mudab, eine API, die in der Registry steht, aber keine Endpunkte hat). Entscheidung des Maintainers.
+
+2026-10-20 07:59 Umsetzung: _load_template sucht jetzt zuerst <endpunkt>.yml und dann <endpunkt>.yaml; der Override bleibt vorrangig, LoadFile bleibt fehlertolerant. Alle 105 .yaml-Platzhalter unter share/templates/ (15 je Sprache: 10 bundesrat, 2 eco_visio, 2 luftqualitaet, 1 regionalatlas) sind geloescht. Nach dem Loeschen zeigen eco_visio_counters, eco_visio_data, luftqualitaet_airquality, luftqualitaet_meta und regionalatlas_indicators den ehrlichen YAML-Fallback (mit _load_template geprueft). README: Tests-Badge 2444, APIs-Badge 20/31, Templates 973 (139 je Sprache), 22 Klassen = 20 API-Commands + 2 Meta-Commands, destatis-Zeile auf 0 Endpunkte/In der Registry umgeschrieben, neuer Abschnitt mit den 11 APIs ohne Endpunkt, prove -lr t/ (2444). POD des Formatters: 139 je Sprache. Entscheidungen: der Changes-Eintrag ist bei 78 Spalten umbrochen (die vorgegebene Zeile waere 79 Spalten lang geworden), der Wortlaut ist unveraendert. Der POD nennt weiterhin nur die .yml-Struktur, die .yaml-Suche ist laut Auftrag nicht dokumentiert - falls der Maintainer das anders will, ist es eine Zeile in der POD. t/luftqualitaet_pflanzenschutz.t musste angepasst werden: der Test verlangte, dass die .yaml-Stubs von airquality und meta noch da sind. Vier Testdateien hatten den Kommentar, der Formatter lese nur .yml - der Kommentar ist korrigiert. Die 28 Template-Dateien je Sprache ohne Endpunkt wurden nicht angefasst (Entscheidung des Maintainers).
+
+2026-10-20 07:59 Commit 81f71f4 auf Branch k10 (Merge-Base mit lokalem main ist der Tip von main, 593d523). Test: t/template_loader.t (21 Tests) war gegen das alte lib/ rot: der alte Formatter fand kein .yaml-Template und lieferte den YAML-Fallback (Failed 2/21). Volle Suite offline: prove -lr t/ - Files=24, Tests=2444, Result: PASS; t/integration.t ist per Design uebersprungen (Live-API-Tests, WWW_BUND_LIVE_TEST=1). dzil build laeuft sauber, das Paket enthaelt 973 .yml-Templates und keine .yaml-Datei.
+
+2026-10-20 08:00 Fertig: Der Formatter findet auch .yaml-Templates (.yml gewinnt), die 105 Platzhalter sind geloescht, README und POD nennen die richtigen Zahlen, t/template_loader.t haelt das Verhalten fest. Commit 81f71f4 auf Branch k10.
+
+2026-10-20 08:05 Gebaut und geprueft: Der Formatter sucht jetzt .yml zuerst und .yaml danach, alle 105 .yaml-Platzhalter sind geloescht (15 je Sprache), Endpunkte ohne echtes Template zeigen wieder den ehrlichen YAML-Fallback. README und POD nennen die richtigen Zahlen (2444 Tests, 20/31 APIs, 973 Templates = 139 je Sprache, 22 Klassen = 20 API-Commands + 2 Meta), die destatis-Zeile ist umgeschrieben und die 11 APIs ohne Endpunkt stehen in einem eigenen Abschnitt. Suite offline gruen (24 Dateien, 2444 Tests), roter Beweis bestaetigt (t/template_loader.t rot gegen das alte lib, 2 von 21 Teiltests). Commit 81f71f4.
