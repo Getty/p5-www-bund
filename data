@@ -1,0 +1,59 @@
+---
+claimed_at: 2026-10-20T16:05:09Z
+claimed_by: k28-bund
+class: standard
+completed: 2026-10-20T16:05:09Z
+created: 2026-10-20T15:50:27Z
+id: 28
+priority: low
+started: 2026-10-20T16:05:09Z
+status: done
+tags:
+- documentation
+title: Die Zahlenangaben zum Katalog stehen an zwei Stellen auseinander
+updated: 2026-10-20T16:08:20Z
+---
+
+Die beiden Zahlenangaben zum Katalog stehen an zwei Stellen und sagen je nur
+die Haelfte der Sache.
+
+lib/WWW/Bund/Registry.pm:40 — "The registry contains 31 APIs, and the
+endpoint catalog defines 115 endpoints across implemented APIs."
+README.md:570 — "share/endpoints.yml  115 Endpoint-Definitionen (20 APIs mit
+Endpoints)"
+
+Beide Angaben sind fuer sich richtig (geprueft: share/registry.yml hat 31
+Eintraege, share/endpoints.yml hat 115 Eintraege ueber genau 20 verschiedene
+api-Werte). Nur: der Pod nennt die 20 nicht, das README nennt die 31 nicht,
+und die Beziehung (31 APIs registriert, davon 20 mit Endpoints, 11 ohne) steht
+nirgends.
+
+Entscheidung des Maintainers (Getty, 2026-10-20): die beiden Zahlen
+angleichen.
+
+Umsetzung:
+- Beide Stellen nennen denselben vollstaendigen Sachverhalt: 31 registrierte
+  APIs, 115 Endpoints ueber 20 APIs, also 11 registrierte APIs ohne Endpoints.
+- An beiden Stellen steht derselbe Gedanke, nicht nur dieselbe Zahl; wer eine
+  Stelle liest, soll die andere nicht brauchen.
+- Der Verweis auf die beiden YAML-Dateien gehoert mit (Registry.pm laedt
+  registry.yml und endpoints.yml).
+- Die Zahlen nicht neu erfinden: sie muessen zu den Dateien passen. Ein
+  Test, der die Zahl aus den YAML-Dateien gegen die Dokumentation haelt,
+  ist eine gute Idee, wenn er ohne Zusatzabhaengigkeit gebaut werden kann.
+
+Keine Aenderung am Verhalten, nur an der Dokumentation.
+
+2026-10-20 16:01 Umsetzung: lib/WWW/Bund/Registry.pm (DESCRIPTION) und README.md (Abschnitt 'Data Files') nennen jetzt denselben vollstaendigen Sachverhalt: 31 registrierte APIs (share/registry.yml), 115 Endpoints ueber 20 dieser APIs (share/endpoints.yml), 11 registrierte APIs ohne Endpoints. Beide Stellen nennen auch die beiden YAML-Dateien. Rein dokumentarisch, keine Verhaltensaenderung.
+
+2026-10-20 16:01 Neuer Test t/catalog_counts.t: zaehlt die APIs aus share/registry.yml, die Endpoints und die APIs mit Endpoints aus share/endpoints.yml und haelt die Dokumentation dagegen (POD von Registry.pm, Data Files-Abschnitt im README.md). Gegen den alten Stand nachweislich rot: 5 Fehlschlaege (POD nennt 20/11 und die beiden YAML-Dateien nicht, README nennt 11 nicht). Mit dem neuen Stand gruen. Ohne Zusatzabhaengigkeit: YAML::PP, Test::More, FindBin, File::Spec sind alle schon da. Im gebauten Dist wird README.md nicht mitgeliefert, dort ueberspringt der Test diesen Teil mit SKIP, der POD-Teil laeuft.
+
+2026-10-20 16:01 Also found: lib/WWW/Bund.pm:44 nennt ebenfalls '20 implemented APIs with 115 endpoints', Zeile 69 verweist auf 'the full list of 31 registered APIs' - die Beziehung (11 APIs ohne Endpoints) steht dort ebenfalls nirgends. Nicht angefasst, weil der Auftrag nur Registry.pm und README.md nennt.
+
+2026-10-20 16:01 Verifiziert: prove -lr t/ aus dem Worktree -> 26 Dateien, 2480 Tests, alles gruen (t/integration.t uebersprungen, das sind die Live-Tests). Branch k28-bund, abgeleitet vom Tip des lokalen main (2e576c4), der Baum ist commit-ready; kein Commit, laut Repo-Regel committet der www-bund-release-manager. t/catalog_counts.t ist gestaged, sonst fehlt es still im dzil build.
+
+2026-10-20 16:02 Vorgeschlagener Commit (der Release-Manager committet): 'State the catalog counts completely in Registry and README (k28)' mit dem Body 'lib/WWW/Bund/Registry.pm: die DESCRIPTION nennt 31 APIs, 115 Endpoints ueber 20 davon, die 11 APIs ohne Endpoints und beide YAML-Dateien / README.md: der Abschnitt Data Files nennt dieselben Zahlen und beide YAML-Dateien / t/catalog_counts.t: zaehlt die YAML-Dateien und haelt die Dokumentation dagegen / Changes: Eintrag fuer die vollstaendigen Katalogzahlen'.
+
+2026-10-20 16:02 Done: Registry.pm (DESCRIPTION) und README.md (Data Files) nennen jetzt beide den vollstaendigen Sachverhalt - 31 registrierte APIs, 115 Endpoints ueber 20 davon, 11 APIs ohne Endpoints - und die beiden YAML-Dateien; neuer Test t/catalog_counts.t haelt die Zahlen aus den YAML-Dateien gegen die Dokumentation (gegen den alten Stand rot). Verifiziert: prove -lr t/ gruen, 26 Dateien, 2480 Tests.
+
+2026-10-20 16:08 2026-10-20 KOORDINATOR: Umgesetzt und geprueft. Commit 57b8c96 'Name the catalog counts in both places (k28)' - lib/WWW/Bund/Registry.pm und README.md nennen jetzt denselben vollstaendigen Sachverhalt (31 registrierte APIs, 115 Endpoints ueber 20 davon, 11 ohne Endpoints), t/catalog_counts.t haelt beide Stellen gegen share/registry.yml und share/endpoints.yml fest. Roter Beweis: der neue Test schlaegt gegen den alten Baum fehl (5 Fehlschlaege von 16). Suite: 26 Dateien, 2480 Tests PASS.
