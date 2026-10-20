@@ -1,0 +1,43 @@
+---
+claimed_at: 2026-10-20T04:56:13Z
+claimed_by: k16-k18
+class: standard
+completed: 2026-10-20T04:56:13Z
+created: 2026-10-06T19:48:10Z
+id: 18
+priority: low
+started: 2026-10-20T04:30:52Z
+status: done
+tags:
+- bug
+- encoding
+- review-2026-10-06
+title: JSON served as text/* with non-ASCII content dies in decode_json (decoded_content
+  hands over characters)
+updated: 2026-10-20T04:56:13Z
+---
+
+`lib/WWW/Bund/LWPIO.pm:68` passes `$response->decoded_content` on. For `text/*` (and XML) content types that is a character string; `WWW::Bund::Response::JSON::_build_data` then calls `decode_json`, which expects UTF-8 bytes. `_build_response` in `Caller.pm` chooses the JSON class by content sniffing (`$content =~ /^\s*[\{\[]/`), i.e. also for JSON that is *not* labelled `application/json`.
+
+The mechanism is reproduced with HTTP::Message 7.04:
+
+```
+application/json; charset=utf-8    is_utf8=0 decode_json=ok
+text/plain; charset=utf-8          is_utf8=1 decode_json=DIES: Wide character in subroutine entry
+text/json; charset=utf-8           is_utf8=1 decode_json=DIES: Wide character in subroutine entry
+```
+
+(body `{"n":"M\xc3\xbcller \xe2\x82\xac"}`). With umlauts only and no character above U+00FF it does not die but decodes to mojibake. The cache makes it inconsistent on top: `Cache::set` writes UTF-8 bytes, so the same URL fails fresh and works from the cache.
+
+Which of the 19 registered APIs actually label JSON as `text/*` was not checked (no network in this review) -- German government endpoints with umlauts in the data are the obvious candidates, hence `plausible`.
+
+Done when: `LWPIO::call` returns bytes (`decoded_content( charset => 'none' )`, which still undoes Content-Encoding), the XML path is checked against the same change, and `t/response.t` has a `text/plain` JSON body with `ü` and `€`.
+
+---
+Fleet review 2026-10-06 · kind: bug · confidence: plausible
+
+Commit 877a7b1 auf Branch k16-k18. LWPIO holt den Body aus decoded_content(charset => 'none'): Content-Encoding wird weiter aufgeloest, die Zeichendekodierung nicht mehr. Der XML-Zweig in Response/XML.pm bleibt unveraendert (is_utf8-Pruefung bleibt, Bytes werden durchgereicht) und ist im Test abgedeckt. Test t/response.t war gegen das alte lib/ rot (5 Fehlschlaege, u.a. 'Wide character in subroutine entry'), jetzt gruen; volle Suite 825 Tests gruen.
+
+Umgesetzt: der Transport liefert Bytes, JSON als text/* stirbt nicht mehr an 'Wide character in subroutine entry'. Test rot gegen altes lib/ belegt.
+
+2026-10-20 Koordination: Der Branch ist auf main gezogen (fast-forward, keine Merge-Konflikte). Die Karte ist damit erledigt. Der Antwortkoerper wird jetzt durchgehend als Bytekette uebergeben; damit stirbt das Dekodieren eines als `text/*` ausgelieferten JSON mit Nicht-ASCII-Inhalt nicht mehr an `decode_json`. Nachweis: `prove -lr t/` = 15 Dateien, 825 Tests, alles gruen. Der rote Beweis traegt: `t/response.t` scheitert gegen das alte `lib/`. Kein Push, kein `dzil release`.
