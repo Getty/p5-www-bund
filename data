@@ -1,0 +1,74 @@
+---
+claimed_at: 2026-10-20T07:09:16Z
+claimed_by: k27
+class: standard
+completed: 2026-10-20T07:09:16Z
+created: 2026-10-20T06:10:51Z
+id: 27
+priority: medium
+started: 2026-10-20T06:39:38Z
+status: done
+tags:
+- templates
+- bundesrat
+title: The five Bundesrat plenary endpoints render their templates
+updated: 2026-10-20T07:09:16Z
+---
+
+The five Bundesrat plenary endpoints below have only the placeholder files <endpoint>.yaml today (see the card about the .yaml placeholders) - the CLI shows their answer as a raw YAML dump. The shapes of the XML answers were measured live on 2026-10-20 with view=renderXml, so the templates are built without an API call. This is the second half of the Bundesrat templates; the other five endpoints have their own card.
+
+Measured shapes (parsed with the XML parser of the repo):
+- bundesrat_plenum_kompakt: list.tops.top[] - nr, title, subtop, filter, bvgtext, bvgurl, imagePath, imageDate; in addition list.header (a hash)
+- bundesrat_plenum_aktuelle_sitzung: list.top[] - toptitle, topheader, topdrucksache, topurl, linkedtop, topdetail; in addition list.header, list.sitzung, list.stand, list.title
+- bundesrat_plenum_chronologisch: only scalars - list.header, list.title
+- bundesrat_plenum_naechste_sitzungen: one base page - title, date, dateOfIssue, abstract, detail, imagePath, imageCaption, imageSource, imgDates, id, type
+- bundesrat_stimmverteilung: one base page - title ("-"), imageCaption, imagePath, date, dateOfIssue, detail, abstract
+
+The fields detail, bodyText, topdetail and abstract contain HTML and do not belong in a template.
+
+Templates: one file <endpoint>.yml per endpoint in all seven languages (de, en, fr, es, it, nl, pl), in the style of the existing files (see share/templates/de/autobahn_closures.yml for the table, share/templates/de/bundesrat_drucksachen.yml for the record). The headers and labels are translated, the field names stay as the API delivers them.
+
+| endpoint | type | extract | columns / fields |
+|---|---|---|---|
+| bundesrat_plenum_kompakt | table | list.tops.top | nr, title, subtop |
+| bundesrat_plenum_aktuelle_sitzung | table | list.top | toptitle, topheader, topdrucksache, topurl |
+| bundesrat_plenum_chronologisch | record | - | list.title, list.header |
+| bundesrat_plenum_naechste_sitzungen | record | - | title, date, dateOfIssue, abstract |
+| bundesrat_stimmverteilung | record | - | imageCaption, imagePath, date, dateOfIssue |
+
+Every template carries a translated empty message that fits the endpoint (German: "Keine Tagesordnungspunkte.", "Keine Angaben." - with umlauts, in the language of the file).
+
+Two answers hold more than the table can show, and that is deliberate: the session data of bundesrat_plenum_aktuelle_sitzung (list.sitzung, list.stand, list.header, list.title) and the header of bundesrat_plenum_kompakt (a hash with titel1, titel2, titel3, url) stay in the XML and are not shown. The table shows what one reads at the desk.
+
+Test: t/bundesrat_plenum_templates.t (new), offline:
+- for every endpoint and every language: the file <endpoint>.yml is there, is readable as YAML, has the type and the extract named above (none for the records), a non-empty empty message and the column or field list in the order named above
+- a render test: the measured answers of the current session (the agenda) and of the chronological plenary are written into the test as Perl data structures, sent through WWW::Bund::CLI::Formatter with the matching template, and the result is checked - the values show up in the output, no field stays silently empty
+
+The test must be red against the old share/templates (the files are missing there): a behavioural failure, no "Can't locate" error.
+
+Changes: the entry for the Bundesrat templates from the first half of the Bundesrat templates is rewritten - one entry for the topic, not two. The new wording covers all ten endpoints:
+  - The ten Bundesrat endpoints render their templates instead of falling back to a raw YAML dump
+
+2026-10-20 07:05 Templates: 35 new files, share/templates/{de,en,fr,es,it,nl,pl}/{bundesrat_plenum_kompakt,bundesrat_plenum_aktuelle_sitzung,bundesrat_plenum_chronologisch,bundesrat_plenum_naechste_sitzungen,bundesrat_stimmverteilung}.yml. Type, extract, column/field order and the empty message follow the card; the headers and labels are translated, the field names stay as the API delivers them. The .yaml placeholders are left alone, as in k21.
+
+2026-10-20 07:05 Decision (measured): the card names topurl, list.sitzung and list.stand for bundesrat_plenum_aktuelle_sitzung, but the live answer of 2026-10-20 (draft agenda of the 1069th session) has no topurl and no list.sitzung/list.stand - the top carries toptitle, topheader, topdrucksache, topdetail, linkedtop, detailImgDates. I built the template exactly as the card names it (column topurl, four columns); with the current answer the URL column stays empty, the API may deliver the field in another session.
+
+2026-10-20 07:05 Decision (measured): the subtop of bundesrat_plenum_kompakt is a structure - a list of hashes for some TOPs, a hash for others. The formatter writes no structure into a cell, so the column UNTERTITEL stays empty. I kept the column, because the card names it, and the test reads the agenda from nr and title.
+
+2026-10-20 07:05 Decision: the records have no extract, so their fields are written as the path from the root of the answer (list.title, list.header, list.item.title, list.item.date, list.item.dateOfIssue, list.item.abstract, list.item.imageCaption, list.item.imagePath). The last segment of the path is the name of the field the API delivers, as the card names it.
+
+2026-10-20 07:05 Decision: the card contradicts itself about abstract - in the prose it carries HTML and does not belong into a template, in the table it is a field of bundesrat_plenum_naechste_sitzungen. I followed the table: abstract is rendered as Kurzfassung. The HTML fields detail, bodyText and topdetail stay out of every template.
+
+2026-10-20 07:05 Also found: the XML of bundesrat_plenum_naechste_sitzungen and bundesrat_stimmverteilung starts with a newline before the XML declaration. XML::Parser dies with 'XML or text declaration not at start of entity at line 2', so both endpoints fail at runtime before the template is used (pre-existing, outside this card, not fixed here).
+
+2026-10-20 07:05 Also found: the number of the templates in README (1008 Templates, 144 pro Sprache) and in the POD of CLI::Formatter was already stale - the tree holds 149 files per language before this change, 154 after it. I corrected both numbers to 1078 Templates (154 pro Sprache), because the templates of this card change them.
+
+2026-10-20 07:06 Also found: the endpoint count in README is inconsistent - the overview says 114 Endpoints, the list of the data files says 115. Not touched here, no endpoint was added by this card.
+
+2026-10-20 07:06 Verified: t/bundesrat_plenum_templates.t is red against the old share/templates (267 failed subtests, no 'Can't locate' error, the run ends with the failed assertions) and green with the new templates (385 subtests). The full suite offline: prove -lr t/ - 20 files, 2104 tests, all successful, 1 skipped (t/integration.t, live only). Live check: bundesrat plenum-kompakt, plenum-aktuelle-sitzung and plenum-chronologisch render their tables and records.
+
+2026-10-20 07:06 Commit: a547e4f on branch k27 (Render the Bundesrat plenary endpoints with their templates (k27)), based on the tip of local main c786bc5. Changes: the entry for the Bundesrat templates now reads 'The ten Bundesrat endpoints render their templates instead of falling back to a raw YAML dump'.
+
+2026-10-20 07:06 Done: the five Bundesrat plenary endpoints render their templates in all seven languages (35 new .yml files), t/bundesrat_plenum_templates.t checks the templates and the rendering offline and was red against the old share/templates, the full suite is green (20 files, 2104 tests, 1 skipped live-only). Commit a547e4f on branch k27, based on local main c786bc5. The decisions and the findings outside the card are noted on the card.
+
+2026-10-20 07:09 K27 umgesetzt: die fuenf Plenum-Endpunkte (plenum_kompakt, plenum_aktuelle_sitzung, plenum_chronologisch, plenum_naechste_sitzungen, stimmverteilung) haben je sieben Sprachdateien als .yml-Templates (35 Dateien). Die Felder wurden live nachgemessen: die beiden Basepage-Endpunkte liegen unter list.item, kompakt unter list.tops.top mit list.header. Test t/bundesrat_plenum_templates.t ist gegen das alte share/templates rot, volle Suite offline gruen (20 Dateien, 2104 Tests). Commit a547e4f, per fast-forward in main. Der Changes-Eintrag der ersten Haelfte wurde umgeschrieben, nicht ergaenzt. Die Templatezahl in README und Formatter-POD wurde mitgezogen (154 pro Sprache) - der endgueltige Stand folgt mit Karte 10, dort zaehlt nur noch die echten .yml-Dateien.
