@@ -1,0 +1,35 @@
+---
+claimed_at: 2026-10-20T07:37:40Z
+claimed_by: k23
+class: standard
+completed: 2026-10-20T07:37:40Z
+created: 2026-10-20T06:00:10Z
+id: 23
+priority: medium
+started: 2026-10-20T07:22:17Z
+status: done
+tags:
+- templates
+- ladestationen
+- bundeshaushalt
+title: The Ladestationen and the federal budget render their templates
+updated: 2026-10-20T07:37:40Z
+---
+
+Two endpoints have only placeholder .yaml files and fall back to a raw YAML dump: ladestationen_query (ArcGIS GeoJSON - the field names are in the public OpenAPI spec) and bundeshaushalt_budget_data (a tree view of the federal budget with meta, detail and parents). Build one template per endpoint in all seven languages, with translated headers and a translated empty message. Test: t/ladestationen_bundeshaushalt.t renders a GeoJSON fixture and one measured budget answer - the Ladestationen call needs a token, so the test never calls the API.
+
+Templates: 14 neue Dateien (je Endpunkt und Sprache eine .yml), die .yaml-Platzhalter entfernt - der Formatter liest nur .yml, darum fielen die Endpunkte auf den YAML-Dump. Die Platzhalter sind mit der echten Datei ersetzt (wie bei den SMARD-Endpunkten in k22).
+
+Entscheidung (gemessen, dann gebaut): der Typ record hat eine verschachtelte Struktur bisher verworfen - _resolve_field gibt fuer einen Hash oder eine Liste undef zurueck, der Rueckfall auf _extract griff nur bei einem Punktpfad. detail und parents der Haushaltsantwort waren damit leere Zeilen. Der Typ record schreibt jetzt auch eine verschachtelte Struktur als kompaktes JSON in die Zeile, wie der Typ table es seit k22 tut. Folge: bei anderen Endpunkten mit Record-Templates (bundesrat_ausschuss: mitglieder, bundesrat_tagesordnung: tagesordnungspunkte/details, smard_chart: values/metadata, smard_index: indices/metadata, dashboard_deutschland_geo: features/geometry/properties) steht statt einer leeren Zeile der Wert als JSON.
+
+Zuordnung der Felder: 'Ebene' ist meta.entity (Budget, Section, Chapter - die Ebene, auf der die Antwort steht), 'Kontenart' ist meta.quota (target/actual), 'Stand' ist meta.modifyDate. meta.levelCur und meta.levelMax stehen nicht im Template, sie waeren eine zusaetzliche Spalte; die Entscheidung des Koordinators nennt genau die sieben Felder, die uebernommen wurden. Live geprueft: 'bund bundeshaushalt budget-data 2025 1101 target single 1101' liefert genau die gemessene Antwort (entity Chapter, modifyDate 02.10.2025, parents mit einem Knoten).
+
+Geprueft: t/ladestationen_bundeshaushalt.t (neu, offline, 114 Tests) ist gegen den alten Baum rot - 103 von 114 Teiltests scheitern, es ist ein Verhaltensfehler (Template fehlt, Ausgabe ist ein YAML-Dump), kein Ladefehler; gegen das alte lib/ mit den neuen Templates scheitern genau die zwei Assertions fuer detail und parents. Volle Suite: prove -lr t/ -> 22 Dateien, 2400 Tests, alle gruen (t/integration.t ist wie immer uebersprungen, der Live-Test ist opt-in). Ladestationen live ohne Token: die API antwortet mit dem Token-Fehler, die CLI meldet '(keine Daten unter Pfad features)' - der Template wird also gefunden, die Feldnamen stammen aus der oeffentlichen OpenAPI-Spezifikation.
+
+Commit e10d3bb auf dem Branch k23 (31 Dateien: 14 Templates, 14 entfernte Platzhalter, Formatter, neuer Test, Changes). Der Changes-Eintrag lautet wie von der Entscheidung vorgegeben: 'The Ladestationen and the federal budget render their templates instead of falling back to a raw YAML dump'. Es gibt nur diesen einen Eintrag zum Thema - die Aenderung am Typ record ist als Folge der Entscheidung im Commit-Body und hier festgehalten, nicht als zweiter Eintrag.
+
+2026-10-20 07:33 Fertig: die Ladestationen und der Bundeshaushalt rendern ihre Templates (Tabelle aus features mit den fuenf Spalten der Ueberschrift, Record aus meta, detail und parents) in allen sieben Sprachen, die .yaml-Platzhalter sind ersetzt. Der Typ record schreibt eine verschachtelte Struktur als kompaktes JSON, sonst waeren detail und parents leere Zeilen. Verifiziert: der neue Test t/ladestationen_bundeshaushalt.t (offline) war gegen den alten Baum rot (103 von 114 Teiltests, Verhaltensfehler) und ist jetzt gruen, die volle Suite laeuft mit 22 Dateien und 2400 Tests gruen durch. Commit e10d3bb auf dem Branch k23.
+
+Also found: ohne LADESTATIONEN_TOKEN antwortet die API mit dem Token-Fehler, das Template liest aber features - die CLI meldet jetzt '(keine Daten unter Pfad features)' und der Fehlertext steht nur bei -o json in der Antwort. Gehoert nicht zu dieser Karte, nur vermerkt.
+
+2026-10-20 07:37 Gebaut und geprueft: Ladestationen (GeoJSON-FeatureCollection) und Bundeshaushalt (Baumansicht) bekommen echte .yml-Templates in allen sieben Sprachen, die .yaml-Platzhalter sind ersetzt. Folge der Entscheidung: der Typ record schreibt eine verschachtelte Struktur jetzt als kompaktes JSON - sonst waeren detail und parents leere Zeilen (betrifft auch die anderen Record-Templates, die jetzt statt einer leeren Zeile den Wert zeigen). Suite offline gruen (22 Dateien, 2400 Tests), roter Beweis gegen den alten Baum bestaetigt (103 von 114 Teiltests, Verhaltensfehler). Commit e10d3bb.
