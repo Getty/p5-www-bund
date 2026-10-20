@@ -1,0 +1,31 @@
+---
+claimed_at: 2026-10-20T07:22:02Z
+claimed_by: k22
+class: standard
+completed: 2026-10-20T07:22:02Z
+created: 2026-10-20T06:00:01Z
+id: 22
+priority: medium
+started: 2026-10-20T07:09:27Z
+status: done
+tags:
+- smard
+- templates
+- formatter
+title: The SMARD endpoints render their templates
+updated: 2026-10-20T07:22:02Z
+---
+
+The three SMARD endpoints have only placeholder .yaml files, so the CLI dumps their answer as raw YAML. The shapes are measured (2026-10-20): smard_indices answers with a list of timestamps, smard_timeseries with positional pairs [timestamp, value], smard_table with the rows under series[0].values[] - one level deeper than the OpenAPI spec describes. Two extensions of the formatter come with it: keyed_matrix takes the column list from the template when the header is missing, and a table cell that holds a nested value shows it as JSON instead of staying silently empty. Test: t/smard_templates.t checks the 21 files, renders the three measured answers and covers both extensions.
+
+2026-10-20 07:20 Umsetzung: lib/WWW/Bund/CLI/Formatter.pm - der Typ keyed_matrix nimmt ohne Kopfzeile die Spalten aus dem Template, eine Tabellenzelle mit verschachtelter Struktur zeigt den Wert als kompaktes JSON. 21 Templates share/templates/{de,en,fr,es,it,nl,pl}/smard_indices.yml, smard_timeseries.yml, smard_table.yml (die .yaml-Platzhalter sind ersetzt). t/smard_templates.t: 182 Tests, offline. Changes-Eintrag. Commit d873a65 auf Branch k22.
+
+2026-10-20 07:20 Verifikation: prove -lr t/ gruen (21 Dateien, 2286 Tests; t/integration.t ist wie immer uebersprungen, es ist der Live-Test). Der neue Test ist gegen das alte lib/ rot: 14 Verhaltensfehler, kein Ladefehler - YAML-Dump statt Tabelle bei smard_timeseries, leere Zelle bei smard_table, beide Erweiterungen fallen aus.
+
+2026-10-20 07:20 Entscheidungen: Die Spaltenueberschriften der Templates folgen dem Stil der vorhandenen SMARD-Templates (de: Zeitstempel, Wert, Werte; in den sechs anderen Sprachen Timestamp, Value, Values wie in smard_chart.yml), die empty-Meldung ist uebersetzt. Die Spalte versions bekommt width 60 und wrap true: das kompakte JSON der Versionen waere an der Standardbreite 50 abgeschnitten und der Wert waere unsichtbar.
+
+2026-10-20 07:20 Also found: Die Live-Antwort der drei Endpunkte habe ich nicht selbst nachgemessen - meine geratenen filter/region-Kombinationen liefern durchweg 404 (u.a. DE/LU und DE/BW). Die Formen der Templates stammen aus der Messung der Karte, die Pfade in share/endpoints.yml sind unveraendert.
+
+2026-10-20 07:18 Done: die drei SMARD-Endpunkte rendern ihre Templates (list, keyed_matrix, table) in allen sieben Sprachen; zwei Erweiterungen des Formatters (Spalten aus dem Template ohne Kopfzeile, Tabellenzelle mit Struktur als JSON). Commit d873a65, Branch k22. Suite gruen (2286 Tests), der neue Test ist gegen das alte lib/ rot.
+
+2026-10-20 07:21 Gebaut und geprueft: Die drei SMARD-Endpunkte (indices, timeseries, table) bekommen echte .yml-Templates in allen sieben Sprachen. Der Formatter kann jetzt verschachtelte Werte in einer Tabellenzelle als kompaktes JSON zeigen und nimmt die Spalten aus dem Template, wenn die Antwort keine Kopfzeile hat. Suite offline gruen (21 Dateien, 2286 Tests), roter Beweis gegen das alte lib bestaetigt (t/smard_templates.t). Commit d873a65.
