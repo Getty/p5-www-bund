@@ -41,7 +41,7 @@ use namespace::clean;
 =head1 DESCRIPTION
 
 WWW::Bund provides a Perl client for German Federal Government APIs available
-through L<https://bund.dev>. It includes 16 implemented APIs with 78 endpoints,
+through L<https://bund.dev>. It includes 20 implemented APIs with 115 endpoints,
 covering traffic, weather, news, water levels, parliament data, and more.
 
 The module provides both a generic C<call> interface and type-safe API adapters

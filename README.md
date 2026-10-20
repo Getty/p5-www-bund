@@ -433,7 +433,7 @@ columns:
 | **autobahn** | 7 | Baustellen, Sperrungen, Webcams, Warnungen, Ladestationen, LKW-Parkplätze | ❌ |
 | **pegel_online** | 5 | Pegelstände, Stationen, Gewässer, Zeitreihen, Messwerte | ❌ |
 | **tagesschau** | 4 | Nachrichten, Suche, Kanäle, Homepage | ❌ |
-| **nina** | 13 | Katastrophenwarnungen, Kartendaten (6 Quellen), Version, Logos, FAQs, Notfalltipps | ❌ |
+| **nina** | 14 | Katastrophenwarnungen, Kartendaten (6 Quellen), Version, Logos, FAQs, Notfalltipps | ❌ |
 | **bundestag** | 8 | Redner, Konferenzen, Ausschüsse, Abgeordnete, Artikel, Videos | ❌ |
 | **dwd** | 5 | Wetterwarnungen (Gemeinde/Küste/Nowcast), Stationsdaten, Crowdmeldungen | ❌ |
 | **feiertage** | 1 | Deutsche Feiertage nach Bundesland/Jahr | ❌ |
@@ -452,20 +452,14 @@ columns:
 
 **Total: 114 Endpoints über 19 APIs**
 
-### ⚠️ Deaktiviert (Auth erforderlich)
-
-| API | Endpoints | Status | Grund |
-|-----|-----------|--------|-------|
-| **ladestationen** | 1 | Deaktiviert | ArcGIS FeatureServer benötigt Token (seit 2026) |
-
-**Hinweis:** Das Ladesäulenregister der Bundesnetzagentur hat die öffentliche GeoJSON-Datei entfernt und auf einen authentifizierten ArcGIS FeatureServer umgestellt.
-
 ### 🔄 In Arbeit / Eingeschränkt (2 APIs)
 
 | API | Endpoints | Status | Details |
 |-----|-----------|--------|---------|
-| **abfallnavi** | 10 | Needs Implementation | Requires {region} parameter substitution in base_url |
 | **destatis** | 4 | Partial Auth Required | Only `find` works with guest credentials (GAST/GAST), other endpoints need registered account |
+| **ladestationen** | 1 | Partial Auth Required | ArcGIS FeatureServer mit GeoJSON-Defaults, optionales LADESTATIONEN_TOKEN |
+
+**Hinweis:** Das Ladesäulenregister der Bundesnetzagentur hat die öffentliche GeoJSON-Datei entfernt und auf einen authentifizierten ArcGIS FeatureServer umgestellt.
 
 ### 🔐 Authentifizierung erforderlich (nicht geplant)
 
@@ -549,8 +543,8 @@ lib/WWW/Bund/API/*.pm                 Typed API-Adapter (optional)
 
 ```
 share/registry.yml                    31 API-Definitionen
-share/endpoints.yml                   115 Endpoint-Definitionen (114 aktiv, 1 deaktiviert)
-share/templates/{de,en,fr,es,it,nl,pl}/*.yml  ~900 Templates (7 Sprachen)
+share/endpoints.yml                   115 Endpoint-Definitionen (20 APIs mit Endpoints)
+share/templates/{de,en,fr,es,it,nl,pl}/       1008 Templates (144 pro Sprache)
 share/strings/{de,en,fr,es,it,nl,pl}.yml      7 Strings-Dateien
 ```
 

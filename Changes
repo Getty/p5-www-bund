@@ -12,6 +12,8 @@
     instead of falling back to a raw YAML dump; the filter parameter of
     hilfsmittel_produkte (UntergruppeId) and the idOrganisme parameter of
     eco_visio_data are corrected
+  - The API, endpoint and template counts in README, WWW::Bund, CLI::Formatter
+    and Registry again match the shipped data
 
 0.002     2026-02-19 22:57:28Z
 

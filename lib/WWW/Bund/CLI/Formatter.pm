@@ -71,7 +71,7 @@ Template files are YAML with structure:
         width: 40
         wrap: true
 
-See C<share/templates/> for 497 templates across 7 languages.
+See C<share/templates/> for the render templates (about 144 per language, 7 languages).
 
 =cut
 
