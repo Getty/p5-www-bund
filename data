@@ -1,0 +1,25 @@
+---
+claimed_at: 2026-10-20T05:20:04Z
+claimed_by: k11
+class: standard
+completed: 2026-10-20T05:20:04Z
+created: 2026-09-09T09:00:06Z
+id: 11
+priority: medium
+started: 2026-10-20T04:57:12Z
+status: done
+tags:
+- cli
+- bug
+title: CLI drops empty positional args (unfiltered marktstammdaten unusable)
+updated: 2026-10-20T05:20:04Z
+---
+
+MooX::Cmd/MooX::Options @ARGV handling (protect_argv=0) strips empty-string positional args before cmd_call sees them. So bund marktstammdaten strom-erzeugung "" 1 5 collapses to 1 5 and misassigns sort=1 page=5. The marktstammdaten data API also requires the filter query param to be present even when empty (omitting it returns Die Anfrage ist Null). Named --filter= is rejected by MooX::Options (only positionals feed query params). Net effect: the unfiltered show-everything call is impossible via the CLI; a non-empty filter value is required as a workaround. Filtered calls work fine. Found during Phase 2 batch (ticket 6). Fix likely needs empty-positional passthrough and/or a way to send an empty required query param.
+
+2026-10-20 05:17 Implementation: branch k11, commit df61806 (Keep empty positional arguments in the CLI).
+Mechanism: the root CLI (WWW::Bund::CLI) encodes every argument behind the command name that does not survive the MooX::Cmd split - shellwords(join ' ', map { quotemeta } @ARGV), which loses the empty string only - as a token (word characters only, unique per process, hex payload). The command decodes the token again where the argument is used: WWW::Bund::CLI::Role::APICommand for the API commands, WWW::Bund::CLI::Cmd::Info for the API name (an empty name stays the usage error with exit 1). The global options in front of the command name are not encoded, so --output/--lang/--template keep their behaviour. cmd_call, Caller.pm and share/endpoints.yml are untouched.
+Test: t/cli_empty_positional.t, offline, 22 assertions, real argument path (WWW::Bund::CLI->new_with_cmd with a local @ARGV, FakeBund, no network). Red against the old lib with a behavioural error: sort got '1' expected '', page got '5' expected '1', pageSize got undef expected '5', filter got undef expected ''. Green with the fix. Full suite offline: prove -lr t/ -> 16 files, 847 tests, all successful (t/integration.t skipped by design, opt-in live test).
+Also found: the MooX::Cmd split only loses the empty string - spaces, quotes, backslashes, tabs, newlines, UTF-8, #, * and ~ all survive; an argument with a space therefore needs no quoting in the CLI.
+
+2026-10-20 Koordination: Der Branch ist auf main gezogen (fast-forward, keine Merge-Konflikte). Die Karte ist damit erledigt. Ursache war der Argument-Split von MooX::Cmd: `shellwords(join ' ', map { quotemeta } @ARGV)` verliert den Leerstring, dadurch rutschten die folgenden Argumente auf die falschen Parameter. Das Wurzel-CLI kodiert jetzt jedes Argument hinter dem Kommandonamen, das den Split nicht uebersteht, in ein prozesseindeutiges Token; die Befehlsrolle bildet es dort zurueck, wo das Argument verwendet wird. Damit bleibt ein leeres Positionsargument an seiner Stelle: `bund marktstammdaten strom-erzeugung "" 1 5 ""` liefert `sort=&page=1&pageSize=5&filter=`. Die Argumente vor dem Kommandonamen (globale Optionen) und alle anderen APIs bleiben unveraendert. Nachweis: `prove -lr t/` = 16 Dateien, 847 Tests, alles gruen. Der rote Beweis traegt: `t/cli_empty_positional.t` scheitert gegen das alte `lib/` mit vier Verhaltensfehlern (sort, page, pageSize, filter), nicht mit einem Ladefehler. Kein Push, kein `dzil release`.
