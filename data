@@ -1,0 +1,62 @@
+---
+claimed_at: 2026-10-20T04:30:31Z
+claimed_by: p5-www-bund
+class: standard
+completed: 2026-10-20T04:30:31Z
+created: 2026-10-06T19:47:55Z
+id: 15
+priority: high
+started: 2026-10-20T03:46:28Z
+status: done
+tags:
+- bug
+- git
+- deps
+- review-2026-10-06
+title: 'Branch phase2-www-bund (7 commits, 2026-09-09) was never merged: k1, k4, k6,
+  k7, k8, k9 are done on the board but missing on main'
+updated: 2026-10-20T04:30:31Z
+---
+
+`git log --oneline main..phase2-www-bund`:
+
+- `0f275b3` Declare XML::Twig prerequisite in cpanfile (k9)
+- `1e5317d` Reject missing required query params before the API call (bundeshaushalt) (k1)
+- `ffed909` offline regression test for abfallnavi {region} (k4)
+- `d1a2866` regression test locking marktstammdaten to GET+filter (k6)
+- `f38873e` hilfsmittel: render all endpoints via templates; fix produkte param typo (k3)
+- `af8e23b` docs: refresh stale API/endpoint/template counts and roadmap (k8)
+- `2276813` pflanzenschutz: render all endpoints via templates; verify luftqualitaet (k7)
+
+The branch is still checked out in the worktree `.claude/worktrees/phase2-www-bund`. All six cards are `done` and quote these hashes.
+
+Concrete effect on `main`: `lib/WWW/Bund/Response/XML.pm:6` does `use XML::Twig;`, which `WWW::Bund::Caller` loads unconditionally, and `cpanfile` on `main` does not declare it (`grep -n Twig cpanfile` is empty; on the branch it is line 9). A clean install cannot load the dist -- exactly what k9 was filed for. Also missing on main: five test files (`t/abfallnavi.t`, `t/cli_required.t`, `t/hilfsmittel_ecovisio_endpoints.t`, `t/luftqualitaet_pflanzenschutz.t`, `t/marktstammdaten.t`), the required-param validation and the template renames `.yaml` -> `.yml` (which is what open card k10 is about).
+
+`git diff --stat main...phase2-www-bund`: 195 files, +1296/-191. `main` has since moved by chores and `323e76c Keep abstracts ASCII`, so expect trivial conflicts in the `# ABSTRACT` lines at most.
+
+Done when: the seven commits are on `main`, `prove -l t` is green, the worktree and branch are removed, k10 is re-checked against the merged state, and `Changes` `{{$NEXT}}` -- empty on both `main` and the branch -- names what changed since 0.002: the re-enabled `ladestationen` endpoint with `query_defaults` and the optional `LADESTATIONEN_TOKEN` (`5173e0b`), the required-param check, the new templates, the XML::Twig prereq.
+
+---
+Fleet review 2026-10-06 · kind: bug · confidence: verified
+
+2026-10-20 04:23 Merge-Stand: Branch k15-merge-phase2 (von lokalem main bef8dc4) mit sieben Karten-Commits in Hausform plus einem eigenen Infra-Commit fuer .worktreeinclude. Tip a0ff838. Commits: d89ab9e (k9), 3259053 (k1), c72cdf7 (k4), 69c93d8 (k6), 61a2714 (k3), 6677d0f (k8), 1949ffa (k7), a0ff838 (.worktreeinclude). Der Karten-Branch phase2-www-bund und die Worktree .claude/worktrees/phase2-www-bund stehen auf demselben Commit a0ff838.
+
+2026-10-20 04:23 Konflikt share/endpoints.yml: 3-Wege-Merge ohne Konflikt, beide Seiten survive. Enthalten sind mains Ladestationen-Block (query_defaults where/outFields/f, auth_env LADESTATIONEN_TOKEN, auth_query_param token) und der Branch-Zustand (required: year/account bei bundeshaushalt_budget_data, idOrganisme bei eco_visio_data, UntergruppeId statt UnterruppeId bei hilfsmittel_produkte). git diff main..phase2-www-bund: keine .claude-Aenderungen, keine Loeschungen ausserhalb share/templates/.
+
+2026-10-20 04:23 Entscheidung 1 (Zahlen in k8): Die k8-Zahlen 114 Endpoints / 19 APIs sind durch mains Reaktivierung von ladestationen_query (5173e0b) ueberholt. Im gemergten Baum gemessen: 115 Endpoint-Definitionen, 20 APIs mit Endpoints. Angepasst: README-Strukturblock, WWW::Bund-POD (20 APIs mit 115 Endpoints), Registry-POD (115 Endpoints) und der README-Roadmap (ladestationen von 'Deaktiviert' nach 'In Arbeit / Eingeschraenkt', Absatz 'Deaktiviert' entfaellt). Die Template-Zahl 144 je Sprache (1008) bleibt gueltig, die .yaml-.yml-Umbenennungen aendern die Dateizahl nicht.
+
+2026-10-20 04:23 Entscheidung 2 (Changes-Text zu k7): Die diktierte Fassung behauptete, luftqualitaet rendere seine Templates. Das widerspricht dem Branch-Test t/luftqualitaet_pflanzenschutz.t, der ausdruecklich festhaelt, dass fuer luftqualitaet kein .yml existiert (die UBA-Antwortform ist vom Formatter nicht renderbar). Der Eintrag wurde praezisiert: pflanzenschutzmittelzulassung rendert seine Templates, luftqualitaet bleibt YAML-Fallback. Ein Changes-Eintrag geht auf CPAN und darf nicht falsch sein.
+
+2026-10-20 04:23 Entscheidung 3 (Changes-Reihenfolge und fehlender Eintrag): Jeder der sieben Karten-Commits traegt seinen eigenen Eintrag unter {{}}. Der zu mains 5173e0b fehlende Eintrag (re-enabled ladestationen endpoint mit query_defaults und optionalem LADESTATIONEN_TOKEN) wurde im k9-Commit nachgetragen und steht als erster Eintrag, passend zur Merge-Reihenfolge. Acht Eintraege, kein Karten-Ids, Zeilenumbruch bei 78 Spalten.
+
+2026-10-20 04:24 Entscheidung 4 (Trailer): Die sieben replayten Commits behalten 'Co-Authored-By: Claude Opus 4.8' plus die Session-URL - das Modell, das den Code geschrieben hat; ich habe nur rebased und die Bodies in Hausform gebracht. Der eigene Commit fuer .worktreeinclude traegt 'Co-Authored-By: Claude MiniMax-M3.1-Flash'.
+
+2026-10-20 04:24 Test: prove -lr t/ aus der Worktree, offline (PERL5LIB erweitert): 15 Dateien, 805 Tests, alle gruen. Uebersprungen ist nur t/integration.t (opt-in Live-Test, WWW_BUND_LIVE_TEST=1) - offline nicht lauffaehig.
+
+2026-10-20 04:24 Rote-Beweis gegen altes main-lib/ plus altes share/ (git archive main lib share): t/cli_required.t rot (4 von 10), t/hilfsmittel_ecovisio_endpoints.t rot (3 von 5), t/luftqualitaet_pflanzenschutz.t rot (126 von 274) - jeweils Verhaltensfehler, keine 'Datei nicht gefunden'. t/abfallnavi.t und t/marktstammdaten.t sind gegen main GRUEN: sie fixieren Verhalten, das main bereits liefert (base_url-{region}-Substitution seit 0.002, marktstammdaten GET+filter bereits in endpoints.yml). Sie koennen nicht rot sein, ohne Verhalten zu aendern; die Karte erwartet fuenf rote Tests, es sind drei.
+
+2026-10-20 04:24 Also found: Nach dem Merge bleiben 31 .yaml-Stubs je Sprache (217 Dateien) ungerendert, weil der Formatter nur .yml laedt: luftqualitaet (13), bundesrat (10), smard (3), eco_visio (2), regionalatlas (1), bundeshaushalt (1), ladestationen (1). k10 ist damit nicht erledigt, die Restliste der Karte (bundESrat, smard, regionalatlas, ladestationen, bundeshaushalt) trifft zu, plus luftqualitaet und eco_visio.
+
+2026-10-20 04:24 Merge erledigt, Branch liegt bereit. Stand: phase2-www-bund und k15-merge-phase2 stehen beide auf a0ff838 (von lokalem main bef8dc4), sieben Commits in Hausform plus ein eigener Commit fuer .worktreeinclude. share/endpoints.yml enthaelt mains Ladestationen/ArcGIS-Block und den Branch-Zustand (required: year/account, idOrganisme, UntergruppeId). Diff main..Branch: keine .claude-Aenderungen, keine Loeschungen ausserhalb share/templates/. prove -lr t/ offline: 15 Dateien, 805 Tests, alle gruen, nur t/integration.t uebersprungen (opt-in). Rote-Beweis gegen altes main-lib/+share: cli_required.t, hilfsmittel_ecovisio_endpoints.t und luftqualitaet_pflanzenschutz.t sind rot (Verhaltensfehler); abfallnavi.t und marktstammdaten.t sind gegen main gruen, weil sie bestehendes Verhalten fixieren. Abweichungen von der Vorgabe, mit Begruendung auf der Karte: k8-Zahlen an den gemergten Stand angepasst (115 Endpoints, 20 APIs), Changes-Eintrag zu k7 praezisiert (luftqualitaet bleibt YAML-Fallback), fehlender ladestationen-Eintrag im k9-Commit nachgetragen. Kein Merge nach main, kein Push, kein Release - das macht die Koordination: git merge --ff-only phase2-www-bund.
+
+2026-10-20 Koordination: der Branch ist auf main gezogen. Der alte Stand phase2-www-bund wurde auf das lokale main rebased, die sieben Karten-Commits (k9, k1, k4, k6, k3, k8, k7) sind mit Hausstil-Betreff und je einem Changes-Eintrag auf main (a0ff838). Die Suite laeuft offline gruen (15 Dateien, 805 Tests). Der rote Beweis traegt fuer die Verhaltensaenderungen: t/cli.t, t/cli_required.t, t/hilfsmittel_ecovisio_endpoints.t und t/luftqualitaet_pflanzenschutz.t scheitern gegen das alte lib. k4 und k6 sind reine Regressionstests (das Verhalten gab es schon), sie sind gegen das alte lib deshalb erwartungsgemaess gruen und halten es jetzt fest. Kein Push, kein dzil release.
