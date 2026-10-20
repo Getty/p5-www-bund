@@ -20,8 +20,8 @@ use WWW::Bund::CLI::Formatter;
 # The fields detail and bodyText carry HTML and stay out of the templates.
 #
 # The template of an endpoint lives in share/templates/{lang}/{endpoint}.yml.
-# The loader of the formatter reads .yml only, so the .yaml placeholders of
-# these endpoints were ignored and the CLI answered with a raw YAML dump.
+# The .yaml placeholders of these endpoints only reported that there was no
+# data; they are removed, so the endpoints render with their own .yml template.
 #
 # Offline: nothing is fetched, the measured answers are written into the test
 # as Perl data structures.

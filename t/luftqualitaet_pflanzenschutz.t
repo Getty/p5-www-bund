@@ -20,7 +20,7 @@ use WWW::Bund::Registry;
 # 3. Eleven of the thirteen luftqualitaet endpoints render as a table too
 #    (type: keyed_matrix), their .yaml stub is gone. The two endpoints
 #    airquality and meta keep the YAML fallback: their shape has no flat
-#    header row, so they still have no .yml and keep their .yaml stub.
+#    header row, so they have no .yml and no .yaml stub either.
 
 my $share = File::Spec->catdir($FindBin::Bin, '..', 'share');
 my $reg = WWW::Bund::Registry->new(
@@ -233,14 +233,14 @@ for my $lang (@langs) {
 }
 
 # airquality and meta have no flat header row, so they keep the YAML fallback:
-# no .yml, and their .yaml stub stays.
+# no .yml and no .yaml stub either, the answer is shown as it is.
 for my $lang (@langs) {
     for my $ep (qw(airquality meta)) {
         my $yml  = File::Spec->catfile($share, 'templates', $lang, "luftqualitaet_$ep.yml");
         my $yaml = File::Spec->catfile($share, 'templates', $lang, "luftqualitaet_$ep.yaml");
 
-        ok(!-e $yml,  "$lang/luftqualitaet_$ep has no .yml (stays a YAML-fallback stub)");
-        ok(-f $yaml,  "$lang/luftqualitaet_$ep.yaml stub is still there");
+        ok(!-e $yml,  "$lang/luftqualitaet_$ep has no .yml (stays a YAML fallback)");
+        ok(!-e $yaml, "$lang/luftqualitaet_$ep.yaml stub is gone");
     }
 }
 

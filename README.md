@@ -3,8 +3,8 @@
 **Perl CLI-Client und Bibliothek für deutsche Bundes-APIs** ([bund.dev](https://bund.dev))
 
 [![CPAN Version](https://img.shields.io/cpan/v/WWW-Bund.svg)](https://metacpan.org/pod/WWW::Bund)
-[![Tests](https://img.shields.io/badge/tests-290%20passing-success)](t/)
-[![APIs](https://img.shields.io/badge/APIs-19%2F26-blue)](#api-roadmap)
+[![Tests](https://img.shields.io/badge/tests-2444%20passing-success)](t/)
+[![APIs](https://img.shields.io/badge/APIs-20%2F31-blue)](#api-roadmap)
 [![Languages](https://img.shields.io/badge/languages-7-green)](#supported-languages)
 [![POD](https://img.shields.io/badge/POD-100%25-success)](#)
 
@@ -456,7 +456,7 @@ columns:
 
 | API | Endpoints | Status | Details |
 |-----|-----------|--------|---------|
-| **destatis** | 4 | Partial Auth Required | Only `find` works with guest credentials (GAST/GAST), other endpoints need registered account |
+| **destatis** | 0 | In der Registry | Noch kein Endpunkt und kein Kommando |
 | **ladestationen** | 1 | Partial Auth Required | ArcGIS FeatureServer mit GeoJSON-Defaults, optionales LADESTATIONEN_TOKEN |
 
 **Hinweis:** Das Ladesäulenregister der Bundesnetzagentur hat die öffentliche GeoJSON-Datei entfernt und auf einen authentifizierten ArcGIS FeatureServer umgestellt.
@@ -470,6 +470,23 @@ Diese APIs benötigen API-Keys und sind daher für den öffentlichen CLI-Client 
 - **jobsuche** (BA API-Key)
 - **lebensmittelwarnung** (API-Key)
 - **dip_bundestag** (API-Key)
+
+### 📋 Nur in der Registry (11 APIs)
+
+Diese APIs stehen in `share/registry.yml`, haben aber noch keinen Endpunkt und
+damit kein Kommando (destatis steht mit 0 Endpunkten in der Tabelle oben):
+
+- **ausbildungssuche**
+- **bewerberboerse**
+- **ddb**
+- **destatis**
+- **deutschlandatlas**
+- **dip_bundestag**
+- **handelsregister**
+- **jobsuche**
+- **lebensmittelwarnung**
+- **mudab**
+- **regionalatlas**
 
 ---
 
@@ -517,7 +534,7 @@ bin/bundfr/bundes/bundit/bundnl/bundpl  Weitere Sprachen
 
 lib/WWW/Bund/CLI.pm                   Root CLI (globale Options, Helper)
 lib/WWW/Bund/CLI/Role/APICommand.pm   Shared Role für API-Commands
-lib/WWW/Bund/CLI/Cmd/*.pm             22 API-Command-Klassen (~10 LOC each)
+lib/WWW/Bund/CLI/Cmd/*.pm             22 Klassen: 20 API-Commands, 2 Meta-Commands (~10 LOC each)
 lib/WWW/Bund/CLI/Cmd/{List,Info}.pm   Meta-Commands
 lib/WWW/Bund/CLI/Formatter.pm         Template-Rendering
 lib/WWW/Bund/CLI/Strings.pm           i18n Strings
@@ -544,7 +561,7 @@ lib/WWW/Bund/API/*.pm                 Typed API-Adapter (optional)
 ```
 share/registry.yml                    31 API-Definitionen
 share/endpoints.yml                   115 Endpoint-Definitionen (20 APIs mit Endpoints)
-share/templates/{de,en,fr,es,it,nl,pl}/       1078 Templates (154 pro Sprache)
+share/templates/{de,en,fr,es,it,nl,pl}/       973 Templates (139 pro Sprache)
 share/strings/{de,en,fr,es,it,nl,pl}.yml      7 Strings-Dateien
 ```
 
@@ -621,7 +638,7 @@ perldoc bund                         # Bin-Command
 ## 🧪 Tests
 
 ```bash
-prove -l t/                        # Alle Tests (290)
+prove -lr t/                       # Alle Tests (2444)
 prove -l t/00-load.t               # Module loading
 prove -l t/cli.t                   # CLI-Funktionalität
 WWW_BUND_LIVE_TEST=1 prove -l t/integration.t  # Live-API-Tests

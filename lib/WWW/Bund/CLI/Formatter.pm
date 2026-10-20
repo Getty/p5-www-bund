@@ -73,7 +73,7 @@ Template files are YAML with structure:
         width: 40
         wrap: true
 
-See C<share/templates/> for the render templates (about 154 per language, 7 languages).
+See C<share/templates/> for the render templates (about 139 per language, 7 languages).
 
 A cell of the type table that holds a nested structure - a hash or a list - is
 written as compact JSON: an empty cell would hide the value. The same holds for
@@ -254,11 +254,14 @@ sub _load_template {
         return eval { LoadFile($path) };
     }
 
-    # Look in share/templates/{lang}/
+    # Look in share/templates/{lang}/, .yml wins over .yaml
     return unless $endpoint_name;
-    my $path = "$self->{templates_dir}/$self->{lang}/$endpoint_name.yml";
-    return unless -f $path;
-    return eval { LoadFile($path) };
+    for my $extension (qw(yml yaml)) {
+        my $path = "$self->{templates_dir}/$self->{lang}/$endpoint_name.$extension";
+        next unless -f $path;
+        return eval { LoadFile($path) };
+    }
+    return;
 }
 
 sub _extract {

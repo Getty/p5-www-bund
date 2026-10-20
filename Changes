@@ -41,6 +41,9 @@
     instead of leaving the cell empty
   - The Ladestationen and the federal budget render their templates instead
     of falling back to a raw YAML dump
+  - The formatter finds a template that is named .yaml as well; the
+    placeholder files that only reported "no data" are removed, so an
+    endpoint without a template keeps the honest YAML output
 
 0.002     2026-02-19 22:57:28Z
 
