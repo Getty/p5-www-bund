@@ -457,6 +457,8 @@ columns:
 
 **Total: 114 Endpoints über 19 APIs**
 
+**Hinweis:** Die Eco-Visio-API antwortet derzeit auf keine renderbare Antwort: `counters` liefert 404 Not Found für jede veröffentlichte Id, die Variante ohne `plus` 200 mit leerem Ergebnis, `data` eine 400 mit Validierungskette (gemessen am 2026-10-20). Die CLI zeigt deshalb die rohe Antwort der API.
+
 ### 🔄 In Arbeit / Eingeschränkt (2 APIs)
 
 | API | Endpoints | Status | Details |

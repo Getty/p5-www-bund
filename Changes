@@ -1,4 +1,6 @@
 {{$NEXT}}
+  - The eco-visio endpoints are documented as answering nothing that can be
+    rendered at the moment; the raw answer of the API is shown
   - Only the templates that belong to an endpoint of the distribution are
     shipped; the leftovers of renamed endpoints and the templates of the API
     without an endpoint are gone
