@@ -1,0 +1,44 @@
+---
+class: standard
+completed: 2026-10-20T17:07:16Z
+created: 2026-10-20T16:36:28Z
+id: 30
+priority: low
+started: 2026-10-20T17:07:16Z
+status: done
+tags:
+- release
+- changes
+title: Der Changes traegt keine Kopfzeile
+updated: 2026-10-20T17:07:16Z
+---
+
+Der Changes dieser Distribution traegt keine Kopfzeile.
+
+Die Hausform (Skill getty-git-commit-style) sieht so aus:
+
+    Revision history for <name>
+
+    {$NEXT}
+      - ...
+
+Vierzehn der achtzehn Distributionen der WWW-Flotte tragen die Kopfzeile, vier
+nicht. Diese Distribution gehoert zu den vier.
+
+Es wird genau eine Zeile ergaenzt: die Kopfzeile mit dem Namen aus dist.ini
+(WWW-Bund) und die Leerzeile darunter. Sonst nichts.
+
+Kein neuer Eintrag unter {$NEXT}: die Karte aendert die Form der Datei, nicht
+ihren Inhalt. Die Einrueckung der Eintraege (2 oder 4 Leerzeichen) bleibt
+unangetastet - sie ist je Datei verschieden und nicht Teil dieser Karte.
+
+Aenderungen ausserhalb von Changes: nicht.
+Commit-Betreff nennt die Karte als (kNN), kein #NN.
+
+Done: die Kopfzeile 'Revision history for WWW-Bund' (Name aus dist.ini) und die Leerzeile darunter ergaenzt, sonst nichts. Diff gegen main: genau 2 zusaetzliche Zeilen ganz oben in Changes, 0 entfernt, keine Aenderung an den Eintraegen oder ihrer Einrueckung. Kein neuer Eintrag unter {{$NEXT}} (die Karte aendert die Form, nicht den Inhalt). Commit 2c10438 auf Branch k30-bund (von lokalem main 37c5923). Suite: prove -lr t/ -> 27 Dateien, 2502 Tests, Result: PASS (t/integration.t uebersprungen, Live-Opt-in).
+
+Also found (nicht Teil dieser Karte, nicht behoben): die veroeffentlichten Abschnitte 0.001 und 0.002 der Changes weichen von der Hausform ab - 0.001 buendelt die Eintraege unter Ueberschriften wie 'APIs & Endpoints:' und 'Core Features:', 0.002 nutzt '*' als Unterpunkte statt '-'. Die Hausform (getty-git-commit-style) sieht eine flache Liste mit '  - ' vor. Ausserdem ist die Einrueckung je Abschnitt verschieden (2 Leerzeichen bei {{$NEXT}}, 4 bei 0.002). Das gehoert in eine eigene Karte.
+
+Done: Kopfzeile 'Revision history for WWW-Bund' plus Leerzeile ganz oben in Changes ergaenzt, sonst nichts. Diff gegen main: 2 zusaetzliche Zeilen, 0 entfernt. Kein Eintrag unter {{$NEXT}} (Form, nicht Inhalt). Suite gruen: prove -lr t/ -> 27 Dateien, 2502 Tests, PASS. Commit 2c10438 auf k30-bund.
+
+Koordination: der Commit 2c10438 steht auf main (ff-only gemergt). Der Diff gegen main zeigt genau zwei zusaetzliche Zeilen ganz oben in der Changes-Datei (Kopfzeile 'Revision history for WWW-Bund' und die Leerzeile darunter), sonst nichts; kein Eintrag unter {{'$$NEXT'}}, die Einrueckung der Eintraege ist unveraendert. Suite offline: 27 Dateien, 2502 Tests, PASS.
