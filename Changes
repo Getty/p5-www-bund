@@ -1,3 +1,5 @@
+Revision history for WWW-Bund
+
 {{$NEXT}}
   - The prerequisites in the cpanfile are listed alphabetically
   - The test suite reads the cpanfile, so a library the code loads but the
