@@ -1,0 +1,5 @@
+type: keyed_matrix
+header: indices.data.station id.date start
+rows: data
+row_key: true
+empty: "Nessuna misura trovata."

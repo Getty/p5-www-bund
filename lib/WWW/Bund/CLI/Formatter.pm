@@ -55,6 +55,8 @@ Templates define how data should be displayed:
 
 =item * B<record> - Key-value pairs (single record)
 
+=item * B<keyed_matrix> - Header row paired with numbered or positional rows
+
 =back
 
 Template files are YAML with structure:
@@ -72,6 +74,37 @@ Template files are YAML with structure:
         wrap: true
 
 See C<share/templates/> for the render templates (about 144 per language, 7 languages).
+
+=head2 The keyed_matrix type
+
+Some APIs deliver their data as a matrix: a header row and rows that are
+either numbered or positional. The C<keyed_matrix> type pairs the header
+with the rows and renders them as a table.
+
+    type: keyed_matrix
+    header: indices             # path to the header (default: indices)
+    rows: data                  # path to the rows (default: the whole response)
+    row_key: true               # show the key column (default: true)
+    row_key_header: station id  # header of the key column
+    empty: "No data."           # message when there is no row
+    columns:                    # optional, as for the type table
+      - field: "0"              # position of the value in the row
+        header: Component       # replaces the header of the API
+        width: 20
+        wrap: true
+
+The header is either a list of column names or a hash: for a hash the key
+names the key column and its value is the list of column names. The rows are
+either a hash with numerically keyed entries (taken in numeric order, so
+C<9> comes before C<10>), a hash of hashes - one level deeper, the key chain
+is joined with C<" / "> - or a list of rows, which are then numbered from 1.
+A value missing in a row leaves the cell empty, a nested hash or list is
+written into the cell as compact JSON.
+
+The type translates nothing: the column names are the ones the API delivers,
+in the language the API was asked for (its C<lang> query parameter, not the
+C<--lang> option of the CLI). The C<empty> message on the other hand comes
+from the template and is therefore in the language of the CLI.
 
 =cut
 
@@ -172,6 +205,8 @@ sub format_output {
         return $self->_render_list($data, $template);
     } elsif ($type eq 'record') {
         return $self->_render_record($data, $template);
+    } elsif ($type eq 'keyed_matrix') {
+        return $self->_render_keyed_matrix($data, $template);
     } else {
         return Dump(_deref_booleans($data));
     }
@@ -486,6 +521,143 @@ sub _render_record {
     }
 
     return $out;
+}
+
+sub _render_keyed_matrix {
+    my ($self, $data, $template) = @_;
+
+    # The header names the columns; for a hash it also names the key column.
+    my $header_path = $template->{header} // 'indices';
+    my $header      = $self->_extract($data, $header_path);
+
+    my ($headers, $key_header);
+    if (ref $header eq 'HASH') {
+        my @keys = sort keys %$header;
+        if (@keys) {
+            $key_header = $keys[0];
+            $headers    = $header->{ $keys[0] };
+        }
+    }
+    elsif (ref $header eq 'ARRAY') {
+        $headers = $header;
+    }
+
+    # An unknown shape is answered honestly with the raw data.
+    unless (ref $headers eq 'ARRAY') {
+        return Dump(_deref_booleans($data));
+    }
+
+    $key_header = $template->{row_key_header} // $key_header // 'row';
+
+    my $rows_path = $template->{rows};
+    my $rows_val  = defined $rows_path ? $self->_extract($data, $rows_path) : $data;
+
+    my @rows = $self->_keyed_matrix_rows($rows_val);
+    unless (@rows) {
+        return $self->_empty_message($template);
+    }
+
+    # The matrix becomes records the table renderer already understands:
+    # the positions of the row are the fields, the key column is row_key.
+    my @records;
+    for my $row (@rows) {
+        my %record = (row_key => $row->{key});
+        my $values = $row->{values};
+        for my $i (0 .. $#$values) {
+            $record{$i} = $self->_keyed_matrix_cell($values->[$i]);
+        }
+        push @records, \%record;
+    }
+
+    my %table = (%$template, columns => [ $self->_keyed_matrix_columns($template, $headers, $key_header) ]);
+
+    return $self->_render_table(\@records, \%table);
+}
+
+# The rows of a keyed matrix with their key chain.
+sub _keyed_matrix_rows {
+    my ($self, $rows) = @_;
+
+    my @found;
+    if (ref $rows eq 'HASH') {
+        # Only numerically keyed entries are rows, in numeric order.
+        for my $key (sort { $a <=> $b } grep { /^\d+$/ } keys %$rows) {
+            my $value = $rows->{$key};
+            if (ref $value eq 'ARRAY') {
+                push @found, {key => $key, values => $value};
+            }
+            elsif (ref $value eq 'HASH') {
+                # One level deeper: the outer key is carried along.
+                for my $sub (_keyed_matrix_sort_keys(keys %$value)) {
+                    next unless ref $value->{$sub} eq 'ARRAY';
+                    push @found, {key => "$key / $sub", values => $value->{$sub}};
+                }
+            }
+        }
+    }
+    elsif (ref $rows eq 'ARRAY') {
+        # Positional rows are numbered from 1.
+        my $number = 0;
+        for my $value (@$rows) {
+            next unless ref $value eq 'ARRAY';
+            $number++;
+            push @found, {key => $number, values => $value};
+        }
+    }
+
+    return @found;
+}
+
+# Numeric keys are sorted numerically, all others as strings.
+sub _keyed_matrix_sort_keys {
+    my @keys = @_;
+    return sort { $a <=> $b } @keys if !grep { $_ !~ /^\d+$/ } @keys;
+    return sort @keys;
+}
+
+# The columns of a keyed matrix: the key column and one column per header.
+sub _keyed_matrix_columns {
+    my ($self, $template, $headers, $key_header) = @_;
+
+    my @columns;
+
+    my $show_key = exists $template->{row_key} ? $template->{row_key} : 1;
+    push @columns, {field => 'row_key', header => $key_header} if $show_key;
+
+    my $spec = $template->{columns};
+    if ($spec && @$spec) {
+        for my $i (0 .. $#$spec) {
+            my $col = $spec->[$i];
+            my $field  = $col->{field} // $i;
+            my $header = $col->{header};
+            $header = $headers->[$field] if !defined $header && $field =~ /^\d+$/;
+            push @columns, {
+                field  => $field,
+                header => $header,
+                (exists $col->{width} ? (width => $col->{width}) : ()),
+                (exists $col->{wrap}  ? (wrap  => $col->{wrap})  : ()),
+            };
+        }
+        return @columns;
+    }
+
+    for my $i (0 .. $#$headers) {
+        push @columns, {field => "$i", header => $headers->[$i]};
+    }
+
+    return @columns;
+}
+
+# A cell is a scalar as it is; a nested structure becomes compact JSON,
+# an empty cell would hide the value.
+sub _keyed_matrix_cell {
+    my ($self, $value) = @_;
+
+    return $value unless ref $value;
+    return $value if JSON::MaybeXS::is_bool($value);
+
+    my $json = JSON::MaybeXS->new(pretty => 0, canonical => 1, utf8 => 0);
+    return $json->encode($value);
 }
 
 sub _deref_booleans {

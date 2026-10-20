@@ -1,0 +1,4 @@
+type: keyed_matrix
+rows: data
+row_key: true
+empty: "Nessun limite di dati sulla qualità dell'aria disponibile."
