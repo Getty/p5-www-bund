@@ -195,6 +195,45 @@ my $caller = WWW::Bund::Caller->new(
     $cache->clear;
 }
 
+# A cache hit is no request and must not consume the rate limit
+{
+    my $limit_mock = MockIO->new(
+        responses => {
+            'o/autobahn/' => WWW::Bund::HTTPResponse->new(
+                status       => 200,
+                content      => encode_json({ roads => ['A1'] }),
+                content_type => 'application/json',
+            ),
+        },
+    );
+
+    my $limit_cache = WWW::Bund::Cache->new(cache_dir => $cache_dir);
+    $limit_cache->clear;
+
+    my $limiter = WWW::Bund::RateLimit->new(
+        limits => { autobahn => { max => 60, window => 3600 } },
+    );
+    my $limit_caller = WWW::Bund::Caller->new(
+        registry     => $registry,
+        auth         => WWW::Bund::Auth->new,
+        cache        => $limit_cache,
+        rate_limiter => $limiter,
+        io           => $limit_mock,
+    );
+
+    # The limiter keeps its timestamps per API in a private attribute
+    my $timestamps = sub { $limiter->_timestamps->{autobahn} // [] };
+
+    $limit_caller->call('autobahn', 'autobahn_roads');
+    is(scalar @{$timestamps->()}, 1, 'a request against the API is counted');
+
+    $limit_caller->call('autobahn', 'autobahn_roads') for 1 .. 5;
+    is(scalar @{$timestamps->()}, 1, 'cache hits do not consume the rate limit');
+    is(scalar @{$limit_mock->requests}, 1, 'only the first call went out');
+
+    $limit_cache->clear;
+}
+
 # ladestationen: query_defaults are applied and token auth is injected from ENV
 {
     my $lade_cache_dir = File::Spec->catdir($FindBin::Bin, '..', '.test-cache-lade');

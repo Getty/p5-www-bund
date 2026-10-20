@@ -1,4 +1,6 @@
 {{$NEXT}}
+  - A cached response no longer consumes the rate limit: only a request that
+    actually goes out to an API counts against its quota
   - The ladestationen endpoint is enabled again with fixed GeoJSON query
     defaults and an optional LADESTATIONEN_TOKEN
   - XML::Twig is declared as a prerequisite; the XML parser uses it

@@ -43,9 +43,9 @@ Flow:
 
 =item 2. Build URL with path and query parameters
 
-=item 3. Check rate limit
+=item 3. Check cache (GET only)
 
-=item 4. Check cache (GET only)
+=item 4. Check rate limit (only when the response is not cached)
 
 =item 5. Add authentication headers
 
@@ -174,9 +174,6 @@ sub call {
         $body_content = join('&', @param_pairs);
     }
 
-    # Rate limiting
-    $self->rate_limiter->check($api);
-
     # Cache check (GET only)
     my $cache_key;
     my $cache_ttl = $endpoint->{cache_ttl};
@@ -205,6 +202,10 @@ sub call {
         headers => \%headers,
         ($body_content ? (content => $body_content) : ()),
     );
+
+    # Rate limiting: only a request against the API consumes the quota, a
+    # cache hit is no request and must not be counted.
+    $self->rate_limiter->check($api);
 
     my $response = $self->io->call($req);
 
@@ -254,6 +255,10 @@ parameters are:
 =item * Sent as form-encoded body for POST/PUT requests (Content-Type: application/x-www-form-urlencoded)
 
 =back
+
+The rate limit is only consulted when the response is not served from the
+cache: a cache hit is no request against the API and does not consume the
+quota.
 
 Throws exception on HTTP errors (non-2xx status codes) or missing endpoints.
 
