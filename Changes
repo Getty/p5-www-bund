@@ -1,4 +1,6 @@
 {{$NEXT}}
+  - The token an API takes from the environment is masked in log lines and in
+    error messages; it is no longer written out in clear text
   - A cached response no longer consumes the rate limit: only a request that
     actually goes out to an API counts against its quota
   - The ladestationen endpoint is enabled again with fixed GeoJSON query

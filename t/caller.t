@@ -12,6 +12,7 @@ use WWW::Bund::Auth;
 use WWW::Bund::Cache;
 use WWW::Bund::RateLimit;
 use WWW::Bund::HTTPResponse;
+use Log::Any::Adapter;
 
 # MockIO: record requests and return canned responses
 {
@@ -295,6 +296,88 @@ my $caller = WWW::Bund::Caller->new(
 
     use File::Path qw(remove_tree);
     remove_tree($lade_cache_dir) if -d $lade_cache_dir;
+}
+
+# The token from the environment is a secret: it must not show up in a log
+# line or in the error message
+{
+    my @messages;
+    my $guard;
+    # The caller logs into the category of its own package
+    Log::Any::Adapter->set(
+        { category => 'WWW::Bund::Caller', lexically => \$guard },
+        'Capture', to => \@messages, format => 'text',
+    );
+
+    my $secret_cache_dir = File::Spec->catdir($FindBin::Bin, '..', '.test-cache-secret');
+
+    local $ENV{LADESTATIONEN_TOKEN} = 'SECRET123';
+
+    # A failing request: the error message and the log lines must be masked
+    {
+        my $error_mock = MockIO->new(
+            default_response => WWW::Bund::HTTPResponse->new(
+                status  => 500,
+                content => 'Internal Server Error',
+            ),
+        );
+        my $secret_caller = WWW::Bund::Caller->new(
+            registry     => $registry,
+            auth         => WWW::Bund::Auth->new,
+            cache        => WWW::Bund::Cache->new(cache_dir => $secret_cache_dir),
+            rate_limiter => WWW::Bund::RateLimit->new,
+            io           => $error_mock,
+        );
+
+        my $err = do {
+            local $@;
+            eval { $secret_caller->call('ladestationen', 'ladestationen_query'); 1 } or $@;
+        };
+
+        like($err, qr/HTTP 500/, 'the request fails with HTTP 500');
+        unlike($err, qr/SECRET123/, 'the error message does not contain the token');
+        like($err, qr/token=\*\*\*/, 'the error message shows the masked token');
+
+        # The request itself still carries the real token
+        like($error_mock->requests->[-1]->url, qr/token=SECRET123/,
+            'the request still sends the real token');
+    }
+
+    # A successful request: the log lines and the cache hit line are masked
+    {
+        my $ok_mock = MockIO->new(
+            default_response => WWW::Bund::HTTPResponse->new(
+                status       => 200,
+                content      => encode_json({ type => 'FeatureCollection' }),
+                content_type => 'application/json',
+            ),
+        );
+        my $secret_cache = WWW::Bund::Cache->new(cache_dir => $secret_cache_dir);
+        $secret_cache->clear;
+        my $secret_caller = WWW::Bund::Caller->new(
+            registry     => $registry,
+            auth         => WWW::Bund::Auth->new,
+            cache        => $secret_cache,
+            rate_limiter => WWW::Bund::RateLimit->new,
+            io           => $ok_mock,
+        );
+
+        $secret_caller->call('ladestationen', 'ladestationen_query');
+        $secret_caller->call('ladestationen', 'ladestationen_query');
+
+        is(scalar @{$ok_mock->requests}, 1, 'the second call was served from the cache');
+
+        my $log = join "\n", @messages;
+        ok(scalar @messages, 'log lines were captured');
+        unlike($log, qr/SECRET123/, 'no log line contains the token');
+        like($log, qr/token=\*\*\*/, 'the log lines show the masked token');
+        like($log, qr/Cache hit: GET \S*token=\*\*\*/, 'the cache hit line is masked');
+
+        $secret_cache->clear;
+    }
+
+    use File::Path qw(remove_tree);
+    remove_tree($secret_cache_dir) if -d $secret_cache_dir;
 }
 
 # Cleanup

@@ -149,21 +149,26 @@ sub call {
 
     # Inject query-param auth token from the environment when configured and set
     # (e.g. ArcGIS ?token=). Caller-supplied value wins; absent env var = omitted.
+    my $auth_param;
     if (my $env = $endpoint->{auth_env}) {
         my $param = $endpoint->{auth_query_param} // 'token';
         if (!exists $remaining_params{$param} && defined(my $token = $ENV{$env})) {
             $remaining_params{$param} = $token;
+            $auth_param = $param;
         }
     }
 
     # Prepare body content for POST/PUT
     my $body_content;
     my @param_pairs;
+    my $secret_pair;
     if (%remaining_params) {
         for my $k (sort keys %remaining_params) {
             my $v = $remaining_params{$k};
             next unless defined $v;
-            push @param_pairs, uri_escape($k) . '=' . uri_escape($v);
+            my $pair = uri_escape($k) . '=' . uri_escape($v);
+            push @param_pairs, $pair;
+            $secret_pair = $pair if defined $auth_param && $k eq $auth_param;
         }
     }
 
@@ -174,18 +179,28 @@ sub call {
         $body_content = join('&', @param_pairs);
     }
 
+    # The token from the environment is a secret and must not show up in a log
+    # line or in an error message. Log lines and exceptions use a masked copy
+    # of the URL; the request itself and the cache key keep the real one.
+    my $display_url = $url;
+    if (defined $secret_pair) {
+        my $masked_pair = uri_escape($auth_param) . '=***';
+        (my $masked_url = $url) =~ s/\Q$secret_pair\E/$masked_pair/;
+        $display_url = $masked_url;
+    }
+
     # Cache check (GET only)
     my $cache_key;
     my $cache_ttl = $endpoint->{cache_ttl};
     if ($method eq 'GET') {
         $cache_key = "$method $url";
         if (my $cached = $self->cache->get($cache_key, $cache_ttl)) {
-            $log->debug("Cache hit: $cache_key");
+            $log->debug("Cache hit: $method $display_url");
             return $self->_build_response($cached)->data;
         }
     }
 
-    $log->debug("$method $url" . ($body_content ? " (body: " . length($body_content) . " bytes)" : ""));
+    $log->debug("$method $display_url" . ($body_content ? " (body: " . length($body_content) . " bytes)" : ""));
 
     # Build headers
     my %headers = ('Accept' => 'application/json, application/xml, */*');
@@ -210,11 +225,11 @@ sub call {
     my $response = $self->io->call($req);
 
     unless ($response->status >= 200 && $response->status < 300) {
-        $log->errorf("API error: %s %s -> %s", $method, $url, $response->status);
-        croak "Bund API error: HTTP " . $response->status . " for $method $url";
+        $log->errorf("API error: %s %s -> %s", $method, $display_url, $response->status);
+        croak "Bund API error: HTTP " . $response->status . " for $method $display_url";
     }
 
-    $log->infof("%s %s -> %s", $method, $url, $response->status);
+    $log->infof("%s %s -> %s", $method, $display_url, $response->status);
 
     # Cache response
     if ($cache_key && $response->content) {
@@ -244,6 +259,8 @@ An endpoint may declare a C<query_defaults> map of fixed query values (applied
 only for keys the caller did not supply) and, for query-parameter token auth
 such as ArcGIS, an C<auth_env>/C<auth_query_param> pair: when the named
 environment variable is set, its value is injected as that query parameter.
+That token is a secret: log lines and error messages show it masked as
+C<token=***>, the request itself sends the real value.
 
 Path parameters (C<{roadId}> in path) are substituted first. Remaining
 parameters are:
