@@ -1,4 +1,7 @@
 {{$NEXT}}
+  - The catalog counts are complete in the README and in the POD of the
+    registry: 31 registered APIs, 115 endpoints across 20 of them, 11 APIs
+    without endpoints
   - The eco-visio endpoints are documented as answering nothing that can be
     rendered at the moment; the raw answer of the API is shown
   - Only the templates that belong to an endpoint of the distribution are

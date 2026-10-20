@@ -567,10 +567,14 @@ lib/WWW/Bund/API/*.pm                 Typed API-Adapter (optional)
 
 ```
 share/registry.yml                    31 API-Definitionen
-share/endpoints.yml                   115 Endpoint-Definitionen (20 APIs mit Endpoints)
+share/endpoints.yml                   115 Endpoint-Definitionen
 share/templates/{de,en,fr,es,it,nl,pl}/       777 Templates (111 pro Sprache)
 share/strings/{de,en,fr,es,it,nl,pl}.yml      7 Strings-Dateien
 ```
+
+Die Registry führt die 31 registrierten APIs aus share/registry.yml. Der
+Endpoint-Katalog in share/endpoints.yml definiert 115 Endpoints über 20 dieser
+APIs; die übrigen 11 registrierten APIs haben noch keine Endpoints.
 
 ---
 

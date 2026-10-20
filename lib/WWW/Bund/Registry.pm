@@ -36,9 +36,11 @@ use namespace::clean;
 
 =head1 DESCRIPTION
 
-Loads and indexes API and endpoint metadata from YAML files. The registry
-contains 31 APIs, and the endpoint catalog defines 115 endpoints across
-implemented APIs.
+Loads and indexes API and endpoint metadata from the two YAML files of the
+distribution, C<share/registry.yml> and C<share/endpoints.yml>.
+
+The registry contains 31 APIs. The endpoint catalog defines 115 endpoints
+across 20 of those APIs; the remaining 11 APIs have no endpoints yet.
 
 =cut
 
