@@ -590,6 +590,19 @@ Output is formatted according to C<--output> option.
         $params{$query_params[$i]} = $positional[$pos_idx];
     }
 
+    # Validate required query params (endpoint opt-in via `required`) before
+    # hitting the API, so a missing value gives a usage hint, not a raw HTTP 400.
+    for my $name (@{$ep->{required} // []}) {
+        next if defined $params{$name} && length $params{$name};
+        warn $self->_s('err_missing_arg', $name) . "\n";
+        my $param_str = join(' ',
+            (map { "<$_>" } @path_params),
+            (map { "<$_>" } @{$ep->{required}}),
+        );
+        warn $self->_s('err_usage_call', $api, $action, $param_str) . "\n";
+        return 1;
+    }
+
     # Execute
     my $data = eval {
         $self->bund->call($api, $endpoint_name, params => \%params);

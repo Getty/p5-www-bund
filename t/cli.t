@@ -125,6 +125,15 @@ sub run_bunden {
     like($out, qr/Fehlendes Argument.*roadId/, 'de shows German missing param');
 }
 
+# missing required query param (offline: rejected before the HTTP call, no raw HTTP 400)
+{
+    my ($out, $rc) = run_bunden('bundeshaushalt budget-data 2021');
+    isnt($rc, 0, 'missing required query param exits non-zero');
+    like($out, qr/Missing argument.*account/, 'shows missing required query param');
+    like($out, qr/Usage: bund bundeshaushalt budget-data <year> <account>/, 'shows usage hint');
+    unlike($out, qr/HTTP 400/, 'does not leak a raw HTTP 400 error');
+}
+
 # hyphen-to-underscore API resolution
 {
     my ($out, $rc) = run_bund('pegel-online');
