@@ -1,5 +1,7 @@
 package WWW::Bund::CLI::Cmd::Pflanzenschutzmittelzulassung;
 our $VERSION = '0.003';
+# ABSTRACT: Pflanzenschutzmittelzulassungen API commands
+
 use Moo;
 use MooX::Cmd;
 use MooX::Options protect_argv => 0;

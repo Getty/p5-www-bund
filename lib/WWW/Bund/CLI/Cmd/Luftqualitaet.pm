@@ -1,5 +1,7 @@
 package WWW::Bund::CLI::Cmd::Luftqualitaet;
 our $VERSION = '0.003';
+# ABSTRACT: Luftqualitaet API commands
+
 use Moo;
 use MooX::Cmd;
 use MooX::Options protect_argv => 0;

@@ -1,5 +1,7 @@
 package WWW::Bund::CLI::Cmd::Marktstammdaten;
 our $VERSION = '0.003';
+# ABSTRACT: Marktdatenstammregister API commands
+
 use Moo;
 use MooX::Cmd;
 use MooX::Options protect_argv => 0;
