@@ -7,7 +7,8 @@ registry of endpoints, and a 7-language template renderer.
 ## Delegation
 
 Delegate behavior-relevant code to the right agent instead of touching it
-yourself — the principle and the lane split are in
+yourself — the principle is a shared house rule (skilletor bundle
+`getty-cpan-dist@getty`); the lane split and hazards are in
 `.claude/rules/www-bund-rules.md` (auto-loaded every turn).
 
 | Task | Agent |
