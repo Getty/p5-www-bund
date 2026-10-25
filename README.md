@@ -1,6 +1,6 @@
 # WWW::Bund
 
-**Perl CLI-Client und Bibliothek für deutsche Bundes-APIs** ([bund.dev](https://bund.dev))
+**Perl CLI client and library for German federal APIs** ([bund.dev](https://bund.dev))
 
 [![CPAN Version](https://img.shields.io/cpan/v/WWW-Bund.svg)](https://metacpan.org/pod/WWW::Bund)
 [![Tests](https://img.shields.io/badge/tests-2444%20passing-success)](t/)
@@ -10,9 +10,9 @@
 
 ---
 
-## 🚗 Live-Beispiele
+## 🚗 Live examples
 
-### Stauabfrage A3
+### Traffic jams on the A3
 
 ```bash
 $ bund autobahn roadworks A3
@@ -26,7 +26,7 @@ A3 | Wolfstein - Neumarkt-Ost            Nürnberg -> Passau            nein
 ...
 ```
 
-### 💧 Pegelstände
+### 💧 Water levels
 
 ```bash
 $ bund pegel stations
@@ -40,7 +40,7 @@ EITZE                      ALLER      107.75
 ...
 ```
 
-### 📰 Tagesschau-Nachrichten
+### 📰 Tagesschau news
 
 ```bash
 $ bund tagesschau homepage
@@ -53,7 +53,7 @@ Klöckner im Gazastreifen        Große Kritik nach kleinem Besuch         2026-
 ...
 ```
 
-### 🏛️ Bundestag Plenarkonferenzen
+### 🏛️ Bundestag plenary sessions
 
 ```bash
 $ bund bundestag conferences
@@ -66,7 +66,7 @@ DATUM       NR  SITZUNG
 ...
 ```
 
-### 🌡️ DWD Wetterwarnungen
+### 🌡️ DWD weather warnings
 
 ```bash
 $ bund dwd municipality-warnings
@@ -77,7 +77,7 @@ Amtliche WARNUNG vor SCHWEREN STURMBÖEN   SCHWERE STURMBÖEN   3      Es treten
 ...
 ```
 
-### 📅 Deutsche Feiertage 2026
+### 📅 German public holidays 2026
 
 ```bash
 $ bund feiertage list
@@ -99,17 +99,17 @@ NATIONAL:
     datum: 2026-12-26
 ```
 
-### 🚨 NINA Katastrophenwarnungen
+### 🚨 NINA disaster warnings
 
 ```bash
 $ bund nina mapdata-katwarn
 Keine Warnungen.
 
 $ bund nina warnings 091620000000
-# (Zeigt aktuelle Warnungen für Kreis mit AGS-Code 091620000000)
+# (Shows current warnings for the district with AGS code 091620000000)
 ```
 
-### ✈️ Reisewarnungen
+### ✈️ Travel warnings
 
 ```bash
 $ bund travelwarning warnings
@@ -131,7 +131,7 @@ $ bund travelwarning warnings
 ...
 ```
 
-### 🏛️ Bundesrat Mitglieder
+### 🏛️ Bundesrat members
 
 ```bash
 $ bund bundesrat mitglieder renderXml
@@ -164,7 +164,7 @@ Branchen         Entwicklungen aus Dienstleistungs- und Industrie...
 ...
 ```
 
-### 🚴 Fahrrad-Zähler (Eco Visio)
+### 🚴 Bicycle counters (Eco Visio)
 
 ```bash
 $ bund -o json ecovisio counters 4586
@@ -180,7 +180,7 @@ $ bund -o json ecovisio counters 4586
 ]
 ```
 
-### 💊 Hilfsmittel-Verzeichnis (GKV)
+### 💊 Medical aids directory (GKV)
 
 ```bash
 $ bund -o json hilfsmittel tree 1
@@ -199,7 +199,7 @@ $ bund -o json hilfsmittel tree 1
 ]
 ```
 
-### 🌫️ Luftqualität (Umweltbundesamt)
+### 🌫️ Air quality (Umweltbundesamt)
 
 ```bash
 $ bund luftqualitaet stations
@@ -220,7 +220,7 @@ O3            Ozon
 ...
 ```
 
-### 🌍 Marktstammdaten (Energieanlagen)
+### 🌍 Market master data (energy installations)
 
 ```bash
 $ bund marktstammdaten strom-erzeugung
@@ -255,11 +255,11 @@ results:
 
 ## 🌍 Supported Languages
 
-**7 Sprachen mit vollständiger Übersetzung:**
+**7 languages with complete translations:**
 
 🇩🇪 Deutsch • 🇬🇧 English • 🇫🇷 Français • 🇪🇸 Español • 🇮🇹 Italiano • 🇳🇱 Nederlands • 🇵🇱 Polski
 
-**Dedizierte Befehle pro Sprache:**
+**Dedicated commands per language:**
 
 ```bash
 bund   autobahn roads   # 🇩🇪 Deutsch (default)
@@ -271,11 +271,11 @@ bundnl autobahn roads   # 🇳🇱 Nederlands
 bundpl autobahn roads   # 🇵🇱 Polski
 ```
 
-**Oder mit --lang Flag:**
+**Or with the --lang flag:**
 
 ```bash
-bund --lang en autobahn roads     # Englisch
-bund --lang fr nina warnings 123  # Französisch
+bund --lang en autobahn roads     # English
+bund --lang fr nina warnings 123  # French
 ```
 
 ---
@@ -286,7 +286,7 @@ bund --lang fr nina warnings 123  # Französisch
 cpanm WWW::Bund
 ```
 
-Oder aus dem Repository:
+Or from the repository:
 
 ```bash
 git clone https://github.com/Getty/p5-www-bund.git
@@ -299,74 +299,74 @@ perl -Ilib bin/bund
 
 ## 🚀 Quick Start
 
-### Übersicht anzeigen
+### Show an overview
 
 ```bash
-bund                    # Zeigt alle verfügbaren APIs
-bund list               # Detaillierte API-Liste
-bund info autobahn      # Details zu einer API
-bund autobahn           # Verfügbare Befehle für autobahn
+bund                    # Shows all available APIs
+bund list               # Detailed API list
+bund info autobahn      # Details on one API
+bund autobahn           # Available commands for autobahn
 ```
 
-### API-Aufrufe
+### API calls
 
 ```bash
-# Autobahn-API
-bund autobahn roads                    # Alle Autobahnen
-bund autobahn roadworks A3             # Baustellen auf der A3
-bund autobahn warnings A7              # Warnungen auf der A7
-bund autobahn webcams A9               # Webcams auf der A9
+# Autobahn API
+bund autobahn roads                    # All motorways
+bund autobahn roadworks A3             # Roadworks on the A3
+bund autobahn warnings A7              # Warnings on the A7
+bund autobahn webcams A9               # Webcams on the A9
 
-# Pegel-Online (Wasserstandsdaten)
-bund pegel stations                    # Alle Messstationen
-bund pegel station WUERZBURG           # Details für eine Station
-bund pegel measurements WUERZBURG W    # Wasserstand-Messungen
+# Pegel-Online (water level data)
+bund pegel stations                    # All gauging stations
+bund pegel station WUERZBURG           # Details for one station
+bund pegel measurements WUERZBURG W    # Water level measurements
 
 # Tagesschau
-bund tagesschau homepage               # Startseite
-bund tagesschau search Ukraine         # Nachrichten suchen
+bund tagesschau homepage               # Front page
+bund tagesschau search Ukraine         # Search news
 
-# NINA (Katastrophenwarnungen)
-bund nina warnings 091620000000        # Warnungen für Kreis (AGS-Code)
-bund nina mapdata-katwarn              # KATWARN Kartendaten
+# NINA (disaster warnings)
+bund nina warnings 091620000000        # Warnings for a district (AGS code)
+bund nina mapdata-katwarn              # KATWARN map data
 
-# DWD (Deutscher Wetterdienst)
-bund dwd municipality-warnings         # Gemeindewarnungen
-bund dwd warnings-nowcast              # Nowcast-Warnungen
+# DWD (German Weather Service)
+bund dwd municipality-warnings         # Municipality warnings
+bund dwd warnings-nowcast              # Nowcast warnings
 
 # Bundestag
-bund bundestag conferences              # Plenarkonferenzen
-bund bundestag mdb-index               # Abgeordnete
+bund bundestag conferences              # Plenary sessions
+bund bundestag mdb-index               # Members of parliament
 
 # Bundesrat
-bund bundesrat startlist               # Startliste
-bund bundesrat aktuelles               # Aktuelle Meldungen
+bund bundesrat startlist               # Start list
+bund bundesrat aktuelles               # Current news
 
-# Feiertage
-bund feiertage list                    # Alle Feiertage (aktuelles Jahr)
+# Public holidays
+bund feiertage list                    # All public holidays (current year)
 
-# SMARD (Strommarktdaten)
-bund smard indices 1 DE hour           # Strommarkt-Indizes
+# SMARD (electricity market data)
+bund smard indices 1 DE hour           # Electricity market indices
 
-# Reisewarnungen
-bund travelwarning warnings            # Alle Reisewarnungen
+# Travel warnings
+bund travelwarning warnings            # All travel warnings
 
 # Dashboard Deutschland
-bund dashboarddeutschland get          # Dashboard-Daten
+bund dashboarddeutschland get          # Dashboard data
 
-# Weitere...
-bund bundestaglobbyregister search     # Lobbyregister-Suche
-bund ecovisio counters 4586            # Fahrrad-Zähler
-bund hilfsmittel tree 1                # Hilfsmittel-Verzeichnis
+# More...
+bund bundestaglobbyregister search     # Lobby register search
+bund ecovisio counters 4586            # Bicycle counters
+bund hilfsmittel tree 1                # Medical aids directory
 ```
 
 ---
 
-## 🎨 Output-Formate
+## 🎨 Output formats
 
-### Template-basiert (Standard)
+### Template-based (default)
 
-Formatierte Tabellen, Listen und Records basierend auf YAML-Templates:
+Formatted tables, lists and records based on YAML templates:
 
 ```bash
 bund pegel stations
@@ -376,10 +376,10 @@ bund pegel stations
 # ...
 ```
 
-Das Template eines Endpunkts liegt in `share/templates/{sprache}/{endpunkt}.yml`.
-Gibt es keine `.yml`-Datei, greift eine `.yaml`-Datei mit demselben Namen; ein
-Template, das man mit `-t` angibt, hat Vorrang. Ein Endpunkt ohne Template
-zeigt die Antwort so, wie sie ist.
+An endpoint's template lives in `share/templates/{language}/{endpoint}.yml`.
+If there is no `.yml` file, a `.yaml` file with the same name is used; a
+template given with `-t` takes precedence. An endpoint without a template
+shows the response as it is.
 
 ### JSON
 
@@ -408,13 +408,13 @@ stations:
       type: river
 ```
 
-### Eigene Templates
+### Custom templates
 
 ```bash
-bund -t mein_template.yml pegel stations
+bund -t my_template.yml pegel stations
 ```
 
-**Template-Beispiel** (`mein_template.yml`):
+**Template example** (`my_template.yml`):
 
 ```yaml
 type: table
@@ -423,7 +423,7 @@ columns:
     header: STATION
     width: 20
   - field: water.shortname
-    header: GEWÄSSER
+    header: WATER
     width: 15
 ```
 
@@ -431,57 +431,57 @@ columns:
 
 ## 📊 API Roadmap
 
-### ✅ Vollständig implementiert (19 APIs, 114 Endpoints)
+### ✅ Fully implemented (19 APIs, 114 endpoints)
 
-| API | Endpoints | Beschreibung | Auth |
+| API | Endpoints | Description | Auth |
 |-----|-----------|-------------|------|
-| **autobahn** | 7 | Baustellen, Sperrungen, Webcams, Warnungen, Ladestationen, LKW-Parkplätze | ❌ |
-| **pegel_online** | 5 | Pegelstände, Stationen, Gewässer, Zeitreihen, Messwerte | ❌ |
-| **tagesschau** | 4 | Nachrichten, Suche, Kanäle, Homepage | ❌ |
-| **nina** | 14 | Katastrophenwarnungen, Kartendaten (6 Quellen), Version, Logos, FAQs, Notfalltipps | ❌ |
-| **bundestag** | 8 | Redner, Konferenzen, Ausschüsse, Abgeordnete, Artikel, Videos | ❌ |
-| **dwd** | 5 | Wetterwarnungen (Gemeinde/Küste/Nowcast), Stationsdaten, Crowdmeldungen | ❌ |
-| **feiertage** | 1 | Deutsche Feiertage nach Bundesland/Jahr | ❌ |
-| **smard** | 3 | Strommarktdaten (Indizes, Zeitreihen, Tabellen) | ❌ |
-| **bundeshaushalt** | 1 | Bundeshaushalt-Daten | ❌ |
-| **bundesrat** | 10 | Startliste, Aktuelles, Termine, Plenum, Mitglieder, Präsidium | ❌ |
-| **bundestag_lobbyregister** | 1 | Lobbyregister-Suche | ❌ |
-| **dashboard_deutschland** | 3 | Dashboard-Daten, Indikatoren, GeoJSON | ❌ |
-| **travelwarning** | 6 | Reisewarnungen, Vertretungen, Länder-Info, Gesundheit | ❌ |
-| **eco_visio** | 2 | Fahrrad-Zähler, Zähldaten | ❌ |
-| **hilfsmittel** | 7 | GKV Hilfsmittelverzeichnis (Baum, Produkte, Gruppen) | ❌ |
-| **luftqualitaet** | 13 | Luftqualität (Komponenten, Messungen, Stationen, Metadaten) | ❌ |
-| **marktstammdaten** | 8 | Marktstammdatenregister (Strom/Gas Filter + Daten) | ❌ |
-| **pflanzenschutzmittelzulassung** | 6 | Pflanzenschutzmittel (Mittel, Wirkstoffe, Anwendungen) | ❌ |
-| **abfallnavi** | 10 | Abfallkalender (Orte, Straßen, Termine mit Region-Parameter) | ❌ |
+| **autobahn** | 7 | Roadworks, closures, webcams, warnings, charging stations, truck parking | ❌ |
+| **pegel_online** | 5 | Water levels, stations, waters, time series, measurements | ❌ |
+| **tagesschau** | 4 | News, search, channels, homepage | ❌ |
+| **nina** | 14 | Disaster warnings, map data (6 sources), version, logos, FAQs, emergency tips | ❌ |
+| **bundestag** | 8 | Speakers, sessions, committees, members, articles, videos | ❌ |
+| **dwd** | 5 | Weather warnings (municipality/coast/nowcast), station data, crowd reports | ❌ |
+| **feiertage** | 1 | German public holidays by state/year | ❌ |
+| **smard** | 3 | Electricity market data (indices, time series, tables) | ❌ |
+| **bundeshaushalt** | 1 | Federal budget data | ❌ |
+| **bundesrat** | 10 | Start list, news, dates, plenary, members, presidium | ❌ |
+| **bundestag_lobbyregister** | 1 | Lobby register search | ❌ |
+| **dashboard_deutschland** | 3 | Dashboard data, indicators, GeoJSON | ❌ |
+| **travelwarning** | 6 | Travel warnings, missions, country info, health | ❌ |
+| **eco_visio** | 2 | Bicycle counters, count data | ❌ |
+| **hilfsmittel** | 7 | GKV medical aids directory (tree, products, groups) | ❌ |
+| **luftqualitaet** | 13 | Air quality (components, measurements, stations, metadata) | ❌ |
+| **marktstammdaten** | 8 | Market master data register (electricity/gas filters + data) | ❌ |
+| **pflanzenschutzmittelzulassung** | 6 | Plant protection products (products, active substances, uses) | ❌ |
+| **abfallnavi** | 10 | Waste collection calendar (places, streets, dates with region parameter) | ❌ |
 
-**Total: 114 Endpoints über 19 APIs**
+**Total: 114 endpoints across 19 APIs**
 
-**Hinweis:** Die Eco-Visio-API antwortet derzeit auf keine renderbare Antwort: `counters` liefert 404 Not Found für jede veröffentlichte Id, die Variante ohne `plus` 200 mit leerem Ergebnis, `data` eine 400 mit Validierungskette (gemessen am 2026-10-20). Die CLI zeigt deshalb die rohe Antwort der API.
+**Note:** the Eco Visio API currently gives no renderable response: `counters` returns 404 Not Found for every published id, the variant without `plus` returns 200 with an empty result, `data` a 400 with a validation chain (measured on 2026-10-20). The CLI therefore shows the API's raw response.
 
-### 🔄 In Arbeit / Eingeschränkt (2 APIs)
+### 🔄 In progress / limited (2 APIs)
 
 | API | Endpoints | Status | Details |
 |-----|-----------|--------|---------|
-| **destatis** | 0 | In der Registry | Noch kein Endpunkt und kein Kommando |
-| **ladestationen** | 1 | Partial Auth Required | ArcGIS FeatureServer mit GeoJSON-Defaults, optionales LADESTATIONEN_TOKEN |
+| **destatis** | 0 | In the registry | No endpoint and no command yet |
+| **ladestationen** | 1 | Partial Auth Required | ArcGIS FeatureServer with GeoJSON defaults, optional LADESTATIONEN_TOKEN |
 
-**Hinweis:** Das Ladesäulenregister der Bundesnetzagentur hat die öffentliche GeoJSON-Datei entfernt und auf einen authentifizierten ArcGIS FeatureServer umgestellt.
+**Note:** the Bundesnetzagentur's charging station register removed the public GeoJSON file and switched to an authenticated ArcGIS FeatureServer.
 
-### 🔐 Authentifizierung erforderlich (nicht geplant)
+### 🔐 Authentication required (not planned)
 
-Diese APIs benötigen API-Keys und sind daher für den öffentlichen CLI-Client nicht vorgesehen:
+These APIs need API keys and are therefore not intended for the public CLI client:
 
-- **ausbildungssuche** (BA API-Key)
-- **bewerberboerse** (BA API-Key)
-- **jobsuche** (BA API-Key)
-- **lebensmittelwarnung** (API-Key)
-- **dip_bundestag** (API-Key)
+- **ausbildungssuche** (BA API key)
+- **bewerberboerse** (BA API key)
+- **jobsuche** (BA API key)
+- **lebensmittelwarnung** (API key)
+- **dip_bundestag** (API key)
 
-### 📋 Nur in der Registry (11 APIs)
+### 📋 Registry only (11 APIs)
 
-Diese APIs stehen in `share/registry.yml`, haben aber noch keinen Endpunkt und
-damit kein Kommando (destatis steht mit 0 Endpunkten in der Tabelle oben):
+These APIs are listed in `share/registry.yml`, but have no endpoint yet and
+therefore no command (destatis is listed with 0 endpoints in the table above):
 
 - **ausbildungssuche**
 - **bewerberboerse**
@@ -499,29 +499,29 @@ damit kein Kommando (destatis steht mit 0 Endpunkten in der Tabelle oben):
 
 ## 🗂️ Cache
 
-API-Antworten werden automatisch gecacht:
+API responses are cached automatically:
 
 ```
 $XDG_CACHE_HOME/www-bund/responses/
 # Fallback: ~/.cache/www-bund/responses/
 ```
 
-**Cache-TTLs** (automatisch pro Endpoint):
+**Cache TTLs** (automatic per endpoint):
 
-| TTL | Typ | Beispiele |
+| TTL | Type | Examples |
 |-----|-----|-----------|
-| **120s** | Notfälle | NINA-Warnungen, DWD-Wetterwarnungen, Autobahn-Warnungen |
-| **300s** | Echtzeit | Tagesschau, Pegel-Messwerte, Baustellen, Bundesrat Aktuelles |
-| **1800s** | Moderat | Webcams, Suche, Strommarkt-Zeitreihen, Reisewarnungen |
-| **86400s** | Statisch | Straßenlisten, Stationslisten, Feiertage, Metadaten |
+| **120s** | Emergencies | NINA warnings, DWD weather warnings, Autobahn warnings |
+| **300s** | Real time | Tagesschau, Pegel measurements, roadworks, Bundesrat news |
+| **1800s** | Moderate | Webcams, search, electricity market time series, travel warnings |
+| **86400s** | Static | Street lists, station lists, public holidays, metadata |
 
-Cache löschen:
+Clear the cache:
 
 ```bash
 rm -rf ~/.cache/www-bund/
 ```
 
-Oder programmatisch:
+Or programmatically:
 
 ```perl
 use WWW::Bund;
@@ -530,7 +530,7 @@ WWW::Bund->new->cache->clear;
 
 ---
 
-## 🏗️ Architektur
+## 🏗️ Architecture
 
 ### CLI (MooX::Cmd + MooX::Options)
 
@@ -540,7 +540,7 @@ bin/bunden                            Englisch (via ENV)
 bin/bundfr/bundes/bundit/bundnl/bundpl  Weitere Sprachen
 
 lib/WWW/Bund/CLI.pm                   Root CLI (globale Options, Helper)
-lib/WWW/Bund/CLI/Role/APICommand.pm   Shared Role für API-Commands
+lib/WWW/Bund/CLI/Role/APICommand.pm   Shared role for API commands
 lib/WWW/Bund/CLI/Cmd/*.pm             22 Klassen: 20 API-Commands, 2 Meta-Commands (~10 LOC each)
 lib/WWW/Bund/CLI/Cmd/{List,Info}.pm   Meta-Commands
 lib/WWW/Bund/CLI/Formatter.pm         Template-Rendering
@@ -551,8 +551,8 @@ lib/WWW/Bund/CLI/Strings.pm           i18n Strings
 
 ```
 lib/WWW/Bund.pm                       Haupt-Client
-lib/WWW/Bund/Registry.pm              API- und Endpoint-Registry
-lib/WWW/Bund/Caller.pm                HTTP-Aufrufe mit Auth/Cache/RateLimit
+lib/WWW/Bund/Registry.pm              API and endpoint registry
+lib/WWW/Bund/Caller.pm                HTTP calls with auth/cache/rate limit
 lib/WWW/Bund/Cache.pm                 Disk-Cache (XDG-konform)
 lib/WWW/Bund/Auth.pm                  Auth-Header pro API
 lib/WWW/Bund/RateLimit.pm             Rate-Limiting pro API
@@ -572,30 +572,30 @@ share/templates/{de,en,fr,es,it,nl,pl}/       777 Templates (111 pro Sprache)
 share/strings/{de,en,fr,es,it,nl,pl}.yml      7 Strings-Dateien
 ```
 
-Die Registry führt die 31 registrierten APIs aus share/registry.yml. Der
-Endpoint-Katalog in share/endpoints.yml definiert 115 Endpoints über 20 dieser
-APIs; die übrigen 11 registrierten APIs haben noch keine Endpoints.
+The registry holds the 31 registered APIs from share/registry.yml. The
+endpoint catalog in share/endpoints.yml defines 115 endpoints across 20 of these
+APIs; the remaining 11 registered APIs have no endpoints yet.
 
 ---
 
-## 🌐 Neue Sprache hinzufügen
+## 🌐 Adding a new language
 
-1. **Strings-Datei erstellen:**
+1. **Create the strings file:**
 
 ```bash
 cp share/strings/en.yml share/strings/xx.yml
-# Alle Werte übersetzen (Keys NICHT ändern)
+# Translate all values (do NOT change the keys)
 ```
 
-2. **Template-Ordner erstellen:**
+2. **Create the template folder:**
 
 ```bash
 mkdir share/templates/xx
 cp share/templates/en/* share/templates/xx/
-# Nur `header:` und `empty:` Felder übersetzen
+# Translate only the `header:` and `empty:` fields
 ```
 
-3. **Verwenden:**
+3. **Use it:**
 
 ```bash
 bund --lang xx autobahn roads
@@ -605,66 +605,66 @@ bund --lang xx autobahn roads
 
 ## 🪟 Windows EXE
 
-Standalone `.exe` ohne Perl-Installation via [PAR::Packer](https://metacpan.org/pod/PAR::Packer):
+Standalone `.exe` without a Perl installation via [PAR::Packer](https://metacpan.org/pod/PAR::Packer):
 
 ```bash
-# Mit Strawberry Perl
+# With Strawberry Perl
 pp -x -M LWP::Protocol::https -M Moo -a "share/;share/" -o bund.exe bin/bund
 ```
 
-**Wichtig:**
-- XS-Module (YAML::XS, JSON::XS) explizit einbinden
-- SSL-Zertifikate (Mozilla::CA) mitliefern
-- Auf sauberem Windows-System testen
+**Important:**
+- Bundle XS modules (YAML::XS, JSON::XS) explicitly
+- Ship SSL certificates (Mozilla::CA)
+- Test on a clean Windows system
 
-Alternative: Strawberry Perl Portable als ZIP.
+Alternative: Strawberry Perl Portable as a ZIP.
 
 ---
 
-## 📚 Dokumentation
+## 📚 Documentation
 
-Alle 46 Module haben vollständige POD-Dokumentation:
+All 46 modules have complete POD documentation:
 
 ```bash
-perldoc WWW::Bund                    # Hauptmodul
-perldoc WWW::Bund::CLI               # CLI-Dokumentation
-perldoc WWW::Bund::API::Autobahn     # API-Adapter
-perldoc bund                         # Bin-Command
+perldoc WWW::Bund                    # Main module
+perldoc WWW::Bund::CLI               # CLI documentation
+perldoc WWW::Bund::API::Autobahn     # API adapter
+perldoc bund                         # Bin command
 ```
 
-**POD-Features:**
-- SYNOPSIS mit Verwendungsbeispielen für jedes Modul
-- Vollständige Beschreibung aller Attribute (=attr)
-- Dokumentation aller Methoden (=method)
-- Cross-References zwischen verwandten Modulen
-- Inline-POD für automatische PodWeaver-Generierung
+**POD features:**
+- SYNOPSIS with usage examples for every module
+- Complete description of all attributes (=attr)
+- Documentation of all methods (=method)
+- Cross-references between related modules
+- Inline POD for automatic PodWeaver generation
 
-**Umfang:**
-- 46 Module mit POD
-- 2,112+ Zeilen Dokumentation
-- 7 Bin-Scripts mit vollständigem POD
+**Scope:**
+- 46 modules with POD
+- 2,112+ lines of documentation
+- 7 bin scripts with complete POD
 
 ---
 
 ## 🧪 Tests
 
 ```bash
-prove -lr t/                       # Alle Tests (2444)
+prove -lr t/                       # All tests (2444)
 prove -l t/00-load.t               # Module loading
-prove -l t/cli.t                   # CLI-Funktionalität
-WWW_BUND_LIVE_TEST=1 prove -l t/integration.t  # Live-API-Tests
+prove -l t/cli.t                   # CLI functionality
+WWW_BUND_LIVE_TEST=1 prove -l t/integration.t  # Live API tests
 ```
 
 ---
 
-## 📝 Lizenz
+## 📝 License
 
-Dieses Modul ist freie Software. Es kann unter denselben Bedingungen wie Perl
-selbst weiterverbreitet und/oder modifiziert werden.
+This module is free software. It can be redistributed and/or modified under the
+same terms as Perl itself.
 
 ---
 
-## 👥 Autor
+## 👥 Author
 
 **Torsten Raudssus** (GETTY) <torsten@raudss.us>
 
@@ -672,7 +672,7 @@ selbst weiterverbreitet und/oder modifiziert werden.
 
 ## 🔗 Links
 
-- [bund.dev](https://bund.dev) - Offizielle API-Registry
+- [bund.dev](https://bund.dev) - Official API registry
 - [GitHub](https://github.com/Getty/p5-www-bund)
 - [MetaCPAN](https://metacpan.org/pod/WWW::Bund)
 - [Issues](https://github.com/Getty/p5-www-bund/issues)
