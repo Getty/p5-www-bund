@@ -3,6 +3,8 @@
 # PODNAME: bundpl
 # ABSTRACT: CLI client for German Federal Government APIs (Polish)
 
+our $VERSION = '0.003';
+
 use strict;
 use warnings;
 use lib 'lib';

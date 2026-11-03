@@ -3,6 +3,8 @@
 # PODNAME: bundnl
 # ABSTRACT: CLI client for German Federal Government APIs (Dutch)
 
+our $VERSION = '0.003';
+
 use strict;
 use warnings;
 use lib 'lib';

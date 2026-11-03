@@ -3,6 +3,8 @@
 # PODNAME: bundit
 # ABSTRACT: CLI client for German Federal Government APIs (Italian)
 
+our $VERSION = '0.003';
+
 use strict;
 use warnings;
 use lib 'lib';

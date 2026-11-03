@@ -3,6 +3,8 @@
 # PODNAME: bund
 # ABSTRACT: CLI client for German Federal Government APIs (bund.dev)
 
+our $VERSION = '0.003';
+
 use strict;
 use warnings;
 use lib 'lib';

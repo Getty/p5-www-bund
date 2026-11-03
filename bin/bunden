@@ -3,6 +3,8 @@
 # PODNAME: bunden
 # ABSTRACT: CLI client for German Federal Government APIs (English)
 
+our $VERSION = '0.003';
+
 use strict;
 use warnings;
 use lib 'lib';
