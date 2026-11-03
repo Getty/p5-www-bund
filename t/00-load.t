@@ -52,8 +52,9 @@ my @modules = qw(
     WWW::Bund::CLI::Cmd::Pflanzenschutzmittelzulassung
 );
 
-plan tests => scalar @modules;
 
 for my $mod (@modules) {
     use_ok($mod);
 }
+
+done_testing;
