@@ -22,7 +22,7 @@ the main agent delegates rather than loading those skills. Architecture, the
 add-an-API recipe, the template/UTF-8/XML conventions, and the invariants live
 in the `www-bund-core` skill under `.claude/skills/`. Shared Perl and release
 skills (`getty-perl-moo`, `perl-release-dist-ini`,
-`getty-perl-release-author-getty`) are hardlinked there too.
+`getty-perl-release-author-getty`) are installed there by skilletor.
 
 ## Coordination
 
