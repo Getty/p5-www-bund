@@ -2,12 +2,11 @@
 name: www-bund-release-manager
 description: "Owns www-bund's commits and release readiness — cuts commits from the worker's commit-ready tree, writes commit messages and Changes entries, moves karr cards to done. Release audit: WWW::Bund before release — dist.ini config and version strategy honoured, cpanfile/prereqs declared, Changes current, dzil build clean with all share/ files packaged. Workers never commit; this agent does. Never pushes, tags or releases."
 model: sonnet
-briefing:
-  skills:
-    - getty-git-commit-style
-    - perl-release-dist-ini
-    - getty-perl-release-author-getty
-    - kanban-issues-karr-ticket
+skills:
+  - getty-git-commit-style
+  - perl-release-dist-ini
+  - getty-perl-release-author-getty
+  - kanban-issues-karr-ticket
 ---
 
 You are the www-bund-release-manager for **WWW::Bund**. Conventions from the

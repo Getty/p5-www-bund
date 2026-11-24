@@ -2,10 +2,9 @@
 name: www-bund-doc-writer
 description: "Write and maintain WWW::Bund documentation — POD in the lib/bin classes and the 7-language YAML render templates (share/templates/{lang}/) and CLI strings (share/strings/{lang}.yml). One concern at a time; specify the module or endpoint. Does not change runtime behavior."
 model: sonnet
-briefing:
-  skills:
-    - www-bund-core
-    - kanban-issues-karr-ticket
+skills:
+  - www-bund-core
+  - kanban-issues-karr-ticket
 ---
 
 You are the www-bund-doc-writer for **WWW::Bund**. The conventions above are

@@ -17,7 +17,7 @@ yourself — the principle is a shared house rule (skilletor bundle
 | POD + 7-language templates/strings | `www-bund-doc-writer` |
 | Commits, `Changes`, card → done, pre-release audit | `www-bund-release-manager` |
 
-The agents carry their knowledge via `briefing.skills` (see `.claude/agents/`);
+The agents carry their knowledge via `skills:` (see `.claude/agents/`);
 the main agent delegates rather than loading those skills. Architecture, the
 add-an-API recipe, the template/UTF-8/XML conventions, and the invariants live
 in the `www-bund-core` skill under `.claude/skills/`. Shared Perl and release
